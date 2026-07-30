@@ -21,8 +21,16 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
   onCompleteLesson,
   onStartExam,
 }) => {
-  const [selectedGrade, setSelectedGrade] = useState<10 | 11 | 12>(user.grade as any || 12);
-  const filteredCourses = courses.filter((c) => c.grade_level === selectedGrade);
+  const [selectedCategoryTab, setSelectedCategoryTab] = useState<'10' | '11' | '12' | 'tka'>(
+    user.grade === 12 ? '12' : (user.grade === 11 ? '11' : '10')
+  );
+
+  const filteredCourses = courses.filter((c) => {
+    if (selectedCategoryTab === 'tka') {
+      return c.category?.toLowerCase().includes('tka') || c.title?.toLowerCase().includes('tka');
+    }
+    return c.grade_level === Number(selectedCategoryTab);
+  });
   
   const initialCourse = courses.find((c) => c.id === activeCourseId) || filteredCourses[0] || courses[0];
   const [currentCourse, setCurrentCourse] = useState<Course>(initialCourse);
@@ -156,24 +164,24 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
             <span>Learning Path Sosiologi Membumi</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-stone-100">
-            Kurikulum Sosiologi Kelas {selectedGrade} SMA
+            {selectedCategoryTab === 'tka' ? 'Modul & Materi TKA Sosiologi (UTBK / PTN)' : `Kurikulum Sosiologi Kelas ${selectedCategoryTab} SMA`}
           </h1>
-          <p className="text-xs text-stone-400">Pilih jenjang kelas untuk menyesuaikan materi pembahasan</p>
+          <p className="text-xs text-stone-400">Pilih jenjang kelas atau pilar TKA untuk menyesuaikan materi pembahasan</p>
         </div>
 
-        {/* Grade Tabs */}
-        <div className="flex bg-stone-800 p-1.5 rounded-2xl border border-stone-700 text-xs font-bold">
+        {/* Grade & TKA Tabs */}
+        <div className="flex bg-stone-800 p-1.5 rounded-2xl border border-stone-700 text-xs font-bold gap-1 flex-wrap">
           <button
             onClick={() => {
-              setSelectedGrade(10);
+              setSelectedCategoryTab('10');
               const c = courses.find(course => course.grade_level === 10);
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
-              selectedGrade === 10
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+              selectedCategoryTab === '10'
                 ? 'bg-amber-500 text-stone-950 shadow-xs'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
@@ -182,15 +190,15 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
           </button>
           <button
             onClick={() => {
-              setSelectedGrade(11);
+              setSelectedCategoryTab('11');
               const c = courses.find(course => course.grade_level === 11);
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
-              selectedGrade === 11
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+              selectedCategoryTab === '11'
                 ? 'bg-amber-500 text-stone-950 shadow-xs'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
@@ -199,20 +207,37 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
           </button>
           <button
             onClick={() => {
-              setSelectedGrade(12);
-              const c = courses.find(course => course.grade_level === 12);
+              setSelectedCategoryTab('12');
+              const c = courses.find(course => course.grade_level === 12 && !course.category?.includes('TKA'));
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
-              selectedGrade === 12
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+              selectedCategoryTab === '12'
                 ? 'bg-amber-500 text-stone-950 shadow-xs'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
           >
             Kelas 12
+          </button>
+          <button
+            onClick={() => {
+              setSelectedCategoryTab('tka');
+              const c = courses.find(course => course.category?.toLowerCase().includes('tka'));
+              if (c) {
+                setCurrentCourse(c);
+                setSelectedLesson(c.lessons[0]);
+              }
+            }}
+            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+              selectedCategoryTab === 'tka'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 shadow-xs font-black'
+                : 'text-amber-400 hover:text-amber-300'
+            }`}
+          >
+            🎯 TKA Sosiologi
           </button>
         </div>
       </div>
