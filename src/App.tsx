@@ -85,6 +85,16 @@ export default function App() {
     setUser((prev) => ({ ...prev, role: newRole }));
   };
 
+  const handlePurgeAllData = () => {
+    localStorage.removeItem('socioedu_courses');
+    localStorage.removeItem('socioedu_exams');
+    localStorage.removeItem('socioedu_announcements');
+    setCourses([]);
+    setExams([]);
+    setAnnouncements([]);
+    setAnalytics([]);
+  };
+
   const handleStartCourse = (courseId: string) => {
     setSelectedCourseId(courseId);
     setActiveTab('modules');
@@ -441,6 +451,7 @@ export default function App() {
           setUser(loggedUser);
           saveDocument('users', loggedUser.id, loggedUser);
         }}
+        onPurgeAllData={handlePurgeAllData}
       />
     </div>
   );

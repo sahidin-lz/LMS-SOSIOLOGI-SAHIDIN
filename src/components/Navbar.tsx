@@ -136,15 +136,43 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Trophy className="w-4 h-4 text-amber-400" />
             <span>Leaderboard</span>
           </button>
+
+          {/* Super Admin Menu Link */}
+          <button
+            onClick={() => {
+              onRoleChange('admin');
+              setActiveTab('dashboard');
+            }}
+            className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-black transition-all ${
+              user.role === 'admin' && activeTab === 'dashboard'
+                ? 'bg-purple-900 text-purple-100 shadow-md border border-purple-500/80 ring-1 ring-purple-400'
+                : 'bg-purple-950/80 text-purple-200 hover:bg-purple-900 hover:text-purple-100 border border-purple-800/80'
+            }`}
+            title="Menu Kontrol Super Admin & Master Data"
+          >
+            <Shield className="w-4 h-4 text-purple-400" />
+            <span>SUPER ADMIN</span>
+          </button>
         </nav>
 
-        {/* Right side stats, Notifications Bell & Role Selector */}
-        <div className="flex items-center space-x-3">
+        {/* Right side stats, Notifications Bell & Dedicated Login Menu */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Dedicated Login / Akun Menu Button */}
+          <button
+            onClick={onOpenLoginModal}
+            className="flex items-center space-x-1.5 bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-stone-950 px-3 py-1.5 rounded-xl text-xs font-black shadow-md transition-all cursor-pointer border border-amber-300/60 active:scale-95"
+            title="Buka Menu Login LMS Sosiologi"
+          >
+            <UserCheck className="w-4 h-4 text-stone-950" />
+            <span className="hidden sm:inline">LOGIN / AKUN</span>
+            <span className="sm:hidden">LOGIN</span>
+          </button>
+
           {/* Notification Bell Button */}
           <div className="relative">
             <button
               onClick={() => setShowNotifPopover(!showNotifPopover)}
-              className="relative p-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700/80 transition-all cursor-pointer"
+              className="relative p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700/80 transition-all cursor-pointer"
               title="Notifikasi LMS"
             >
               <Bell className="w-4 h-4 text-amber-300" />
