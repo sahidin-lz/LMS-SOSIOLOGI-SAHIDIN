@@ -72,11 +72,11 @@ export const INITIAL_LEADERBOARD: LeaderboardUser[] = [
 ];
 
 export const TRYOUT_ANALYTICS_DATA: TryoutAnalytics[] = [
-  { exam_title: 'Tryout 1', score: 580, date: '10 Jun', target_score: 700 },
-  { exam_title: 'Tryout 2', score: 640, date: '24 Jun', target_score: 700 },
-  { exam_title: 'Tryout 3', score: 620, date: '08 Jul', target_score: 700 },
-  { exam_title: 'Tryout 4', score: 710, date: '22 Jul', target_score: 700 },
-  { exam_title: 'Tryout 5 (Terbaru)', score: 785, date: '28 Jul', target_score: 700 },
+  { exam_title: 'Tryout 1', score: 120, date: '10 Jun', target_score: 150 },
+  { exam_title: 'Tryout 2', score: 135, date: '24 Jun', target_score: 150 },
+  { exam_title: 'Tryout 3', score: 130, date: '08 Jul', target_score: 150 },
+  { exam_title: 'Tryout 4', score: 150, date: '22 Jul', target_score: 150 },
+  { exam_title: 'Tryout 5 (Terbaru)', score: 165, date: '28 Jul', target_score: 150 },
 ];
 
 export const COURSES_DATA: Course[] = [
@@ -963,7 +963,7 @@ export const INITIAL_ANNOUNCEMENTS = [
     category: 'Jadwal Ujian',
     date: '30 Juli 2026',
     author: 'Tim Kurikulum Admin LMS',
-    content: 'Simulasi Tryout CBT TKA Sosiologi dengan sistem penilaian IRT Skala 100 akan diselenggarakan serentak. Silakan berlatih menggunakan Paket Tryout 1 dan 2.',
+    content: 'Simulasi Tryout CBT TKA Sosiologi dengan sistem penilaian IRT (Maksimal 200) & Skor Normal akan diselenggarakan serentak. Silakan berlatih menggunakan Paket Tryout 1 dan 2.',
   },
   {
     id: 'ann_2',
@@ -979,7 +979,7 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: 'notif_1',
     title: 'Misi CBT TKA Baru Dibuka!',
-    message: 'Guru Sosiologi menugaskan Tryout TKA Paket 1 (IR Skor Skala 100). Kerjakan sebelum 2 Agustus 2026.',
+    message: 'Guru Sosiologi menugaskan Tryout TKA Paket 1 (Penilaian IRT Maksimal 200 & Skor Normal). Kerjakan sebelum 2 Agustus 2026.',
     type: 'cbt' as const,
     date: 'Hari ini, 08:30',
     isRead: false,

@@ -170,7 +170,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
 
             <button
               onClick={() => {
-                const csvContent = "Nama Siswa,Sekolah,Progres Video,Skor UTBK,Akurasi,Status\nArya Pratama,SMA Negeri 8 Jakarta,85%,785,80%,Lolos PTN Top 1\nSiti Rahmawati,SMA Negeri 3 Yogyakarta,100%,820,90%,Lolos PTN Top 1\nBintang Ramadhan,SMA Labschool Kebayoran,65%,710,70%,Passing Grade Aman\n";
+                const csvContent = "Nama Siswa,Sekolah,Progres Video,Skor IRT TKA (Max 200),Akurasi Normal,Status\nArya Pratama,SMA Negeri 8 Jakarta,85%,165 / 200,80%,Lolos PTN Top 1\nSiti Rahmawati,SMA Negeri 3 Yogyakarta,100%,180 / 200,90%,Lolos PTN Top 1\nBintang Ramadhan,SMA Labschool Kebayoran,65%,145 / 200,70%,Passing Grade Aman\n";
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -485,8 +485,8 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                   <th className="p-3">Nama Siswa</th>
                   <th className="p-3">Sekolah</th>
                   <th className="p-3">Progres Tontonan Modul</th>
-                  <th className="p-3">Skor UTBK</th>
-                  <th className="p-3">Akurasi</th>
+                  <th className="p-3">Skor IRT TKA (Max 200)</th>
+                  <th className="p-3">Akurasi Normal</th>
                   <th className="p-3">Status UTBK</th>
                 </tr>
               </thead>
@@ -502,7 +502,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                       <span className="text-xs font-mono font-bold text-emerald-400">85%</span>
                     </div>
                   </td>
-                  <td className="p-3 font-bold text-amber-400">785 / 1000</td>
+                  <td className="p-3 font-bold text-amber-400">85 / 100</td>
                   <td className="p-3 font-semibold text-emerald-400">80% (8/10)</td>
                   <td className="p-3">
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
@@ -521,7 +521,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                       <span className="text-xs font-mono font-bold text-emerald-400">100%</span>
                     </div>
                   </td>
-                  <td className="p-3 font-bold text-amber-400">820 / 1000</td>
+                  <td className="p-3 font-bold text-amber-400">92 / 100</td>
                   <td className="p-3 font-semibold text-emerald-400">90% (9/10)</td>
                   <td className="p-3">
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
@@ -540,7 +540,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                       <span className="text-xs font-mono font-bold text-amber-400">65%</span>
                     </div>
                   </td>
-                  <td className="p-3 font-bold text-amber-400">710 / 1000</td>
+                  <td className="p-3 font-bold text-amber-400">78 / 100</td>
                   <td className="p-3 font-semibold text-amber-400">70% (7/10)</td>
                   <td className="p-3">
                     <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800">

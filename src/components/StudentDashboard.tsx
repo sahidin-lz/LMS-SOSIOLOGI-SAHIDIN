@@ -119,13 +119,13 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                   <span>Grafik Progres Nilai Tryout TKA Sosiologi</span>
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Perkembangan skor dari tryout ke tryout menuju target <span className="font-semibold text-emerald-600">85 Points</span> (Skala 100 TKA)
+                  Perkembangan skor dari tryout ke tryout menuju target <span className="font-semibold text-emerald-600">85 Points</span> (Skala Maksimal 100 IRT TKA)
                 </p>
               </div>
 
               <div className="flex items-center space-x-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 text-xs text-emerald-800 font-semibold self-start sm:self-auto">
                 <ArrowUpRight className="w-4 h-4 text-emerald-600" />
-                <span>Skor Terbaru: {latestTryout?.score || 785} / 1000</span>
+                <span>Skor IRT Terbaru: {latestTryout?.score || 92} / 100</span>
               </div>
             </div>
 
@@ -135,7 +135,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                 <LineChart data={analytics} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis dataKey="exam_title" stroke="#64748b" fontSize={12} tickLine={false} />
-                  <YAxis domain={[400, 1000]} stroke="#64748b" fontSize={12} tickLine={false} />
+                  <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} tickLine={false} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#1e293b',
@@ -149,7 +149,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
                   <Line
                     type="monotone"
                     dataKey="score"
-                    name="Skor TryoutKamu"
+                    name="Skor Tryout Kamu (IRT Max 100)"
                     stroke="#4f46e5"
                     strokeWidth={3}
                     dot={{ fill: '#4f46e5', r: 5 }}
@@ -171,11 +171,11 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             <div className="flex items-center justify-between text-xs text-slate-500 bg-slate-50 p-3 rounded-2xl border border-slate-100">
               <div className="flex items-center space-x-2">
                 <span className="w-3 h-3 rounded-full bg-indigo-600 inline-block"></span>
-                <span>Nilai Tryout Kamu</span>
+                <span>Nilai IRT Tryout Kamu (Max 100)</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="w-3 h-0.5 border-t-2 border-dashed border-emerald-500 inline-block"></span>
-                <span>Target PTN Favorit (700+)</span>
+                <span>Target PTN Favorit (85+)</span>
               </div>
             </div>
           </div>

@@ -10,22 +10,29 @@ import { ExamDiscussionView } from './components/ExamDiscussionView';
 import { LearningJourneyMap } from './components/LearningJourneyMap';
 import { TasksWorkspace } from './components/TasksWorkspace';
 import { ClassroomManagement } from './components/ClassroomManagement';
-import { LoginModal } from './components/LoginModal';
+import { LoginPage } from './components/LoginPage';
 import { 
   INITIAL_USER, COURSES_DATA, EXAMS_DATA, INITIAL_LEADERBOARD, 
   TRYOUT_ANALYTICS_DATA, INITIAL_ANNOUNCEMENTS 
 } from './data/sociologyData';
 import { Announcement, Course, Exam, Question, ExamSession, Role, User, UserAnswer, TryoutAnalytics } from './types';
 import { testFirestoreConnection, subscribeToCollection, saveDocument } from './lib/firestoreService';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from './lib/firebase';
 import { FileText, Zap, Award, Sparkles, ChevronRight, Clock } from 'lucide-react';
 
 export default function App() {
-  const [user, setUser] = useState<User>(() => {
+  const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('socioedu_user');
-    return saved ? JSON.parse(saved) : INITIAL_USER;
+    return saved ? JSON.parse(saved) : null;
   });
 
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return !!localStorage.getItem('socioedu_user');
+  });
+
+  const [authLoading, setAuthLoading] = useState<boolean>(true);
 
   const [courses, setCourses] = useState<Course[]>(() => {
     const saved = localStorage.getItem('socioedu_courses');
@@ -42,15 +49,66 @@ export default function App() {
     return saved ? JSON.parse(saved) : INITIAL_ANNOUNCEMENTS;
   });
 
+  const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion'>('dashboard');
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(undefined);
   const [activeExam, setActiveExam] = useState<Exam | null>(null);
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
   const [analytics, setAnalytics] = useState<TryoutAnalytics[]>(TRYOUT_ANALYTICS_DATA);
 
-  // Persist user and data to localStorage & Firebase Firestore LMS Sosiologi
+  // Firebase Auth Observer & Firestore Sync
   useEffect(() => {
     testFirestoreConnection();
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        let fetchedUser: User | null = null;
+        try {
+          // Sync with Firestore user document
+          const userDocRef = doc(db, 'users', fbUser.uid);
+          const docSnap = await getDoc(userDocRef);
+
+          if (docSnap.exists()) {
+            fetchedUser = docSnap.data() as User;
+          }
+        } catch (err) {
+          console.warn('Firestore offline or user profile fetch warning:', err);
+        }
+
+        if (!fetchedUser) {
+          fetchedUser = {
+            id: fbUser.uid,
+            name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Guru Super Admin',
+            email: fbUser.email || '',
+            role: 'admin',
+            total_xp: 9990,
+            levelTitle: 'Super Admin Utama / Guru Pengampu Sosiologi',
+            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(fbUser.email || 'user')}`,
+            grade: 12,
+            streakDays: 1,
+            schoolName: 'SMA Negeri 1 Membumi',
+            group_name: 'Super Admin',
+          };
+          saveDocument('users', fbUser.uid, fetchedUser);
+        } else {
+          // Firebase authenticated email account is Guru Superadmin with full control
+          fetchedUser = {
+            ...fetchedUser,
+            role: 'admin',
+            levelTitle: fetchedUser.levelTitle || 'Super Admin Utama / Guru Pengampu Sosiologi',
+          };
+        }
+
+        setUser(fetchedUser);
+        localStorage.setItem('socioedu_user', JSON.stringify(fetchedUser));
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+        localStorage.removeItem('socioedu_user');
+      }
+      setAuthLoading(false);
+    });
 
     // Subscribe to exams from Firestore
     const unsubExams = subscribeToCollection<Exam>('exams', (fsExams) => {
@@ -60,13 +118,16 @@ export default function App() {
     });
 
     return () => {
+      unsubscribeAuth();
       unsubExams();
     };
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('socioedu_user', JSON.stringify(user));
-    saveDocument('students', user.id || 'std_default', user);
+    if (user) {
+      localStorage.setItem('socioedu_user', JSON.stringify(user));
+      saveDocument('students', user.id || 'std_default', user);
+    }
   }, [user]);
 
   useEffect(() => {
@@ -82,7 +143,32 @@ export default function App() {
   }, [announcements]);
 
   const handleRoleChange = (newRole: Role) => {
-    setUser((prev) => ({ ...prev, role: newRole }));
+    if (!user) return;
+    const updated = { ...user, role: newRole };
+    setUser(updated);
+    saveDocument('users', user.id, updated);
+  };
+
+  const handleGradeChange = (newGrade: number) => {
+    if (!user) return;
+    const updated = { ...user, grade: newGrade };
+    setUser(updated);
+    saveDocument('users', user.id, updated);
+    if (updated.role === 'siswa' && newGrade !== 12 && mainPillar === 'tka') {
+      setMainPillar('belajar');
+      setActiveTab('dashboard');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+    setIsAuthenticated(false);
+    setUser(null);
+    localStorage.removeItem('socioedu_user');
   };
 
   const handlePurgeAllData = () => {
@@ -213,7 +299,7 @@ export default function App() {
             exam_title: `Tryout ${prev.length + 1}`,
             score: session.score,
             date: 'Hari ini',
-            target_score: 700,
+            target_score: 150,
           },
         ]);
 
@@ -274,16 +360,42 @@ export default function App() {
     }
   };
 
+  // Auth Loading Gatekeeper
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-stone-950 flex flex-col items-center justify-center space-y-4 text-stone-100 font-sans">
+        <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs text-stone-400 font-bold tracking-wider uppercase">Memuat Sesi Autentikasi LMS...</p>
+      </div>
+    );
+  }
+
+  // Unauthenticated -> Show Dedicated Full Page Login Screen
+  if (!isAuthenticated || !user) {
+    return (
+      <LoginPage
+        onLoginSuccess={(loggedUser) => {
+          setUser(loggedUser);
+          setIsAuthenticated(true);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 font-sans antialiased selection:bg-amber-500 selection:text-stone-950">
       {/* Hide main navbar when active CBT exam is running for full focus */}
       {activeTab !== 'exam_active' && (
         <Navbar
           user={user}
+          mainPillar={mainPillar}
+          setMainPillar={setMainPillar}
           activeTab={activeTab as any}
           setActiveTab={(tab) => setActiveTab(tab as any)}
           onRoleChange={handleRoleChange}
-          onOpenLoginModal={() => setIsLoginModalOpen(true)}
+          onGradeChange={handleGradeChange}
+          onLogout={handleLogout}
+          notifications={announcements as any}
         />
       )}
 
@@ -441,18 +553,6 @@ export default function App() {
           />
         )}
       </main>
-
-      {/* Login & Role Authentication Modal */}
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        currentUser={user}
-        onLoginSuccess={(loggedUser) => {
-          setUser(loggedUser);
-          saveDocument('users', loggedUser.id, loggedUser);
-        }}
-        onPurgeAllData={handlePurgeAllData}
-      />
     </div>
   );
 }

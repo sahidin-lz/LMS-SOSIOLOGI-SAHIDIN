@@ -114,18 +114,18 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
             </div>
           </div>
 
-          {/* Dual Score Badges (Skala 100) */}
+          {/* Dual Score Badges (Skala Maksimal 100 IRT & Normal 100) */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 text-center space-y-3">
             <div className="border-b border-white/10 pb-2">
-              <span className="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider block">Skor IRT TKA (Skala 100)</span>
+              <span className="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider block">Skor IRT TKA (Skala Max 100)</span>
               <div className="text-3xl sm:text-4xl font-black text-amber-300 tracking-tight">
                 {session.irt_score ?? session.score} <span className="text-sm font-normal text-indigo-200">/ 100</span>
               </div>
-              <p className="text-[10px] text-amber-200/90 mt-0.5">Berbobot Tingkat Kesukaran Soal</p>
+              <p className="text-[10px] text-amber-200/90 mt-0.5">Sistem Normal Berbobot Kesukaran Soal</p>
             </div>
 
             <div className="pt-1">
-              <span className="text-[10px] text-indigo-200 font-bold uppercase tracking-wider block">Skor Normal (Persentase)</span>
+              <span className="text-[10px] text-indigo-200 font-bold uppercase tracking-wider block">Skor Normal (Persentase Jawaban Benar)</span>
               <div className="text-2xl font-bold text-white tracking-tight">
                 {session.normal_score ?? Math.round((session.total_correct / session.total_questions) * 100)} <span className="text-xs font-normal text-indigo-200">/ 100</span>
               </div>
@@ -134,7 +134,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
 
             <div className="pt-2 border-t border-white/10">
               <span className="inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                {(session.irt_score ?? session.score) >= 70 ? 'Lolos Target TKA Sosiologi' : 'Perlu Pendalaman Materi'}
+                {(session.irt_score ?? session.score) >= 75 ? 'Lolos Target TKA Sosiologi' : 'Perlu Pendalaman Materi'}
               </span>
             </div>
           </div>
