@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "classrooms": {
+      "title": "Rombongan Belajar",
+      "description": "Daftar Rombel / Kelas Sosiologi",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "teacher_name": { "type": "string" },
+        "grade_level": { "type": "string" },
+        "academic_year": { "type": "string" },
+        "total_students": { "type": "number" },
+        "code": { "type": "string" }
+      },
+      "required": ["name", "grade_level"]
+    },
+    "students": {
+      "title": "Data Siswa",
+      "description": "Profil Siswa dan Capaian Nilai",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "nisn": { "type": "string" },
+        "classroom_id": { "type": "string" },
+        "group_name": { "type": "string" },
+        "xp": { "type": "number" },
+        "avg_cbt_score": { "type": "number" }
+      },
+      "required": ["name", "group_name"]
+    },
+    "exams": {
+      "title": "Ujian & Kuis Sosiologi",
+      "description": "Paket Soal CBT TKA dan Kuis Harian",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "type": { "type": "string" },
+        "duration_minutes": { "type": "number" },
+        "total_questions": { "type": "number" }
+      },
+      "required": ["title", "type"]
+    },
+    "notifications": {
+      "title": "Notifikasi System",
+      "description": "Pengumuman dan Misi Baru",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "date": { "type": "string" },
+        "isRead": { "type": "boolean" }
+      },
+      "required": ["title", "message"]
+    }
+  }
+}

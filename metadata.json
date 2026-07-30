@@ -1,0 +1,6 @@
+{
+  "name": "Sosiologi Membumi",
+  "description": "Platform LMS Sosiologi SMA & CBT TKA Sosiologi dengan Sistem Penilaian IRT & Skor Normal Skala 100, Peta Belajar Gamifikasi, serta CMS Admin & Portal Pengajar",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
