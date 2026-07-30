@@ -10,11 +10,13 @@ import { ExamDiscussionView } from './components/ExamDiscussionView';
 import { LearningJourneyMap } from './components/LearningJourneyMap';
 import { TasksWorkspace } from './components/TasksWorkspace';
 import { ClassroomManagement } from './components/ClassroomManagement';
+import { LoginModal } from './components/LoginModal';
 import { 
   INITIAL_USER, COURSES_DATA, EXAMS_DATA, INITIAL_LEADERBOARD, 
   TRYOUT_ANALYTICS_DATA, INITIAL_ANNOUNCEMENTS 
 } from './data/sociologyData';
 import { Announcement, Course, Exam, Question, ExamSession, Role, User, UserAnswer, TryoutAnalytics } from './types';
+import { testFirestoreConnection, subscribeToCollection, saveDocument } from './lib/firestoreService';
 import { FileText, Zap, Award, Sparkles, ChevronRight, Clock } from 'lucide-react';
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
     const saved = localStorage.getItem('socioedu_user');
     return saved ? JSON.parse(saved) : INITIAL_USER;
   });
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const [courses, setCourses] = useState<Course[]>(() => {
     const saved = localStorage.getItem('socioedu_courses');
@@ -44,9 +48,25 @@ export default function App() {
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
   const [analytics, setAnalytics] = useState<TryoutAnalytics[]>(TRYOUT_ANALYTICS_DATA);
 
-  // Persist user and data to localStorage
+  // Persist user and data to localStorage & Firebase Firestore LMS Sosiologi
+  useEffect(() => {
+    testFirestoreConnection();
+
+    // Subscribe to exams from Firestore
+    const unsubExams = subscribeToCollection<Exam>('exams', (fsExams) => {
+      if (fsExams && fsExams.length > 0) {
+        setExams(fsExams);
+      }
+    });
+
+    return () => {
+      unsubExams();
+    };
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('socioedu_user', JSON.stringify(user));
+    saveDocument('students', user.id || 'std_default', user);
   }, [user]);
 
   useEffect(() => {
@@ -253,6 +273,7 @@ export default function App() {
           activeTab={activeTab as any}
           setActiveTab={(tab) => setActiveTab(tab as any)}
           onRoleChange={handleRoleChange}
+          onOpenLoginModal={() => setIsLoginModalOpen(true)}
         />
       )}
 
@@ -410,6 +431,17 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Login & Role Authentication Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        currentUser={user}
+        onLoginSuccess={(loggedUser) => {
+          setUser(loggedUser);
+          saveDocument('users', loggedUser.id, loggedUser);
+        }}
+      />
     </div>
   );
 }

@@ -1,12 +1,12 @@
 {
-  "projectId": "ferrous-epoch-v6pck",
-  "appId": "1:121481033540:web:3ad8ea28d5ebda48e44911",
-  "apiKey": "AIzaSyBWnZxDLeu1X8cpx6kAnj6SH_2f21JAmS8",
-  "authDomain": "ferrous-epoch-v6pck.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-sosiologimembumi-db5555cd-2c1b-4793-87d3-13da923f43dc",
-  "storageBucket": "ferrous-epoch-v6pck.firebasestorage.app",
-  "messagingSenderId": "121481033540",
+  "projectId": "lms-sosiologi",
+  "appId": "1:78649220828:web:63b5b4c8aca0106cc55e19",
+  "apiKey": "AIzaSyAbbe4nEov1hvv6Op8yGy2DcpWxgbSOIfM",
+  "authDomain": "lms-sosiologi.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "lms-sosiologi.firebasestorage.app",
+  "messagingSenderId": "78649220828",
   "measurementId": "",
-  "oAuthClientId": "121481033540-fj1qujbkl864h5jj7hg67fjtc3mo952a.apps.googleusercontent.com",
+  "oAuthClientId": "",
   "recaptchaSiteKey": ""
 }

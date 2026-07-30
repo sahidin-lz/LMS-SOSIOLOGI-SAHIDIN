@@ -7,6 +7,7 @@ interface NavbarProps {
   activeTab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt';
   setActiveTab: (tab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt') => void;
   onRoleChange: (role: Role) => void;
+  onOpenLoginModal?: () => void;
   notifications?: AppNotification[];
   onMarkNotificationRead?: (id: string) => void;
   onNotificationClick?: (notif: AppNotification) => void;
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   onRoleChange,
+  onOpenLoginModal,
   notifications = [],
   onMarkNotificationRead,
   onNotificationClick,
@@ -286,11 +288,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="text-[10px] text-stone-400">Kontrol Sistem & User</div>
                 </div>
               </button>
+              {onOpenLoginModal && (
+                <button
+                  onClick={onOpenLoginModal}
+                  className="w-full mt-2 p-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 flex items-center justify-center space-x-1.5 transition-all shadow-md cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Dialog Login Lengkap</span>
+                </button>
+              )}
             </div>
           </div>
 
           {/* User Avatar */}
-          <div className="w-9 h-9 rounded-full ring-2 ring-emerald-500/50 overflow-hidden shrink-0">
+          <div
+            onClick={onOpenLoginModal}
+            className="w-9 h-9 rounded-full ring-2 ring-emerald-500/50 overflow-hidden shrink-0 cursor-pointer hover:ring-amber-400 transition-all"
+            title="Klik untuk Login / Kelola Akun"
+          >
             <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
           </div>
         </div>
