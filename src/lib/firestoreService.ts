@@ -3,6 +3,7 @@ import {
   doc,
   getDocs,
   setDoc,
+  deleteDoc,
   onSnapshot,
   getDocFromServer
 } from 'firebase/firestore';
@@ -57,6 +58,14 @@ export async function saveDocument(collectionName: string, docId: string, data: 
     await setDoc(doc(db, collectionName, docId), data, { merge: true });
   } catch (error) {
     handleFirestoreError(error, OperationType.WRITE, `${collectionName}/${docId}`);
+  }
+}
+
+export async function deleteDocument(collectionName: string, docId: string) {
+  try {
+    await deleteDoc(doc(db, collectionName, docId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `${collectionName}/${docId}`);
   }
 }
 

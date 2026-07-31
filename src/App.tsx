@@ -16,7 +16,7 @@ import {
   TRYOUT_ANALYTICS_DATA, INITIAL_ANNOUNCEMENTS 
 } from './data/sociologyData';
 import { Announcement, Course, Exam, Question, ExamSession, Role, User, UserAnswer, TryoutAnalytics } from './types';
-import { testFirestoreConnection, subscribeToCollection, saveDocument } from './lib/firestoreService';
+import { testFirestoreConnection, subscribeToCollection, saveDocument, deleteDocument } from './lib/firestoreService';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
@@ -34,39 +34,21 @@ export default function App() {
 
   const [authLoading, setAuthLoading] = useState<boolean>(true);
 
-  const [courses, setCourses] = useState<Course[]>(() => {
-    const saved = localStorage.getItem('socioedu_courses');
-    if (!saved) return COURSES_DATA;
-    try {
-      const parsed: Course[] = JSON.parse(saved);
-      const initialIds = new Set(COURSES_DATA.map((c) => c.id));
-      const userAddedCourses = parsed.filter((c) => !initialIds.has(c.id));
-      const updatedList = [...COURSES_DATA, ...userAddedCourses];
-      localStorage.setItem('socioedu_courses', JSON.stringify(updatedList));
-      return updatedList;
-    } catch {
-      return COURSES_DATA;
-    }
-  });
-
-  const [exams, setExams] = useState<Exam[]>(() => {
-    const saved = localStorage.getItem('socioedu_exams');
-    return saved ? JSON.parse(saved) : EXAMS_DATA;
-  });
-
-  const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
-    const saved = localStorage.getItem('socioedu_announcements');
-    return saved ? JSON.parse(saved) : INITIAL_ANNOUNCEMENTS;
-  });
+  // Firestore Collections State
+  const [courses, setCourses] = useState<Course[]>(COURSES_DATA);
+  const [exams, setExams] = useState<Exam[]>(EXAMS_DATA);
+  const [announcements, setAnnouncements] = useState<Announcement[]>(INITIAL_ANNOUNCEMENTS);
+  const [usersList, setUsersList] = useState<User[]>([]);
 
   const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
+  const [tkaSubTab, setTkaSubTab] = useState<'materi' | 'latihan_bab' | 'try_out_tka'>('materi');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion'>('dashboard');
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(undefined);
   const [activeExam, setActiveExam] = useState<Exam | null>(null);
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
   const [analytics, setAnalytics] = useState<TryoutAnalytics[]>(TRYOUT_ANALYTICS_DATA);
 
-  // Firebase Auth Observer & Firestore Sync
+  // Firebase Auth Observer & Real-time Firestore Subscriptions
   useEffect(() => {
     testFirestoreConnection();
 
@@ -101,7 +83,6 @@ export default function App() {
           };
           saveDocument('users', fbUser.uid, fetchedUser);
         } else {
-          // Firebase authenticated email account is Guru Superadmin with full control
           fetchedUser = {
             ...fetchedUser,
             role: 'admin',
@@ -120,37 +101,57 @@ export default function App() {
       setAuthLoading(false);
     });
 
-    // Subscribe to exams from Firestore
+    // 1. Real-time Subscription: Courses
+    const unsubCourses = subscribeToCollection<Course>('courses', (fsCourses) => {
+      if (fsCourses && fsCourses.length > 0) {
+        setCourses(fsCourses);
+      } else {
+        // Seed initial courses data to Firestore if empty
+        COURSES_DATA.forEach(c => saveDocument('courses', c.id, c));
+      }
+    });
+
+    // 2. Real-time Subscription: Exams
     const unsubExams = subscribeToCollection<Exam>('exams', (fsExams) => {
       if (fsExams && fsExams.length > 0) {
         setExams(fsExams);
+      } else {
+        // Seed initial exams data to Firestore if empty
+        EXAMS_DATA.forEach(e => saveDocument('exams', e.id, e));
+      }
+    });
+
+    // 3. Real-time Subscription: Announcements
+    const unsubAnnouncements = subscribeToCollection<Announcement>('announcements', (fsAnnouncements) => {
+      if (fsAnnouncements && fsAnnouncements.length > 0) {
+        setAnnouncements(fsAnnouncements);
+      } else {
+        INITIAL_ANNOUNCEMENTS.forEach(a => saveDocument('announcements', a.id, a));
+      }
+    });
+
+    // 4. Real-time Subscription: Users
+    const unsubUsers = subscribeToCollection<User>('users', (fsUsers) => {
+      if (fsUsers && fsUsers.length > 0) {
+        setUsersList(fsUsers);
       }
     });
 
     return () => {
       unsubscribeAuth();
+      unsubCourses();
       unsubExams();
+      unsubAnnouncements();
+      unsubUsers();
     };
   }, []);
 
   useEffect(() => {
     if (user) {
       localStorage.setItem('socioedu_user', JSON.stringify(user));
-      saveDocument('students', user.id || 'std_default', user);
+      saveDocument('users', user.id || 'std_default', user);
     }
   }, [user]);
-
-  useEffect(() => {
-    localStorage.setItem('socioedu_courses', JSON.stringify(courses));
-  }, [courses]);
-
-  useEffect(() => {
-    localStorage.setItem('socioedu_exams', JSON.stringify(exams));
-  }, [exams]);
-
-  useEffect(() => {
-    localStorage.setItem('socioedu_announcements', JSON.stringify(announcements));
-  }, [announcements]);
 
   const handleRoleChange = (newRole: Role) => {
     if (!user) return;
@@ -181,16 +182,6 @@ export default function App() {
     localStorage.removeItem('socioedu_user');
   };
 
-  const handlePurgeAllData = () => {
-    localStorage.removeItem('socioedu_courses');
-    localStorage.removeItem('socioedu_exams');
-    localStorage.removeItem('socioedu_announcements');
-    setCourses([]);
-    setExams([]);
-    setAnnouncements([]);
-    setAnalytics([]);
-  };
-
   const handleStartCourse = (courseId: string) => {
     setSelectedCourseId(courseId);
     setActiveTab('modules');
@@ -202,21 +193,25 @@ export default function App() {
     setActiveTab('exam_active');
   };
 
-  // CRUD Handlers for Admin CMS
+  // CRUD Handlers for Admin CMS (Firebase Firestore Synced)
   const handleAddCourse = (newCourse: Course) => {
-    setCourses((prev) => [newCourse, ...prev]);
+    setCourses((prev) => [newCourse, ...prev.filter(c => c.id !== newCourse.id)]);
+    saveDocument('courses', newCourse.id, newCourse);
   };
 
   const handleDeleteCourse = (courseId: string) => {
     setCourses((prev) => prev.filter((c) => c.id !== courseId));
+    deleteDocument('courses', courseId);
   };
 
   const handleAddExam = (newExam: Exam) => {
-    setExams((prev) => [newExam, ...prev]);
+    setExams((prev) => [newExam, ...prev.filter(e => e.id !== newExam.id)]);
+    saveDocument('exams', newExam.id, newExam);
   };
 
   const handleDeleteExam = (examId: string) => {
     setExams((prev) => prev.filter((e) => e.id !== examId));
+    deleteDocument('exams', examId);
   };
 
   const handleAddQuestion = (examId: string, newQuestion: Question) => {
@@ -224,11 +219,13 @@ export default function App() {
       prev.map((e) => {
         if (e.id === examId) {
           const updatedQs = [...e.questions, { ...newQuestion, number: e.questions.length + 1 }];
-          return {
+          const updatedExam = {
             ...e,
             questions: updatedQs,
             total_questions: updatedQs.length,
           };
+          saveDocument('exams', examId, updatedExam);
+          return updatedExam;
         }
         return e;
       })
@@ -240,11 +237,13 @@ export default function App() {
       prev.map((e) => {
         if (e.id === examId) {
           const updatedQs = e.questions.filter((q) => q.id !== questionId);
-          return {
+          const updatedExam = {
             ...e,
             questions: updatedQs,
             total_questions: updatedQs.length,
           };
+          saveDocument('exams', examId, updatedExam);
+          return updatedExam;
         }
         return e;
       })
@@ -252,11 +251,28 @@ export default function App() {
   };
 
   const handleAddAnnouncement = (newAnn: Announcement) => {
-    setAnnouncements((prev) => [newAnn, ...prev]);
+    setAnnouncements((prev) => [newAnn, ...prev.filter(a => a.id !== newAnn.id)]);
+    saveDocument('announcements', newAnn.id, newAnn);
   };
 
   const handleDeleteAnnouncement = (annId: string) => {
     setAnnouncements((prev) => prev.filter((a) => a.id !== annId));
+    deleteDocument('announcements', annId);
+  };
+
+  const handleAddUser = (newUser: User) => {
+    setUsersList((prev) => [newUser, ...prev.filter(u => u.id !== newUser.id)]);
+    saveDocument('users', newUser.id, newUser);
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    setUsersList((prev) => prev.filter((u) => u.id !== userId));
+    deleteDocument('users', userId);
+  };
+
+  const handleBulkAddUsers = (newUsers: User[]) => {
+    setUsersList((prev) => [...newUsers, ...prev]);
+    newUsers.forEach((u) => saveDocument('users', u.id, u));
   };
 
   const handleCompleteLesson = (lessonId: string, xpReward: number) => {
@@ -333,7 +349,7 @@ export default function App() {
 
         const ans = answers[q.id]?.selected_option;
         if (!ans) total_unanswered++;
-        else if (ans === q.correct_answer) {
+        else if (ans === q.correct_answer || (q.correct_answer && q.correct_answer.includes(ans))) {
           total_correct++;
           weighted_earned += weight;
         }
@@ -402,6 +418,20 @@ export default function App() {
           setMainPillar={setMainPillar}
           activeTab={activeTab as any}
           setActiveTab={(tab) => setActiveTab(tab as any)}
+          tkaSubTab={tkaSubTab}
+          onSelectTkaSubTab={(sub) => {
+            setMainPillar('tka');
+            setTkaSubTab(sub);
+            if (sub === 'try_out_tka') {
+              setActiveTab('cbt');
+            } else {
+              setActiveTab('modules');
+            }
+          }}
+          onSelectTkaModules={() => {
+            setSelectedCourseId('course_tka_01');
+            setActiveTab('modules');
+          }}
           onRoleChange={handleRoleChange}
           onGradeChange={handleGradeChange}
           onLogout={handleLogout}
@@ -423,6 +453,7 @@ export default function App() {
             courses={courses}
             exams={exams}
             announcements={announcements}
+            usersList={usersList}
             onAddCourse={handleAddCourse}
             onDeleteCourse={handleDeleteCourse}
             onAddExam={handleAddExam}
@@ -431,6 +462,9 @@ export default function App() {
             onDeleteQuestion={handleDeleteQuestion}
             onAddAnnouncement={handleAddAnnouncement}
             onDeleteAnnouncement={handleDeleteAnnouncement}
+            onAddUser={handleAddUser}
+            onDeleteUser={handleDeleteUser}
+            onBulkAddUsers={handleBulkAddUsers}
           />
         )}
 
@@ -466,6 +500,13 @@ export default function App() {
             user={user}
             courses={courses}
             activeCourseId={selectedCourseId}
+            tkaSubTab={tkaSubTab}
+            onSelectTkaSubTab={(sub) => {
+              setTkaSubTab(sub);
+              if (sub === 'try_out_tka') {
+                setActiveTab('cbt');
+              }
+            }}
             onCompleteLesson={handleCompleteLesson}
             onStartExam={handleStartExam}
           />

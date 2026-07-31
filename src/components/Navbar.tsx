@@ -11,6 +11,9 @@ export interface NavbarProps {
   setMainPillar: (pillar: 'belajar' | 'tka') => void;
   activeTab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion';
   setActiveTab: (tab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion') => void;
+  onSelectTkaModules?: () => void;
+  tkaSubTab?: 'materi' | 'latihan_bab' | 'try_out_tka';
+  onSelectTkaSubTab?: (subTab: 'materi' | 'latihan_bab' | 'try_out_tka') => void;
   onRoleChange: (role: Role) => void;
   onGradeChange: (grade: number) => void;
   onLogout?: () => void;
@@ -25,6 +28,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   setMainPillar,
   activeTab,
   setActiveTab,
+  onSelectTkaModules,
+  tkaSubTab = 'materi',
+  onSelectTkaSubTab,
   onRoleChange,
   onGradeChange,
   onLogout,
@@ -354,15 +360,57 @@ export const Navbar: React.FC<NavbarProps> = ({
             /* Pilar 2: TKA Sosiologi Sub-tabs (Kelas 12) */
             <nav className="flex items-center space-x-2 overflow-x-auto text-xs font-semibold">
               <button
-                onClick={() => setActiveTab('cbt')}
-                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl transition-all ${
-                  activeTab === 'cbt'
+                onClick={() => {
+                  if (onSelectTkaSubTab) {
+                    onSelectTkaSubTab('materi');
+                  } else {
+                    setActiveTab('modules');
+                  }
+                }}
+                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  mainPillar === 'tka' && activeTab === 'modules' && tkaSubTab === 'materi'
                     ? 'bg-amber-500 text-stone-950 font-black shadow-md border border-amber-300'
                     : 'text-stone-300 hover:text-amber-300 hover:bg-stone-800'
                 }`}
               >
-                <FileText className="w-4 h-4 text-amber-950" />
-                <span>Simulasi Tryout CBT & Bank Soal TKA Sosiologi</span>
+                <BookOpen className={`w-4 h-4 ${mainPillar === 'tka' && activeTab === 'modules' && tkaSubTab === 'materi' ? 'text-stone-950' : 'text-amber-400'}`} />
+                <span className="capitalize">materi</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onSelectTkaSubTab) {
+                    onSelectTkaSubTab('latihan_bab');
+                  } else {
+                    setActiveTab('modules');
+                  }
+                }}
+                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  mainPillar === 'tka' && activeTab === 'modules' && tkaSubTab === 'latihan_bab'
+                    ? 'bg-amber-500 text-stone-950 font-black shadow-md border border-amber-300'
+                    : 'text-stone-300 hover:text-amber-300 hover:bg-stone-800'
+                }`}
+              >
+                <GraduationCap className={`w-4 h-4 ${mainPillar === 'tka' && activeTab === 'modules' && tkaSubTab === 'latihan_bab' ? 'text-stone-950' : 'text-amber-400'}`} />
+                <span className="capitalize">latihan bab</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onSelectTkaSubTab) {
+                    onSelectTkaSubTab('try_out_tka');
+                  } else {
+                    setActiveTab('cbt');
+                  }
+                }}
+                className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  mainPillar === 'tka' && (activeTab === 'cbt' || tkaSubTab === 'try_out_tka')
+                    ? 'bg-amber-500 text-stone-950 font-black shadow-md border border-amber-300'
+                    : 'text-stone-300 hover:text-amber-300 hover:bg-stone-800'
+                }`}
+              >
+                <FileText className={`w-4 h-4 ${mainPillar === 'tka' && (activeTab === 'cbt' || tkaSubTab === 'try_out_tka') ? 'text-stone-950' : 'text-amber-400'}`} />
+                <span>Try out TKA</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
               </button>
 

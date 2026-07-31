@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  BookOpen, Play, CheckCircle2, Bookmark, Award, Clock, ChevronRight, 
-  Sparkles, FileText, Share2, Check, ArrowLeft, MessageSquare, ThumbsUp, Send, StickyNote, Plus, PlayCircle
+  BookOpen, Play, CheckCircle2, Bookmark, Award, Clock, ChevronRight, ChevronDown,
+  Sparkles, FileText, Share2, Check, ArrowLeft, ArrowRight, MessageSquare, ThumbsUp, Send, StickyNote, Plus, PlayCircle,
+  Target, Layers, GitCompare, HelpCircle, ShieldAlert, Search, Filter, ListOrdered, LayoutGrid, GraduationCap
 } from 'lucide-react';
 import { Course, Lesson, LessonComment, Role, User, VideoNote } from '../types';
 import { INITIAL_COMMENTS } from '../data/sociologyData';
@@ -12,7 +13,184 @@ interface LearningModulesProps {
   activeCourseId?: string;
   onCompleteLesson: (lessonId: string, xpReward: number) => void;
   onStartExam?: (examId: string) => void;
+  tkaSubTab?: 'materi' | 'latihan_bab' | 'try_out_tka';
+  onSelectTkaSubTab?: (subTab: 'materi' | 'latihan_bab' | 'try_out_tka') => void;
 }
+
+// Helper to highlight key sociological terms in text
+const highlightKeyTerms = (text: string) => {
+  if (!text) return text;
+  
+  // If line is in "Term: Explanation" format
+  const colonIndex = text.indexOf(': ');
+  if (colonIndex > 0 && colonIndex < 45 && !text.startsWith('http')) {
+    const term = text.substring(0, colonIndex);
+    const rest = text.substring(colonIndex + 2);
+    return (
+      <span>
+        <strong className="text-amber-300 font-extrabold">{term}:</strong> {rest}
+      </span>
+    );
+  }
+  return text;
+};
+
+// Formatted material renderer component for text lessons
+const FormattedMaterialBody: React.FC<{
+  lesson: Lesson;
+  onStartExam?: (examId: string) => void;
+}> = ({ lesson, onStartExam }) => {
+  const isCbtLesson = 
+    lesson.exam_id_target || 
+    lesson.id === 'les_tka_1_i' || 
+    lesson.title.toLowerCase().includes('20 soal cbt') ||
+    lesson.text_body.includes('SISTEM CBT');
+
+  const examTargetId = lesson.exam_id_target || 
+    (lesson.id === 'les_tka_1_i' ? 'exam_latihan_bab_1' : `exam_latihan_bab_${lesson.chapter_number}`);
+
+  const paragraphs = lesson.text_body ? lesson.text_body.split('\n\n').filter(p => p.trim().length > 0) : [];
+
+  return (
+    <div className="space-y-6">
+      {/* Key Takeaways Section */}
+      {lesson.key_takeaways && lesson.key_takeaways.length > 0 && (
+        <div className="bg-gradient-to-r from-amber-950/80 via-stone-900 to-emerald-950/70 p-5 sm:p-6 rounded-2xl border border-amber-500/40 space-y-3.5 shadow-lg">
+          <div className="flex items-center space-x-2 text-amber-300 font-extrabold text-xs uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>Poin Kunci & Ringkasan Konsep Utama</span>
+          </div>
+          <ul className="space-y-2.5 text-xs sm:text-sm text-stone-200">
+            {lesson.key_takeaways.map((point, i) => (
+              <li key={i} className="flex items-start space-x-3">
+                <span className="w-5 h-5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <span className="leading-relaxed">{highlightKeyTerms(point)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* CBT Mode Launcher if applicable */}
+      {isCbtLesson ? (
+        <div className="bg-gradient-to-br from-amber-950 via-stone-950 to-emerald-950/90 p-6 sm:p-7 rounded-2xl border border-amber-500/60 shadow-xl space-y-6">
+          <div className="flex items-start space-x-3.5 text-amber-400">
+            <ShieldAlert className="w-7 h-7 shrink-0 mt-0.5 text-amber-400" />
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-2">
+                <span className="bg-amber-500 text-stone-950 font-black text-[10px] px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+                  Mode Ujian CBT Aktif
+                </span>
+                <span className="text-xs text-stone-400 font-medium">20 Soal TKA Sosiologi</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-extrabold text-stone-100">
+                Simulasi CBT: {lesson.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+                Siswa mengerjakan 20 soal terlebih dahulu di Sistem CBT secara mandiri. Kunci jawaban, analisis statistik IRT, serta pembahasan terinci terbuka otomatis setelah dikumpulkan!
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-stone-900/90 p-3.5 rounded-xl border border-stone-800 text-center">
+              <span className="block text-[10px] uppercase font-bold text-stone-400">Jumlah Soal</span>
+              <span className="text-sm sm:text-base font-extrabold text-amber-400">20 Soal CBT</span>
+            </div>
+            <div className="bg-stone-900/90 p-3.5 rounded-xl border border-stone-800 text-center">
+              <span className="block text-[10px] uppercase font-bold text-stone-400">Durasi Pengerjaan</span>
+              <span className="text-sm sm:text-base font-extrabold text-stone-200">40 Menit</span>
+            </div>
+            <div className="bg-stone-900/90 p-3.5 rounded-xl border border-stone-800 text-center">
+              <span className="block text-[10px] uppercase font-bold text-stone-400">Format Soal</span>
+              <span className="text-sm sm:text-base font-extrabold text-indigo-400">3 Model TKA</span>
+            </div>
+            <div className="bg-stone-900/90 p-3.5 rounded-xl border border-stone-800 text-center">
+              <span className="block text-[10px] uppercase font-bold text-stone-400">Reward Hadiah</span>
+              <span className="text-sm sm:text-base font-extrabold text-emerald-400">+300 XP</span>
+            </div>
+          </div>
+
+          <div className="bg-stone-900/60 p-4 rounded-xl border border-amber-500/30 text-center space-y-3">
+            <p className="text-xs text-stone-300 font-medium">
+              Format Soal: Pilihan Ganda Biasa, PGK Kategori (Sesuai/Tidak Sesuai), dan PGK Multi-Jawaban (MCMA).
+            </p>
+            <button
+              onClick={() => onStartExam && onStartExam(examTargetId)}
+              className="w-full sm:w-auto bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 hover:from-amber-400 hover:to-emerald-400 text-stone-950 font-black text-xs sm:text-sm px-8 py-3.5 rounded-xl shadow-xl hover:shadow-amber-500/20 transition-all inline-flex items-center justify-center space-x-2 cursor-pointer transform hover:scale-[1.01]"
+            >
+              <PlayCircle className="w-5 h-5 fill-stone-950" />
+              <span>MULAI KERJAKAN 20 SOAL DI SISTEM CBT</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {paragraphs.map((para, idx) => {
+            const lines = para.split('\n');
+            const firstLine = lines[0].trim();
+            
+            // Check if paragraph header is a main title (ALL CAPS or numbered like "1. HAKIKAT GEJALA SOSIAL")
+            const isMainSection = 
+              /^[0-9I|V|X]+\.\s+[A-Z\s,&\(\)\/\-\:]+$/.test(firstLine) ||
+              (firstLine.length < 55 && firstLine === firstLine.toUpperCase() && !firstLine.includes('HTTP'));
+            
+            // Check if paragraph is sub-heading (like "1. Tindakan sosial instrumental" or "a. Kontak Sosial:")
+            const isSubSection = /^[0-9a-z]\.\s+/i.test(firstLine) || /^[0-9a-z]\)\s+/i.test(firstLine);
+
+            if (isMainSection) {
+              return (
+                <div key={idx} className="bg-stone-950 border border-amber-500/30 rounded-2xl p-5 space-y-3 shadow-sm">
+                  <div className="flex items-center space-x-2.5 border-b border-stone-800 pb-3">
+                    <BookOpen className="w-4 h-4 text-amber-400 shrink-0" />
+                    <h3 className="text-sm sm:text-base font-extrabold text-amber-300 tracking-wide uppercase">
+                      {firstLine}
+                    </h3>
+                  </div>
+                  {lines.slice(1).length > 0 && (
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-300 leading-relaxed pt-1">
+                      {lines.slice(1).map((l, lIdx) => (
+                        <p key={lIdx}>{highlightKeyTerms(l)}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (isSubSection) {
+              return (
+                <div key={idx} className="bg-stone-950/90 border-l-4 border-amber-500 p-4 rounded-r-2xl border-y border-r border-stone-800/80 space-y-2 shadow-xs">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-100 flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
+                    <span>{firstLine}</span>
+                  </h4>
+                  {lines.slice(1).length > 0 && (
+                    <div className="space-y-1.5 text-xs text-stone-300 leading-relaxed pl-4">
+                      {lines.slice(1).map((l, lIdx) => (
+                        <p key={lIdx}>{highlightKeyTerms(l)}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <div key={idx} className="bg-stone-950 p-4 sm:p-5 rounded-2xl border border-stone-800 space-y-2 text-xs sm:text-sm text-stone-300 leading-relaxed shadow-xs">
+                {lines.map((l, lIdx) => (
+                  <p key={lIdx}>{highlightKeyTerms(l)}</p>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const LearningModules: React.FC<LearningModulesProps> = ({
   user,
@@ -20,24 +198,135 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
   activeCourseId,
   onCompleteLesson,
   onStartExam,
+  tkaSubTab: externalTkaSubTab,
+  onSelectTkaSubTab,
 }) => {
+  const [internalTkaSubTab, setInternalTkaSubTab] = useState<'materi' | 'latihan_bab' | 'try_out_tka'>('materi');
+  const activeTkaSubTab = externalTkaSubTab || internalTkaSubTab;
+
+  const handleSubTabChange = (sub: 'materi' | 'latihan_bab' | 'try_out_tka') => {
+    setInternalTkaSubTab(sub);
+    if (onSelectTkaSubTab) {
+      onSelectTkaSubTab(sub);
+    }
+  };
+
   const [selectedCategoryTab, setSelectedCategoryTab] = useState<'10' | '11' | '12' | 'tka'>(
     user.grade === 12 ? '12' : (user.grade === 11 ? '11' : '10')
   );
 
-  const filteredCourses = courses.filter((c) => {
-    const isTkaCourse = c.category?.toLowerCase().includes('tka') || c.title?.toLowerCase().includes('tka');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredCourses = useMemo(() => {
+    const list = courses.filter((c) => {
+      const isTkaCourse = c.category?.toLowerCase().includes('tka') || c.title?.toLowerCase().includes('tka');
+      
+      let matchesTab = false;
+      if (selectedCategoryTab === 'tka') {
+        matchesTab = isTkaCourse;
+      } else {
+        if (isTkaCourse) matchesTab = false;
+        else matchesTab = c.grade_level === Number(selectedCategoryTab);
+      }
+
+      if (!matchesTab) return false;
+
+      if (!searchQuery.trim()) return true;
+
+      const q = searchQuery.toLowerCase();
+      const matchCourse = c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q);
+      const matchLesson = c.lessons.some(l => 
+        l.title.toLowerCase().includes(q) || 
+        l.text_body.toLowerCase().includes(q) ||
+        (l.key_takeaways && l.key_takeaways.some(kt => kt.toLowerCase().includes(q)))
+      );
+
+      return matchCourse || matchLesson;
+    });
+
     if (selectedCategoryTab === 'tka') {
-      return isTkaCourse;
+      return [...list].sort((a, b) => {
+        const getUnitNum = (title: string) => {
+          const match = title.match(/Unit\s+(\d+)([A-Z]?)/i);
+          if (match) {
+            const num = parseInt(match[1]);
+            const sub = match[2] ? 0.5 : 0;
+            return num + sub;
+          }
+          return 99;
+        };
+        return getUnitNum(a.title) - getUnitNum(b.title);
+      });
     }
-    // Exclude TKA courses from regular grade 10, 11, 12 tabs
-    if (isTkaCourse) return false;
-    return c.grade_level === Number(selectedCategoryTab);
-  });
-  
+
+    return list;
+  }, [courses, selectedCategoryTab, searchQuery]);
+
   const initialCourse = courses.find((c) => c.id === activeCourseId) || filteredCourses[0] || courses[0];
   const [currentCourse, setCurrentCourse] = useState<Course>(initialCourse);
   const [selectedLesson, setSelectedLesson] = useState<Lesson>(initialCourse.lessons[0]);
+  const [activeDetailCourse, setActiveDetailCourse] = useState<Course | null>(() => {
+    if (activeCourseId) {
+      return courses.find((c) => c.id === activeCourseId) || null;
+    }
+    return null;
+  });
+
+  const openDetailCourse = (course: Course) => {
+    setActiveDetailCourse(course);
+    setCurrentCourse(course);
+    if (course.lessons && course.lessons.length > 0) {
+      setSelectedLesson(course.lessons[0]);
+      setBookmarked(course.lessons[0].bookmarked || false);
+    }
+  };
+
+  const backToGrid = () => {
+    setActiveDetailCourse(null);
+  };
+
+  // Track expanded accordion states for course cards
+  const [expandedCourseIds, setExpandedCourseIds] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    courses.forEach(c => {
+      initial[c.id] = c.id === initialCourse.id;
+    });
+    return initial;
+  });
+
+  const toggleCourseExpand = (courseId: string) => {
+    setExpandedCourseIds(prev => ({
+      ...prev,
+      [courseId]: !prev[courseId]
+    }));
+  };
+
+  React.useEffect(() => {
+    if (activeCourseId) {
+      const found = courses.find((c) => c.id === activeCourseId);
+      if (found) {
+        const isTka = found.category?.toLowerCase().includes('tka') || found.title?.toLowerCase().includes('tka');
+        if (isTka) {
+          setSelectedCategoryTab('tka');
+        } else {
+          setSelectedCategoryTab(String(found.grade_level) as any);
+        }
+        setCurrentCourse(found);
+        if (found.lessons && found.lessons.length > 0) {
+          setSelectedLesson(found.lessons[0]);
+        }
+        setExpandedCourseIds(prev => ({ ...prev, [found.id]: true }));
+      }
+    }
+  }, [activeCourseId, courses]);
+
+  // Also auto expand first course when category tab changes
+  React.useEffect(() => {
+    if (filteredCourses.length > 0) {
+      const first = filteredCourses[0];
+      setExpandedCourseIds(prev => ({ ...prev, [first.id]: true }));
+    }
+  }, [selectedCategoryTab]);
   
   const [bookmarked, setBookmarked] = useState<boolean>(selectedLesson?.bookmarked || false);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(
@@ -67,7 +356,8 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
   const [replyParentId, setReplyParentId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
 
-  const handleLessonChange = (lesson: Lesson) => {
+  const handleLessonChange = (lesson: Lesson, course: Course) => {
+    setCurrentCourse(course);
     setSelectedLesson(lesson);
     setBookmarked(lesson.bookmarked || false);
   };
@@ -157,191 +447,566 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
     setReplyParentId(null);
   };
 
+  // Find next and previous lessons for navigation
+  const allLessonsFlat = useMemo(() => {
+    return filteredCourses.flatMap(c => c.lessons.map(l => ({ lesson: l, course: c })));
+  }, [filteredCourses]);
+
+  const currentIndex = allLessonsFlat.findIndex(item => item.lesson.id === selectedLesson?.id);
+  const prevLessonItem = currentIndex > 0 ? allLessonsFlat[currentIndex - 1] : null;
+  const nextLessonItem = currentIndex >= 0 && currentIndex < allLessonsFlat.length - 1 ? allLessonsFlat[currentIndex + 1] : null;
+
   return (
     <div className="space-y-6 pb-12">
       {/* Header & Grade Selection */}
-      <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-stone-100">
+      <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-stone-100">
         <div>
-          <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full mb-1 border border-emerald-800">
+          <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-emerald-400 bg-emerald-950 px-3 py-1 rounded-full mb-1.5 border border-emerald-800">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Learning Path Sosiologi Membumi</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-stone-100">
             {selectedCategoryTab === 'tka' ? 'Modul & Materi TKA Sosiologi (UTBK / PTN)' : `Kurikulum Sosiologi Kelas ${selectedCategoryTab} SMA`}
           </h1>
-          <p className="text-xs text-stone-400">Pilih jenjang kelas atau pilar TKA untuk menyesuaikan materi pembahasan</p>
+          <p className="text-xs text-stone-400">Pilih jenjang kelas atau pilar TKA untuk mengeksplorasi bab dan materi lengkap</p>
         </div>
 
         {/* Grade & TKA Tabs */}
-        <div className="flex bg-stone-800 p-1.5 rounded-2xl border border-stone-700 text-xs font-bold gap-1 flex-wrap">
+        <div className="flex bg-stone-800 p-1.5 rounded-2xl border border-stone-700 text-xs font-bold gap-1 flex-wrap shrink-0">
           <button
             onClick={() => {
               setSelectedCategoryTab('10');
+              setActiveDetailCourse(null);
               const c = courses.find(course => course.grade_level === 10);
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               selectedCategoryTab === '10'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-extrabold'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
           >
-            Kelas 10
+            Kelas 10 (3 Bab)
           </button>
           <button
             onClick={() => {
               setSelectedCategoryTab('11');
+              setActiveDetailCourse(null);
               const c = courses.find(course => course.grade_level === 11);
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               selectedCategoryTab === '11'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-extrabold'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
           >
-            Kelas 11
+            Kelas 11 (3 Bab)
           </button>
           <button
             onClick={() => {
               setSelectedCategoryTab('12');
+              setActiveDetailCourse(null);
               const c = courses.find(course => course.grade_level === 12 && !course.category?.includes('TKA'));
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               selectedCategoryTab === '12'
-                ? 'bg-amber-500 text-stone-950 shadow-xs'
+                ? 'bg-amber-500 text-stone-950 shadow-md font-extrabold'
                 : 'text-stone-300 hover:text-stone-100'
             }`}
           >
-            Kelas 12
+            Kelas 12 (3 Bab)
           </button>
           <button
             onClick={() => {
               setSelectedCategoryTab('tka');
+              setActiveDetailCourse(null);
               const c = courses.find(course => course.category?.toLowerCase().includes('tka'));
               if (c) {
                 setCurrentCourse(c);
                 setSelectedLesson(c.lessons[0]);
               }
             }}
-            className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
               selectedCategoryTab === 'tka'
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 shadow-xs font-black'
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 shadow-md font-black'
                 : 'text-amber-400 hover:text-amber-300'
             }`}
           >
-            🎯 TKA Sosiologi
+            🎯 TKA Sosiologi (10 Unit)
           </button>
         </div>
       </div>
 
-      {/* Course & Lesson Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (1 col): Navigation Bab / Lessons List */}
-        <div className="space-y-4">
-          {filteredCourses.map((course) => (
-            <div key={course.id} className="bg-stone-900 rounded-3xl p-5 border border-stone-800 shadow-sm space-y-4">
-              <div className="border-b border-stone-800 pb-3">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-950 px-2.5 py-0.5 rounded-full border border-amber-800">
-                  {course.category}
-                </span>
-                <h2 className="font-bold text-stone-100 text-sm mt-2">{course.title}</h2>
+      {/* MAIN VIEW: Overview Grid or Kegiatan Belajar Detail View */}
+      {!activeDetailCourse ? (
+        /* GRID VIEW OF CHAPTERS ("KOTAK-KOTAK") */
+        <div className="space-y-6">
+          {/* TKA Subtab Selector Bar */}
+          {selectedCategoryTab === 'tka' && (
+            <div className="bg-stone-900 rounded-3xl p-4 border border-stone-800 shadow-md flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center space-x-2 bg-stone-950 p-1.5 rounded-2xl border border-stone-800">
+                <button
+                  onClick={() => handleSubTabChange('materi')}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all cursor-pointer ${
+                    activeTkaSubTab === 'materi'
+                      ? 'bg-amber-500 text-stone-950 shadow-md border border-amber-300'
+                      : 'text-stone-300 hover:text-amber-300 hover:bg-stone-900'
+                  }`}
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span className="capitalize">materi</span>
+                </button>
+
+                <button
+                  onClick={() => handleSubTabChange('latihan_bab')}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all cursor-pointer ${
+                    activeTkaSubTab === 'latihan_bab'
+                      ? 'bg-amber-500 text-stone-950 shadow-md border border-amber-300'
+                      : 'text-stone-300 hover:text-amber-300 hover:bg-stone-900'
+                  }`}
+                >
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span className="capitalize">latihan bab</span>
+                </button>
+
+                <button
+                  onClick={() => handleSubTabChange('try_out_tka')}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center space-x-2 transition-all cursor-pointer ${
+                    activeTkaSubTab === 'try_out_tka'
+                      ? 'bg-amber-500 text-stone-950 shadow-md border border-amber-300'
+                      : 'text-stone-300 hover:text-amber-300 hover:bg-stone-900'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Try out TKA</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                </button>
               </div>
 
-              {/* Lesson Items list */}
-              <div className="space-y-2">
-                {course.lessons.map((lesson, idx) => {
-                  const isSelected = selectedLesson?.id === lesson.id;
-                  const isDone = completedLessons.has(lesson.id);
+              <div className="text-xs font-semibold text-stone-400">
+                {activeTkaSubTab === 'materi' && '📖 Mode Pembahasan & Rangkuman 10 Unit TKA'}
+                {activeTkaSubTab === 'latihan_bab' && '📝 Mode Latihan Soal CBT per Bab (20 Soal)'}
+                {activeTkaSubTab === 'try_out_tka' && '🎯 Mode Simulasi Ujian Tryout TKA Standar Nasional 2025'}
+              </div>
+            </div>
+          )}
+
+          {/* Grid Header & Search Bar */}
+          <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center space-x-2 text-xs font-extrabold text-amber-400 mb-1">
+                <LayoutGrid className="w-4 h-4" />
+                <span>
+                  {selectedCategoryTab === 'tka'
+                    ? (activeTkaSubTab === 'try_out_tka' ? 'Paket Tryout TKA Resmi 2025' : (activeTkaSubTab === 'latihan_bab' ? 'Paket Latihan Soal CBT 10 Unit TKA' : 'Daftar 10 Unit Materi TKA Kotak-Kotak'))
+                    : 'Daftar Bab Tersusun Kotak-Kotak'}
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-extrabold text-stone-100">
+                {selectedCategoryTab === 'tka' && activeTkaSubTab === 'try_out_tka'
+                  ? 'Try Out TKA Sosiologi Standar Nasional'
+                  : `Pilih Bab / Unit Pembelajaran (${filteredCourses.length} Bab Tersedia)`}
+              </h2>
+              <p className="text-xs text-stone-400">
+                {selectedCategoryTab === 'tka' && activeTkaSubTab === 'latihan_bab'
+                  ? 'Klik tombol "Kerjakan Latihan CBT" pada kotak bab untuk langsung memulai latihan 20 soal CBT per unit.'
+                  : 'Klik pada salah satu kotak bab di bawah untuk masuk ke Kegiatan Belajar lengkap dengan Sub-bab dan Latihan Soal CBT.'}
+              </p>
+            </div>
+
+            <div className="relative min-w-[260px]">
+              <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari materi sosiologi..."
+                className="w-full bg-stone-950 border border-stone-700 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-stone-200 focus:outline-none focus:border-amber-500 placeholder-stone-500 shadow-inner"
+              />
+            </div>
+          </div>
+
+          {/* Special view for Try out TKA subtab */}
+          {selectedCategoryTab === 'tka' && activeTkaSubTab === 'try_out_tka' ? (
+            <div className="space-y-6">
+              {/* Featured 2025 Official Tryout Card */}
+              <div className="bg-gradient-to-br from-amber-950/80 via-stone-900 to-stone-900 rounded-3xl p-6 border-2 border-amber-500/80 shadow-xl relative overflow-hidden space-y-4">
+                <div className="absolute top-0 right-0 bg-amber-500 text-stone-950 text-[10px] font-black uppercase px-4 py-1 rounded-bl-2xl shadow-md">
+                  ★ Paket Utama TKA Resmi 2025
+                </div>
+
+                <div className="space-y-2 max-w-3xl">
+                  <div className="flex items-center space-x-2 text-xs font-bold text-amber-300">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Tryout Tes Kemampuan Akademik (TKA) Standar Nasional</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-stone-100 leading-snug">
+                    Tryout TKA Sosiologi SMA Tahun 2025 - 30 Soal Standar Nasional
+                  </h3>
+                  <p className="text-xs text-stone-300 leading-relaxed">
+                    Simulasi Resmi Ujian Tes Kemampuan Akademik (TKA) Sosiologi SMA/MA/SMK Tahun 2025. Mencakup 30 Indikator Soal standar nasional dengan 3 model soal resmi (Pilihan Ganda Biasa, Pilihan Ganda Kompleks/Benar-Salah, dan Soal Uji Kasus/Infografis/Grafik).
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-stone-800">
+                  <div className="flex items-center space-x-4 text-xs font-semibold text-stone-300">
+                    <span className="bg-stone-950 px-3 py-1.5 rounded-xl border border-stone-800 flex items-center space-x-1.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>45 Menit</span>
+                    </span>
+                    <span className="bg-stone-950 px-3 py-1.5 rounded-xl border border-stone-800 flex items-center space-x-1.5">
+                      <FileText className="w-3.5 h-3.5 text-amber-400" />
+                      <span>30 Soal HOTS</span>
+                    </span>
+                    <span className="bg-amber-950 text-amber-300 px-3 py-1.5 rounded-xl border border-amber-800 flex items-center space-x-1.5">
+                      <Award className="w-3.5 h-3.5 text-amber-400" />
+                      <span>+400 Socio-Points</span>
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
+                    className="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs transition-all shadow-lg hover:shadow-amber-500/20 cursor-pointer flex items-center space-x-2 transform hover:scale-105"
+                  >
+                    <Play className="w-4 h-4 fill-stone-950" />
+                    <span>Mulai Kerjakan Ujian TKA 2025</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Secondary TKA Packages Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
+                      Tryout TKA Paket 1
+                    </span>
+                    <h4 className="text-base font-bold text-stone-100">Fondasi & Teori Klasik</h4>
+                    <p className="text-xs text-stone-400">Paket simulasi TKA berfokus pada analisis teori sosiologi klasik (Marx, Durkheim, Weber) dan pemetaan gejala sosial.</p>
+                  </div>
+                  <button
+                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
+                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
+                  >
+                    Mulai Kerjakan Ujian (25 Menit)
+                  </button>
+                </div>
+
+                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
+                      Tryout TKA Paket 2
+                    </span>
+                    <h4 className="text-base font-bold text-stone-100">Penalaran HOTS & Perubahan Global</h4>
+                    <p className="text-xs text-stone-400">Paket latihan TKA tingkat tinggi (HOTS) berfokus pada analisis konflik, globalisasi, kearifan lokal, dan transformasi digital.</p>
+                  </div>
+                  <button
+                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
+                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
+                  >
+                    Mulai Kerjakan Ujian (20 Menit)
+                  </button>
+                </div>
+
+                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
+                      Tryout TKA Paket 3
+                    </span>
+                    <h4 className="text-base font-bold text-stone-100">Pemetaan Riset & Analisis Kritis</h4>
+                    <p className="text-xs text-stone-400">Tryout TKA simulasi cepat untuk menguji kecepatan bernalar, kearifan lokal, dan mobilitas sosial.</p>
+                  </div>
+                  <button
+                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
+                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
+                  >
+                    Mulai Kerjakan Ujian (15 Menit)
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Course Cards Grid */
+            filteredCourses.length === 0 ? (
+              <div className="bg-stone-900 rounded-3xl p-10 text-center text-xs text-stone-400 border border-stone-800">
+                Tidak ada materi yang sesuai dengan pencarian "{searchQuery}".
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredCourses.map((course) => {
+                  const completedCount = course.lessons.filter(l => completedLessons.has(l.id)).length;
+                  const progressPct = Math.round((completedCount / course.lessons.length) * 100);
+                  const examTargetId = `exam_latihan_bab_${course.chapter_number}`;
 
                   return (
-                    <button
-                      key={lesson.id}
-                      onClick={() => {
-                        setCurrentCourse(course);
-                        handleLessonChange(lesson);
-                      }}
-                      className={`w-full text-left p-3 rounded-2xl transition-all cursor-pointer flex items-center justify-between group ${
-                        isSelected
-                          ? 'bg-amber-950 text-amber-200 border border-amber-600/60 shadow-md'
-                          : 'bg-stone-800/80 hover:bg-stone-800 text-stone-300 border border-transparent'
-                      }`}
+                    <div
+                      key={course.id}
+                      onClick={() => openDetailCourse(course)}
+                      className="group bg-stone-900 hover:bg-stone-850 rounded-3xl border border-stone-800 hover:border-amber-500/60 p-6 shadow-md hover:shadow-amber-500/10 transition-all cursor-pointer flex flex-col justify-between space-y-5 relative overflow-hidden transform hover:-translate-y-1 select-none"
                     >
-                      <div className="flex items-center space-x-3 pr-2">
-                        <div
-                          className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-xs ${
-                            isSelected
-                              ? 'bg-amber-500 text-stone-950'
-                              : isDone
-                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                              : 'bg-stone-700 text-stone-300'
-                          }`}
-                        >
-                          {isDone ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
+                      {/* Top Card Info */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800 shadow-xs">
+                            {course.category}
+                          </span>
+                          <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-md border border-emerald-800">
+                            {completedCount}/{course.lessons.length} Sub-Bab Selesai
+                          </span>
                         </div>
 
-                        <div>
-                          <p
-                            className={`text-xs font-bold line-clamp-1 ${
-                              isSelected ? 'text-amber-200' : 'text-stone-100'
-                            }`}
-                          >
-                            {lesson.title}
-                          </p>
-                          <p
-                            className={`text-[10px] ${
-                              isSelected ? 'text-amber-400' : 'text-stone-400'
-                            }`}
-                          >
-                            Bab {lesson.chapter_number} • {lesson.duration}
-                          </p>
-                        </div>
+                        <h3 className="text-base sm:text-lg font-extrabold text-stone-100 group-hover:text-amber-300 transition-colors leading-snug">
+                          {course.title}
+                        </h3>
+                        
+                        <p className="text-xs text-stone-400 line-clamp-2 leading-relaxed">
+                          {course.description}
+                        </p>
                       </div>
 
-                      {lesson.content_type === 'video' ? (
-                        <Play className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-400 fill-amber-400' : 'text-stone-400'}`} />
-                      ) : (
-                        <FileText className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-300' : 'text-stone-400'}`} />
-                      )}
-                    </button>
+                      {/* Sub-Bab Preview List */}
+                      <div className="space-y-2 bg-stone-950/80 p-3.5 rounded-2xl border border-stone-800/80 text-xs">
+                        <div className="flex items-center justify-between text-[10px] uppercase font-bold text-stone-400 mb-1">
+                          <span>Sub-Bab & Kegiatan Belajar</span>
+                          <span className="text-amber-400">{course.lessons.length} Sub-Bab</span>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {course.lessons.slice(0, 3).map((l, lIdx) => {
+                            const isDone = completedLessons.has(l.id);
+                            return (
+                              <li key={l.id} className="flex items-center space-x-2 text-stone-300 text-[11px] truncate">
+                                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 ${
+                                  isDone ? 'bg-emerald-500 text-stone-950' : 'bg-stone-800 text-stone-400'
+                                }`}>
+                                  {isDone ? '✓' : lIdx + 1}
+                                </span>
+                                <span className="truncate">{l.title}</span>
+                              </li>
+                            );
+                          })}
+                          {course.lessons.length > 3 && (
+                            <li className="text-[10px] text-amber-400 font-bold pl-6 pt-0.5">
+                              +{course.lessons.length - 3} Sub-Bab Tambahan & Latihan CBT
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+
+                      {/* Progress & CTA Button */}
+                      <div className="pt-3 border-t border-stone-800/80 space-y-3">
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[10px] font-bold text-stone-400">
+                            <span>Progres Unit</span>
+                            <span className="text-amber-400">{progressPct}%</span>
+                          </div>
+                          <div className="w-full bg-stone-950 rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-amber-500 to-emerald-500 h-full transition-all duration-300"
+                              style={{ width: `${progressPct}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        {selectedCategoryTab === 'tka' && activeTkaSubTab === 'latihan_bab' ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (onStartExam) onStartExam(examTargetId);
+                            }}
+                            className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer"
+                          >
+                            <FileText className="w-4 h-4" />
+                            <span>Mulai Latihan CBT (20 Soal)</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openDetailCourse(course);
+                            }}
+                            className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                          >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>Buka Materi Unit</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
+      ) : (
+        /* KEGIATAN BELAJAR DETAIL VIEW */
+        <div className="space-y-6">
+          {/* Header Navigation Bar */}
+          <div className="bg-stone-900 rounded-3xl p-5 border border-stone-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-stone-100">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={backToGrid}
+                className="bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-extrabold text-xs px-4 py-2.5 rounded-2xl transition-all flex items-center space-x-2 border border-stone-700 cursor-pointer shadow-sm shrink-0"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>← Kembali ke Daftar Bab (Grid)</span>
+              </button>
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-950 px-2.5 py-0.5 rounded-md border border-amber-800">
+                  {activeDetailCourse.category}
+                </span>
+                <h2 className="text-base sm:text-lg font-extrabold text-stone-100 truncate max-w-md mt-0.5">
+                  Kegiatan Belajar: {activeDetailCourse.title}
+                </h2>
+              </div>
+            </div>
 
-        {/* Right Column (2 cols): Main Lesson View (Video Player + Notes + Comments) */}
-        <div className="lg:col-span-2 space-y-6">
-          {selectedLesson ? (
-            <div className="bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-800 shadow-md space-y-6 text-stone-100">
+            <div className="flex items-center space-x-3 text-xs text-stone-300 bg-stone-950 px-4 py-2 rounded-xl border border-stone-800 shrink-0">
+              <Award className="w-4 h-4 text-amber-400" />
+              <span>
+                {activeDetailCourse.lessons.filter(l => completedLessons.has(l.id)).length}/{activeDetailCourse.lessons.length} Sub-Bab Selesai
+              </span>
+            </div>
+          </div>
+
+          {/* Detail View 2-column Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column: Sub-Bab Navigator */}
+            <div className="space-y-4">
+              <div className="bg-stone-900 rounded-3xl p-5 border border-stone-800 shadow-md space-y-4">
+                <div className="flex items-center justify-between border-b border-stone-800 pb-3">
+                  <span className="font-bold text-xs text-amber-400 flex items-center space-x-1.5">
+                    <ListOrdered className="w-4 h-4" />
+                    <span>Sub-Bab & Latihan CBT</span>
+                  </span>
+                  <span className="text-[11px] text-stone-400">
+                    {activeDetailCourse.lessons.length} Sub-Bab
+                  </span>
+                </div>
+
+                {/* Sub-bab list buttons */}
+                <div className="space-y-2">
+                  {activeDetailCourse.lessons.map((lesson, idx) => {
+                    const isSelected = selectedLesson?.id === lesson.id;
+                    const isDone = completedLessons.has(lesson.id);
+                    const isCbt = lesson.exam_id_target || lesson.id === 'les_tka_1_i' || lesson.title.toLowerCase().includes('20 soal cbt');
+
+                    return (
+                      <button
+                        key={lesson.id}
+                        onClick={() => handleLessonChange(lesson, activeDetailCourse)}
+                        className={`w-full text-left p-3.5 rounded-2xl transition-all cursor-pointer flex items-center justify-between group ${
+                          isSelected
+                            ? 'bg-amber-950/90 text-amber-200 border border-amber-500/70 shadow-md ring-1 ring-amber-500/30'
+                            : 'bg-stone-800/70 hover:bg-stone-800 text-stone-300 border border-stone-700/50'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3 pr-2 min-w-0">
+                          <div
+                            className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-xs transition-all ${
+                              isSelected
+                                ? 'bg-amber-500 text-stone-950 shadow-sm'
+                                : isDone
+                                ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                                : 'bg-stone-700 text-stone-300'
+                            }`}
+                          >
+                            {isDone ? <Check className="w-4 h-4 stroke-[3]" /> : idx + 1}
+                          </div>
+
+                          <div className="min-w-0">
+                            <p
+                              className={`text-xs font-bold truncate ${
+                                isSelected ? 'text-amber-200' : 'text-stone-100'
+                              }`}
+                            >
+                              {lesson.title}
+                            </p>
+                            <div className="flex items-center space-x-2 text-[10px] mt-0.5">
+                              <span className={isSelected ? 'text-amber-400 font-medium' : 'text-stone-400'}>
+                                {lesson.duration}
+                              </span>
+                              {isCbt && (
+                                <span className="bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded text-[9px] font-bold border border-amber-500/40">
+                                  20 Soal CBT
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {lesson.content_type === 'video' ? (
+                          <Play className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-400 fill-amber-400' : 'text-stone-400'}`} />
+                        ) : isCbt ? (
+                          <ShieldAlert className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-400' : 'text-amber-500/70'}`} />
+                        ) : (
+                          <FileText className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-amber-300' : 'text-stone-400'}`} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Pindah Bab Quick Switcher */}
+              <div className="bg-stone-900 rounded-3xl p-4 border border-stone-800 space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block">
+                  Pindah Ke Bab Lain ({filteredCourses.length} Bab)
+                </span>
+                <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                  {filteredCourses.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => openDetailCourse(c)}
+                      className={`w-full text-left p-2 rounded-xl text-xs font-medium transition-all cursor-pointer truncate ${
+                        c.id === activeDetailCourse.id
+                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
+                          : 'text-stone-400 hover:text-stone-200 hover:bg-stone-800'
+                      }`}
+                    >
+                      • {c.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column (2 cols): Main Lesson View */}
+            <div className="lg:col-span-2 space-y-6">
+              {selectedLesson ? (
+                <div className="bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-800 shadow-md space-y-6 text-stone-100">
               {/* Top lesson info */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-800 pb-4">
                 <div>
-                  <div className="flex items-center space-x-2 text-xs font-semibold text-stone-400 mb-1">
-                    <span>Bab {selectedLesson.chapter_number}: {selectedLesson.chapter_title}</span>
+                  <div className="flex items-center space-x-2 text-xs font-semibold text-stone-400 mb-1 flex-wrap gap-y-1">
+                    <span className="bg-stone-800 text-amber-300 px-2.5 py-0.5 rounded-md font-bold">
+                      Bab {selectedLesson.chapter_number}: {selectedLesson.chapter_title}
+                    </span>
                     <span>•</span>
                     <span className="flex items-center space-x-1 text-amber-400 font-bold">
                       <Clock className="w-3.5 h-3.5" />
                       <span>{selectedLesson.duration}</span>
                     </span>
+                    <span>•</span>
+                    <span className="text-emerald-400 font-bold">+{selectedLesson.xp_reward} XP</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-stone-100 tracking-tight">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-stone-100 tracking-tight mt-1">
                     {selectedLesson.title}
                   </h2>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 shrink-0">
                   <button
                     onClick={() => setBookmarked(!bookmarked)}
                     className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
@@ -414,7 +1079,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     <StickyNote className="w-4 h-4" />
                     <span>Catatan Berbasis Waktu (Time-Stamped Notes)</span>
                   </div>
-                  <span className="text-[10px] text-stone-400">Otomatis Tersimpan saat Menonton</span>
+                  <span className="text-[10px] text-stone-400">Otomatis Tersimpan</span>
                 </div>
 
                 {/* Form to add note */}
@@ -458,28 +1123,40 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                 </div>
               </div>
 
-              {/* Key Takeaways Box */}
-              {selectedLesson.key_takeaways && selectedLesson.key_takeaways.length > 0 && (
-                <div className="bg-gradient-to-r from-emerald-950/80 to-amber-950/80 p-5 rounded-2xl border border-amber-800/60 space-y-3">
-                  <div className="flex items-center space-x-2 text-amber-300 font-bold text-xs">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span>Poin Kunci Sosiologi (Ringkasan Cepat)</span>
-                  </div>
-                  <ul className="space-y-2 text-xs text-stone-200 font-medium">
-                    {selectedLesson.key_takeaways.map((point, i) => (
-                      <li key={i} className="flex items-start space-x-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0"></span>
-                        <span>{point}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {/* Formatted Material Body */}
+              <FormattedMaterialBody lesson={selectedLesson} onStartExam={onStartExam} />
 
-              {/* Detailed Text Body */}
-              <div className="prose prose-invert max-w-none text-xs sm:text-sm text-stone-300 leading-relaxed whitespace-pre-line bg-stone-950 p-5 rounded-2xl border border-stone-800">
-                <h3 className="text-sm font-bold text-amber-300 mb-2">Ringkasan Konsep Lengkap</h3>
-                {selectedLesson.text_body}
+              {/* Prev / Next Lesson Navigation Buttons */}
+              <div className="flex items-center justify-between pt-4 border-t border-stone-800 gap-3">
+                {prevLessonItem ? (
+                  <button
+                    onClick={() => handleLessonChange(prevLessonItem.lesson, prevLessonItem.course)}
+                    className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="hidden sm:inline truncate max-w-[160px]">{prevLessonItem.lesson.title}</span>
+                    <span className="sm:hidden">Sebelumnya</span>
+                  </button>
+                ) : <div></div>}
+
+                {nextLessonItem ? (
+                  <button
+                    onClick={() => handleLessonChange(nextLessonItem.lesson, nextLessonItem.course)}
+                    className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-extrabold transition-all cursor-pointer shadow-md"
+                  >
+                    <span className="hidden sm:inline truncate max-w-[160px]">{nextLessonItem.lesson.title}</span>
+                    <span className="sm:hidden">Selanjutnya</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => onStartExam && onStartExam(selectedLesson.exam_id_target || 'exam_latihan_bab_1')}
+                    className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 text-xs font-black transition-all cursor-pointer shadow-md"
+                  >
+                    <span>Latihan Soal Bab</span>
+                    <PlayCircle className="w-4 h-4" />
+                  </button>
+                )}
               </div>
 
               {/* Latihan Bab & Ulangan Harian Trigger */}
@@ -499,11 +1176,15 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
 
                   <div className="flex items-center space-x-2 shrink-0">
                     <button
-                      onClick={() => onStartExam && onStartExam('exam_10_1')}
+                      onClick={() => {
+                        const targetId = selectedLesson.exam_id_target || 
+                          (selectedLesson.id === 'les_tka_1_i' ? 'exam_latihan_bab_1' : `exam_latihan_bab_${selectedLesson.chapter_number}`);
+                        onStartExam && onStartExam(targetId);
+                      }}
                       className="bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold px-4 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 transition-all shadow-md cursor-pointer"
                     >
                       <PlayCircle className="w-4 h-4" />
-                      <span>Kerjakan Latihan Bab</span>
+                      <span>Kerjakan Latihan Bab (20 Soal CBT)</span>
                     </button>
                     <button
                       onClick={() => onStartExam && onStartExam('exam_12_1')}
@@ -629,6 +1310,8 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
         </div>
       </div>
     </div>
-  );
+  )}
+</div>
+);
 };
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle2, XCircle, Award, Clock, ArrowLeft, Sparkles, 
-  HelpCircle, Bot, BookOpen, AlertCircle, RefreshCw, Trophy
+  HelpCircle, Bot, BookOpen, AlertCircle, RefreshCw, Trophy, Layers, GitCompare
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Exam, ExamSession, Question } from '../types';
+import { getTkaTypeDetails, getOptionText } from '../utils/tkaQuestionHelper';
 
 interface ExamDiscussionViewProps {
   session: ExamSession;
@@ -276,7 +277,15 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                     {idx + 1}
                   </span>
                   <div>
-                    <span className="text-xs text-slate-500 font-bold">Topik: {question.topic}</span>
+                    <span className="text-xs text-slate-500 font-bold block">Topik: {question.topic}</span>
+                    {(() => {
+                      const tkaDetails = getTkaTypeDetails(question);
+                      return (
+                        <span className={`inline-block px-2 py-0.5 mt-0.5 rounded text-[10px] font-extrabold border ${tkaDetails.badgeBg} ${tkaDetails.badgeText} ${tkaDetails.badgeBorder}`}>
+                          {tkaDetails.label}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -284,7 +293,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                 {isCorrect ? (
                   <span className="inline-flex items-center space-x-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Jawaban Kamu Benar (+{exam.xp_reward / exam.total_questions} XP)</span>
+                    <span>Jawaban Kamu Benar (+{Math.round(exam.xp_reward / exam.total_questions)} XP)</span>
                   </span>
                 ) : isUnanswered ? (
                   <span className="inline-flex items-center space-x-1.5 bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-200">
@@ -299,15 +308,47 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                 )}
               </div>
 
-              {/* Question Text */}
-              <p className="text-sm text-slate-800 font-semibold leading-relaxed">
-                {question.text}
-              </p>
+              {/* Question Text & Statements */}
+              <div className="space-y-3">
+                <p className="text-sm text-slate-800 font-semibold leading-relaxed">
+                  {question.text}
+                </p>
+
+                {(question.statement_1 || question.statement_2) && (
+                  <div className="p-3.5 bg-purple-50/80 rounded-xl border border-purple-200 space-y-1.5 text-xs text-slate-800 font-medium">
+                    <p className="font-bold text-purple-900">Pernyataan-pernyataan:</p>
+                    {question.statement_1 && <div>(1) {question.statement_1}</div>}
+                    {question.statement_2 && <div>(2) {question.statement_2}</div>}
+                    {question.statement_3 && <div>(3) {question.statement_3}</div>}
+                    {question.statement_4 && <div>(4) {question.statement_4}</div>}
+                  </div>
+                )}
+
+                {(question.pernyataan || question.alasan) && (
+                  <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200 space-y-2 text-xs text-slate-800 font-medium">
+                    {question.pernyataan && (
+                      <div>
+                        <span className="font-bold text-amber-900 uppercase text-[10px] block">Kalimat Pernyataan:</span>
+                        <p className="text-slate-900">{question.pernyataan}</p>
+                      </div>
+                    )}
+                    <div className="text-center font-black text-amber-800 text-[11px] uppercase tracking-widest my-1 bg-amber-100 py-0.5 rounded">
+                      — SEBAB —
+                    </div>
+                    {question.alasan && (
+                      <div>
+                        <span className="font-bold text-amber-900 uppercase text-[10px] block">Kalimat Alasan:</span>
+                        <p className="text-slate-900">{question.alasan}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* Options Breakdown */}
               <div className="space-y-2 text-xs sm:text-sm">
                 {(['A', 'B', 'C', 'D', 'E'] as const).map((optKey) => {
-                  const optText = question[`option_${optKey.toLowerCase()}` as keyof Question];
+                  const optText = getOptionText(question, optKey);
                   const isUserChosen = selectedOption === optKey;
                   const isCorrectKey = question.correct_answer === optKey;
 

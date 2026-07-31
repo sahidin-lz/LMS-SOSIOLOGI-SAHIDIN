@@ -33,6 +33,8 @@ export interface StudentCompetencyAnalysis {
   recommendation: string;
 }
 
+export type Competency = StudentCompetencyAnalysis;
+
 export interface ClassRoom {
   id: string;
   name: string; // e.g. "10-IPS-1"
@@ -59,6 +61,8 @@ export interface User {
   schoolName: string;
   group_id?: string;
   group_name?: string;
+  nisn?: string;
+  status?: 'Aktif' | 'Izin' | 'Alumni';
 }
 
 export interface VideoNote {
@@ -125,6 +129,9 @@ export interface Lesson {
   completed?: boolean;
   bookmarked?: boolean;
   xp_reward: number;
+  document_url?: string;
+  document_name?: string;
+  exam_id_target?: string;
 }
 
 export interface Course {
@@ -143,14 +150,21 @@ export interface Question {
   id: string;
   exam_id: string;
   number: number;
+  question_type?: 'pilihan_ganda' | 'kompleks' | 'sebab_akibat';
   text: string;
+  pernyataan?: string; // For sebab_akibat questions
+  alasan?: string; // For sebab_akibat questions
+  statement_1?: string; // For kompleks questions (1)
+  statement_2?: string; // For kompleks questions (2)
+  statement_3?: string; // For kompleks questions (3)
+  statement_4?: string; // For kompleks questions (4)
   image_url?: string;
   option_a: string;
   option_b: string;
   option_c: string;
   option_d: string;
   option_e: string;
-  correct_answer: 'A' | 'B' | 'C' | 'D' | 'E';
+  correct_answer: string;
   explanation: string;
   topic: string;
   difficulty?: 'Easy' | 'Medium' | 'Hard';

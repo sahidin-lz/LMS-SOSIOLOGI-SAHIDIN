@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Clock, AlertTriangle, ChevronLeft, ChevronRight, CheckCircle2, 
-  HelpCircle, Flag, Send, ShieldAlert, Sparkles, X, RotateCcw
+  HelpCircle, Flag, Send, ShieldAlert, Sparkles, X, RotateCcw, Info, Layers, GitCompare
 } from 'lucide-react';
 import { Exam, Question, UserAnswer } from '../types';
+import { getTkaTypeDetails, getOptionText, KOMPLEKS_OPTIONS, SEBAB_AKIBAT_OPTIONS } from '../utils/tkaQuestionHelper';
 
 interface CbtExamViewProps {
   exam: Exam;
@@ -167,9 +168,19 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
                   {currentQuestionIndex + 1}
                 </span>
                 <div>
-                  <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
-                    Soal Nomor {currentQuestionIndex + 1} dari {exam.total_questions}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                      Soal Nomor {currentQuestionIndex + 1} dari {exam.total_questions}
+                    </span>
+                    {(() => {
+                      const tkaDetails = getTkaTypeDetails(currentQuestion);
+                      return (
+                        <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border ${tkaDetails.badgeBg} ${tkaDetails.badgeText} ${tkaDetails.badgeBorder}`}>
+                          {tkaDetails.label}
+                        </span>
+                      );
+                    })()}
+                  </div>
                   <p className="text-xs text-indigo-300 font-bold">Topik: {currentQuestion.topic}</p>
                 </div>
               </div>
@@ -188,15 +199,91 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
               </button>
             </div>
 
-            {/* Question Text */}
-            <div className="text-sm sm:text-base text-slate-100 leading-relaxed font-medium bg-slate-900/50 p-5 rounded-2xl border border-slate-700/50">
-              {currentQuestion.text}
+            {/* TKA Model Instruction Card */}
+            {(() => {
+              const tkaDetails = getTkaTypeDetails(currentQuestion);
+              if (tkaDetails.type === 'kompleks') {
+                return (
+                  <div className="bg-purple-950/40 border border-purple-500/30 p-4 rounded-2xl text-xs text-purple-200 space-y-2">
+                    <div className="flex items-center space-x-2 font-bold text-purple-300">
+                      <Layers className="w-4 h-4 shrink-0 text-purple-400" />
+                      <span>Petunjuk Soal Pilihan Ganda Kompleks (Asosiatif):</span>
+                    </div>
+                    <p className="text-slate-300">{tkaDetails.description}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 bg-slate-900/60 p-3 rounded-xl border border-purple-500/20 font-mono text-[11px]">
+                      <div>• <span className="font-bold text-purple-300">A:</span> Jika (1), (2), dan (3) benar</div>
+                      <div>• <span className="font-bold text-purple-300">B:</span> Jika (1) dan (3) benar</div>
+                      <div>• <span className="font-bold text-purple-300">C:</span> Jika (2) dan (4) benar</div>
+                      <div>• <span className="font-bold text-purple-300">D:</span> Jika hanya (4) yang benar</div>
+                      <div className="sm:col-span-2">• <span className="font-bold text-purple-300">E:</span> Jika semua pernyataan benar</div>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (tkaDetails.type === 'sebab_akibat') {
+                return (
+                  <div className="bg-amber-950/40 border border-amber-500/30 p-4 rounded-2xl text-xs text-amber-200 space-y-2">
+                    <div className="flex items-center space-x-2 font-bold text-amber-300">
+                      <GitCompare className="w-4 h-4 shrink-0 text-amber-400" />
+                      <span>Petunjuk Soal Hubungan Sebab-Akibat:</span>
+                    </div>
+                    <p className="text-slate-300">{tkaDetails.description}</p>
+                    <div className="space-y-1 bg-slate-900/60 p-3 rounded-xl border border-amber-500/20 text-[11px] font-medium">
+                      <div><span className="font-bold text-amber-300">A:</span> Pernyataan benar, alasan benar, dan keduanya menunjukkan hubungan sebab-akibat</div>
+                      <div><span className="font-bold text-amber-300">B:</span> Pernyataan benar, alasan benar, tetapi keduanya tidak menunjukkan hubungan sebab-akibat</div>
+                      <div><span className="font-bold text-amber-300">C:</span> Pernyataan benar dan alasan salah</div>
+                      <div><span className="font-bold text-amber-300">D:</span> Pernyataan salah dan alasan benar</div>
+                      <div><span className="font-bold text-amber-300">E:</span> Pernyataan dan alasan, keduanya salah</div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return null;
+            })()}
+
+            {/* Question Stimulus / Text */}
+            <div className="text-sm sm:text-base text-slate-100 leading-relaxed font-medium bg-slate-900/50 p-5 rounded-2xl border border-slate-700/50 space-y-3">
+              <p>{currentQuestion.text}</p>
+
+              {/* Statements (1) to (4) if present in question object */}
+              {(currentQuestion.statement_1 || currentQuestion.statement_2) && (
+                <div className="mt-3 p-4 bg-slate-800/80 rounded-xl border border-slate-700 space-y-2 font-sans text-xs sm:text-sm text-slate-200">
+                  <p className="font-bold text-purple-300">Pernyataan-pernyataan:</p>
+                  {currentQuestion.statement_1 && <div>(1) {currentQuestion.statement_1}</div>}
+                  {currentQuestion.statement_2 && <div>(2) {currentQuestion.statement_2}</div>}
+                  {currentQuestion.statement_3 && <div>(3) {currentQuestion.statement_3}</div>}
+                  {currentQuestion.statement_4 && <div>(4) {currentQuestion.statement_4}</div>}
+                </div>
+              )}
+
+              {/* Pernyataan & Alasan block if present in question object */}
+              {(currentQuestion.pernyataan || currentQuestion.alasan) && (
+                <div className="mt-3 p-4 bg-slate-800/80 rounded-xl border border-amber-500/30 space-y-3 text-xs sm:text-sm text-slate-200">
+                  {currentQuestion.pernyataan && (
+                    <div>
+                      <span className="font-extrabold text-amber-400 block uppercase text-[10px]">Kalimat Pernyataan:</span>
+                      <p className="font-semibold text-white mt-0.5">{currentQuestion.pernyataan}</p>
+                    </div>
+                  )}
+                  <div className="text-center font-black text-amber-400 text-xs tracking-widest my-1 uppercase bg-amber-950/60 py-1 rounded border border-amber-500/20">
+                    — SEBAB —
+                  </div>
+                  {currentQuestion.alasan && (
+                    <div>
+                      <span className="font-extrabold text-amber-400 block uppercase text-[10px]">Kalimat Alasan:</span>
+                      <p className="font-semibold text-white mt-0.5">{currentQuestion.alasan}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Multiple Choice Options A - E */}
             <div className="space-y-3 pt-2">
               {(['A', 'B', 'C', 'D', 'E'] as const).map((optKey) => {
-                const optText = currentQuestion[`option_${optKey.toLowerCase()}` as keyof Question];
+                const optText = getOptionText(currentQuestion, optKey);
                 const isSelected = answers[currentQuestion.id]?.selected_option === optKey;
 
                 return (

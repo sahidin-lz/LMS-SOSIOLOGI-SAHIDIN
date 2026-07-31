@@ -48,7 +48,10 @@ async function startServer() {
         const userAnswer = answers?.[q.id]?.selected_option;
         if (!userAnswer) {
           total_unanswered++;
-        } else if (userAnswer === q.correct_answer) {
+        } else if (
+          userAnswer === q.correct_answer ||
+          (q.correct_answer && q.correct_answer.includes(userAnswer))
+        ) {
           total_correct++;
           weighted_earned_points += weight;
         } else {
