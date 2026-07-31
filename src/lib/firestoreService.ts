@@ -2,13 +2,10 @@ import {
   collection,
   doc,
   getDocs,
-  getDocsFromCache,
-  getDocsFromServer,
   setDoc,
   deleteDoc,
   onSnapshot,
-  getDocFromServer,
-  Query,
+  getDocFromServer
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -105,32 +102,4 @@ export function subscribeToCollection<T>(
       handleFirestoreError(error, OperationType.GET, collectionName);
     }
   );
-}
-
-export async function cacheFirstFetch<T>(q: Query | ReturnType<typeof collection>): Promise<T[]> {
-  try {
-    const cacheSnapshot = await getDocsFromCache(q);
-    if (!cacheSnapshot.empty) {
-      const items: T[] = [];
-      cacheSnapshot.forEach((docSnap) => {
-        items.push({ id: docSnap.id, ...docSnap.data() } as T);
-      });
-      return items;
-    }
-  } catch (error) {
-    console.warn('[Cache First Fetch] Cache miss or error:', error);
-  }
-
-  // Fallback to server
-  try {
-    const serverSnapshot = await getDocsFromServer(q);
-    const items: T[] = [];
-    serverSnapshot.forEach((docSnap) => {
-      items.push({ id: docSnap.id, ...docSnap.data() } as T);
-    });
-    return items;
-  } catch (error) {
-    handleFirestoreError(error, OperationType.LIST, 'cacheFirstFetch fallback');
-    return [];
-  }
 }

@@ -32,8 +32,6 @@ interface AdminDashboardProps {
   onAddUser?: (newUser: User) => void;
   onDeleteUser?: (userId: string) => void;
   onBulkAddUsers?: (users: User[]) => void;
-  rombelFilter?: string;
-  setRombelFilter?: (val: string) => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -57,11 +55,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onAddUser,
   onDeleteUser,
   onBulkAddUsers,
-  rombelFilter = 'Semua',
-  setRombelFilter,
 }) => {
   const [adminTab, setAdminTab] = useState<'users' | 'courses' | 'exams' | 'announcements'>('courses');
-  const [filterRombel, setFilterRombel] = useState<string>('Semua');
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -858,33 +853,6 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
     }
   };
 
-  const uniqueRombels = React.useMemo(() => {
-    const rombels = new Set<string>();
-    usersList.forEach(u => {
-      const rombel = String(u.kelas || u.grade || '').trim();
-      if (rombel && rombel !== 'undefined' && rombel !== 'null') {
-        rombels.add(rombel);
-      }
-    });
-    return ['Semua', ...Array.from(rombels).sort()];
-  }, [usersList]);
-
-  const displayedUsers = React.useMemo(() => {
-    if (filterRombel === 'Semua') return usersList;
-    return usersList.filter(u => {
-      const rombel = String(u.kelas || u.grade || '').trim();
-      return rombel === filterRombel;
-    });
-  }, [usersList, filterRombel]);
-
-  const getRombelBadgeColor = (rombel: string) => {
-    const r = rombel.toLowerCase();
-    if (r.includes('10')) return 'bg-blue-50 text-blue-700 border-blue-200';
-    if (r.includes('11')) return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    if (r.includes('12')) return 'bg-purple-50 text-purple-700 border-purple-200';
-    return 'bg-slate-50 text-slate-700 border-slate-200';
-  };
-
   const handleToggleUserRole = async (id: string, newRole: Role) => {
     const targetUser = usersList.find(u => u.id === id);
     if (!targetUser) return;
@@ -1142,289 +1110,1255 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
 
       {/* QUICK ACTIONS PANEL (AKSI CEPAT ADMIN) */}
       <div className="bg-white rounded-3xl p-5 border border-purple-100 shadow-sm border border-slate-200 space-y-3">
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
-          <button onClick={() => setAdminTab('courses')} className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${adminTab === 'courses' ? 'bg-indigo-600 text-white shadow-sm border border-slate-200' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'}`}>
-            <BookOpen className="w-4 h-4" />
-            <span>Input Modul & Dokumen ({courses.length})</span>
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center space-x-2">
+            <Zap className="w-5 h-5 text-amber-500" />
+            <h2 className="text-sm font-extrabold text-slate-800">Aksi Cepat Admin (Quick Uploads ke Firebase)</h2>
+          </div>
+          <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
+            Direct Cloud Persistence
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Action 1: Upload Dokumen/Modul */}
+          <button
+            onClick={() => {
+              setAdminTab('courses');
+              setCourseInputMode('form');
+            }}
+            className="flex items-center space-x-3 p-3.5 bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200 rounded-2xl transition-all cursor-pointer text-left group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Upload className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-indigo-900">Upload Dokumen/Modul</h3>
+              <p className="text-[10px] text-indigo-700">Unggah PDF, Word, PPT, Excel ke Cloud</p>
+            </div>
           </button>
-          <button onClick={() => setAdminTab('exams')} className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${adminTab === 'exams' ? 'bg-amber-600 text-white shadow-sm border border-slate-200' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'}`}>
-            <Award className="w-4 h-4" />
-            <span>Input Tryout TKA & Soal ({exams.length})</span>
+
+          {/* Action 2: Upload Bank Soal CSV */}
+          <button
+            onClick={() => {
+              setAdminTab('exams');
+              setExamInputMode('template');
+            }}
+            className="flex items-center space-x-3 p-3.5 bg-amber-50 hover:bg-amber-100/80 border border-amber-200 rounded-2xl transition-all cursor-pointer text-left group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <FileSpreadsheet className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-amber-900">Upload Bank Soal (CSV)</h3>
+              <p className="text-[10px] text-amber-700">Impor Paket Tryout & Soal HOTS</p>
+            </div>
           </button>
-          <button onClick={() => setAdminTab('users')} className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${adminTab === 'users' ? 'bg-purple-600 text-white shadow-sm border border-slate-200' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'}`}>
-            <Users className="w-4 h-4" />
-            <span>Kelola User & Role ({usersList.length})</span>
-          </button>
-          <button onClick={() => setAdminTab('announcements')} className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${adminTab === 'announcements' ? 'bg-blue-600 text-white shadow-sm border border-slate-200' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'}`}>
-            <Bell className="w-4 h-4" />
-            <span>Pengumuman LMS ({announcements.length})</span>
+
+          {/* Action 3: Upload Data Siswa Massal */}
+          <button
+            onClick={() => {
+              setAdminTab('users');
+              setUserMode('csv');
+            }}
+            className="flex items-center space-x-3 p-3.5 bg-purple-50 hover:bg-purple-100/80 border border-purple-200 rounded-2xl transition-all cursor-pointer text-left group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-purple-900">Upload Data Siswa (Massal)</h3>
+              <p className="text-[10px] text-purple-700">Impor Roster Siswa via CSV / Excel</p>
+            </div>
           </button>
         </div>
       </div>
 
+      {/* Uploading Loading Banner */}
+      {isUploading && (
+        <div className="bg-indigo-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-xl animate-pulse">
+          <div className="flex items-center space-x-3">
+            <Loader2 className="w-5 h-5 animate-spin text-indigo-300" />
+            <div>
+              <p className="text-xs font-bold">Proses Unggah & Sinkronisasi Firestore / Storage Sedang Berjalan...</p>
+              {uploadProgress > 0 && (
+                <p className="text-[10px] text-indigo-200">Progress upload file: {uploadProgress}%</p>
+              )}
+            </div>
+          </div>
+          <div className="w-32 bg-indigo-950 rounded-full h-2 overflow-hidden border border-indigo-700">
+            <div 
+              className="bg-emerald-400 h-full transition-all duration-300" 
+              style={{ width: `${uploadProgress > 0 ? uploadProgress : 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Success Notification Alert */}
+      {successMsg && (
+        <div className="bg-blue-100/90 border border-blue-400 text-emerald-100 px-4 py-3 rounded-2xl flex items-center justify-between shadow-lg text-xs font-bold">
+          <div className="flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-blue-500" />
+            <span>{successMsg}</span>
+          </div>
+          <span className="text-[10px] bg-blue-100 px-2 py-0.5 rounded-md">Firebase Synced</span>
+        </div>
+      )}
+
+      {/* Error Notification Alert */}
+      {errorMsg && (
+        <div className="bg-red-900/90 border border-red-500 text-red-100 px-4 py-3 rounded-2xl flex items-center justify-between shadow-lg text-xs font-bold">
+          <div className="flex items-center space-x-2">
+            <AlertCircle className="w-5 h-5 text-red-300" />
+            <span>{errorMsg}</span>
+          </div>
+          <span className="text-[10px] bg-red-800 px-2 py-0.5 rounded-md">Error</span>
+        </div>
+      )}
+
+      {/* Metrics Counter Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <BookOpen className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[11px] font-medium text-white0">Materi / Modul</p>
+            <p className="text-lg font-extrabold text-slate-800">{courses.length} Modul</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+            <FileText className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[11px] font-medium text-white0">Paket Tryout TKA</p>
+            <p className="text-lg font-extrabold text-slate-800">{exams.length} Ujian</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <Users className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[11px] font-medium text-white0">Total Pengguna</p>
+            <p className="text-lg font-extrabold text-slate-800">{usersList.length} User</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+            <Bell className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-[11px] font-medium text-white0">Pengumuman</p>
+            <p className="text-lg font-extrabold text-slate-800">{announcements.length} Berita</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Admin Navigation Tabs */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
+        <button
+          onClick={() => setAdminTab('courses')}
+          className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            adminTab === 'courses'
+              ? 'bg-indigo-600 text-white shadow-sm border border-slate-200'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <BookOpen className="w-4 h-4" />
+          <span>Input Modul & Dokumen ({courses.length})</span>
+        </button>
+
+        <button
+          onClick={() => setAdminTab('exams')}
+          className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            adminTab === 'exams'
+              ? 'bg-amber-600 text-white shadow-sm border border-slate-200'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>Input Tryout TKA & Soal ({exams.length})</span>
+        </button>
+
+        <button
+          onClick={() => setAdminTab('users')}
+          className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            adminTab === 'users'
+              ? 'bg-purple-600 text-white shadow-sm border border-slate-200'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>Kelola User & Role ({usersList.length})</span>
+        </button>
+
+        <button
+          onClick={() => setAdminTab('announcements')}
+          className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            adminTab === 'announcements'
+              ? 'bg-blue-600 text-white shadow-sm border border-slate-200'
+              : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+          }`}
+        >
+          <Bell className="w-4 h-4" />
+          <span>Pengumuman LMS ({announcements.length})</span>
+        </button>
+      </div>
+
+      {/* TAB 1: INPUT MODUL & DOKUMEN PEMBELAJARAN (BERLAKU KELAS & TKA) */}
       {adminTab === 'courses' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form Input Modul & Template Bulk */}
           <div className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-            <h2 className="text-sm font-bold text-slate-800">Form Input Modul & Dokumen</h2>
-            <form onSubmit={handleAddCourseSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Target Pilar</label>
-                <select value={courseTargetPillar} onChange={(e) => setCourseTargetPillar(e.target.value as any)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500">
-                  <option value="kelas">Materi Kelas (10-12)</option>
-                  <option value="tka">Materi TKA Sosiologi</option>
-                </select>
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Judul Modul</label>
-                <input required type="text" value={courseTitle} onChange={(e) => setCourseTitle(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Kelas</label>
-                  <select value={courseGrade} onChange={(e) => setCourseGrade(Number(e.target.value) as any)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500">
-                    <option value={10}>Kelas 10</option><option value={11}>Kelas 11</option><option value={12}>Kelas 12</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Bab</label>
-                  <input type="number" value={courseChapterNum} onChange={(e) => setCourseChapterNum(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-                </div>
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Deskripsi</label>
-                <textarea required value={courseDesc} onChange={(e) => setCourseDesc(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Judul Video / Sub-Materi</label>
-                <input required type="text" value={lessonTitle} onChange={(e) => setLessonTitle(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">File Dokumen (Opsional)</label>
-                <input type="file" onChange={(e) => setSelectedDocumentFile(e.target.files?.[0] || null)} className="w-full text-xs" />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">YouTube Video ID</label>
-                <input type="text" value={lessonVideoUrl} onChange={(e) => setLessonVideoUrl(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Teks Materi</label>
-                <textarea value={lessonTextBody} onChange={(e) => setLessonTextBody(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Poin Kunci (pisahkan dengan baris baru)</label>
-                <textarea value={lessonKeyPoints} onChange={(e) => setLessonKeyPoints(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500" />
-              </div>
-              <button type="submit" disabled={isUploading} className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-sm">Simpan Modul</button>
-            </form>
-          </div>
-          <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-base font-bold text-slate-800">Daftar Modul Pembelajaran ({courses.length})</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {courses.map(course => (
-                <div key={course.id} className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-2 hover:border-indigo-200 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">{course.category} • KLS {course.grade_level}</span>
-                      <h3 className="font-bold text-sm mt-2 text-slate-800">{course.title}</h3>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{course.description}</p>
-                    </div>
-                    <div className="flex space-x-1">
-                      <button onClick={() => setEditingCourse(course)} className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg"><Edit3 className="w-4 h-4" /></button>
-                      <button onClick={() => onDeleteCourse(course.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {adminTab === 'exams' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-            <h2 className="text-sm font-bold text-slate-800">Form Input Paket Tryout</h2>
-            <form onSubmit={handleAddExamSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Judul Paket Ujian</label>
-                <input required type="text" value={examTitle} onChange={(e) => setExamTitle(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Kategori</label>
-                  <select value={examCategory} onChange={(e) => setExamCategory(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500">
-                    <option value="Tryout TKA">Tryout TKA</option>
-                    <option value="Ujian Akhir">Ujian Akhir</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Kelas</label>
-                  <select value={examGrade} onChange={(e) => setExamGrade(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500">
-                    <option value={10}>10</option><option value={11}>11</option><option value={12}>12</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Durasi (Menit)</label>
-                  <input required type="number" value={examDuration} onChange={(e) => setExamDuration(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500" />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Passing Score</label>
-                  <input required type="number" value={examPassingScore} onChange={(e) => setExamPassingScore(Number(e.target.value))} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500" />
-                </div>
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Deskripsi</label>
-                <textarea required value={examDesc} onChange={(e) => setExamDesc(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-amber-500" />
-              </div>
-              <button type="submit" disabled={isUploading} className="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition-all shadow-sm">Simpan Paket Ujian</button>
-            </form>
-            
-            <div className="border-t border-slate-200 pt-5 mt-5">
-              <h2 className="text-sm font-bold text-slate-800 mb-3">Tambah Butir Soal</h2>
-              <form onSubmit={handleAddQuestionSubmit} className="space-y-4 text-xs">
-                 <div>
-                   <label className="block font-bold text-slate-700 mb-1">Pilih Paket Ujian</label>
-                   <select required value={selectedExamId} onChange={(e) => setSelectedExamId(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500">
-                     <option value="">-- Pilih Paket --</option>
-                     {exams.map(ex => <option key={ex.id} value={ex.id}>{ex.title}</option>)}
-                   </select>
-                 </div>
-                 <div>
-                   <label className="block font-bold text-slate-700 mb-1">Teks Pertanyaan</label>
-                   <textarea required value={qText} onChange={(e) => setQText(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500" />
-                 </div>
-                 <div className="grid grid-cols-2 gap-2">
-                   <div>
-                     <label className="block font-bold text-slate-700 mb-1">Tipe Soal</label>
-                     <select value={qType} onChange={(e) => setQType(e.target.value as any)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500">
-                       <option value="pilihan_ganda">Pilihan Ganda</option>
-                       <option value="sebab_akibat">Sebab Akibat</option>
-                       <option value="kompleks">Kompleks</option>
-                     </select>
-                   </div>
-                   <div>
-                     <label className="block font-bold text-slate-700 mb-1">Jawaban Benar</label>
-                     <select value={qCorrect} onChange={(e) => setQCorrect(e.target.value as any)} className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500">
-                       <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
-                     </select>
-                   </div>
-                 </div>
-                 <button type="submit" disabled={isUploading} className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-sm">Simpan Soal</button>
-              </form>
-            </div>
-          </div>
-          <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-base font-bold text-slate-800">Daftar Paket Ujian ({exams.length})</h2>
-            <div className="grid grid-cols-1 gap-4">
-              {exams.map(exam => (
-                <div key={exam.id} className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-amber-200 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-1 rounded-full">{exam.category} • {exam.duration_minutes} Menit</span>
-                      <h3 className="font-bold text-sm mt-2 text-slate-800">{exam.title} ({exam.questions?.length || 0} Soal)</h3>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">{exam.description}</p>
-                    </div>
-                    <div className="flex space-x-1">
-                      <button onClick={() => onDeleteExam(exam.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {adminTab === 'users' && (
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-          <div className="flex justify-between items-center pb-4 border-b border-slate-100">
-            <div className="flex flex-col">
-              <h2 className="text-base font-bold text-slate-800">Data Seluruh Pengguna Sistem Firebase</h2>
-              <span className="text-xs text-slate-500">Ubah role instan & tersimpan di Cloud</span>
-            </div>
-          </div>
-          
-          <div className="w-full flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-hide">
-            <label className="text-[11px] font-bold text-slate-600 shrink-0">Filter Rombel:</label>
-            {uniqueRombels.map(rombel => (
+            {/* Mode Switcher */}
+            <div className="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
               <button
-                key={rombel}
-                onClick={() => setFilterRombel(rombel)}
-                className={`px-3 py-1.5 rounded-full text-[10px] font-extrabold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                  filterRombel === rombel
-                    ? 'bg-purple-600 text-white shadow-sm border border-purple-600'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                type="button"
+                onClick={() => setCourseInputMode('form')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  courseInputMode === 'form' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {rombel}
+                📝 Form Input Manual
               </button>
-            ))}
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 font-bold uppercase text-[11px]">
-                <tr>
-                  <th className="p-3">Pengguna</th>
-                  <th className="p-3">Kelas / Rombel</th>
-                  <th className="p-3">Role Saat Ini</th>
-                  <th className="p-3">XP Points</th>
-                  <th className="p-3 text-right">Aksi Role Access</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {displayedUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50">
-                    <td className="p-3">
-                      <div className="font-bold text-slate-800">{u.name}</div>
-                      <div className="text-[10px] text-slate-500">{u.email} • {u.schoolName || u.school}</div>
-                    </td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full font-bold text-[10px] border ${getRombelBadgeColor(String(u.kelas || u.grade || ''))}`}>
-                        {u.kelas || u.grade || '-'}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${
-                        u.role === 'siswa' ? 'bg-indigo-100 text-indigo-800' : u.role === 'guru' ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="p-3 font-extrabold text-amber-600">{u.total_xp || u.xp || 500} XP</td>
-                    <td className="p-3 text-right space-x-1">
-                      <button onClick={() => handleToggleUserRole(u.id, 'siswa')} className={`px-2 py-1 rounded-lg text-[10px] font-bold ${u.role === 'siswa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>Siswa</button>
-                      <button onClick={() => handleToggleUserRole(u.id, 'guru')} className={`px-2 py-1 rounded-lg text-[10px] font-bold ${u.role === 'guru' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>Guru</button>
-                      <button onClick={() => handleToggleUserRole(u.id, 'admin')} className={`px-2 py-1 rounded-lg text-[10px] font-bold ${u.role === 'admin' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>Admin</button>
-                      <button onClick={() => setEditingUser(u)} className="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800 mr-1">Edit</button>
-                      <button onClick={() => handleDeleteUser(u.id)} className="p-1 text-red-500 hover:bg-red-50 rounded ml-1"><Trash2 className="w-3.5 h-3.5" /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {hasMoreUsers && onLoadMoreUsers && (
-            <div className="pt-4 border-t border-slate-100 flex justify-center">
               <button
-                onClick={onLoadMoreUsers}
-                disabled={loadingMoreUsers}
-                className="px-5 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs flex items-center space-x-2 transition-all cursor-pointer border border-indigo-200"
+                type="button"
+                onClick={() => setCourseInputMode('template')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  courseInputMode === 'template' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
-                {loadingMoreUsers ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
-                    <span>Memuat Data Selanjutnya dari Firestore...</span>
-                  </>
-                ) : (
-                  <span>📥 Muat Lebih Banyak Pengguna (Paginated Load More)</span>
-                )}
+                📄 Upload Template CSV
               </button>
             </div>
-          )}
+
+            {courseInputMode === 'form' ? (
+              <div>
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Plus className="w-5 h-5 text-indigo-600" />
+                    <h2 className="text-sm font-bold text-slate-800">Form Input Modul & Document Upload</h2>
+                  </div>
+                </div>
+
+                <form onSubmit={handleAddCourseSubmit} className="space-y-3.5 text-xs">
+                  {/* Pillar Selector: Kelas vs TKA */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Target Pilar Materi *</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setCourseTargetPillar('kelas')}
+                        className={`py-2 px-3 rounded-xl border text-center font-bold transition-all cursor-pointer ${
+                          courseTargetPillar === 'kelas'
+                            ? 'bg-indigo-50 border-indigo-500 text-indigo-700 ring-2 ring-indigo-200'
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        📚 Materi Kelas (10-12)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCourseTargetPillar('tka')}
+                        className={`py-2 px-3 rounded-xl border text-center font-bold transition-all cursor-pointer ${
+                          courseTargetPillar === 'tka'
+                            ? 'bg-amber-50 border-amber-500 text-amber-800 ring-2 ring-amber-200'
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        🎯 Materi TKA Sosiologi
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Judul Modul Sosiologi *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder={courseTargetPillar === 'tka' ? "Misal: Modul HOTS TKA Sosiologi - Teori Konflik Modern" : "Misal: Sosiologi Perubahan Sosial & Globalisasi"}
+                      value={courseTitle}
+                      onChange={(e) => setCourseTitle(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        {courseTargetPillar === 'tka' ? 'Kategori Pilar' : 'Tingkat Kelas'}
+                      </label>
+                      {courseTargetPillar === 'tka' ? (
+                        <input
+                          type="text"
+                          disabled
+                          value="TKA Sosiologi (UTBK)"
+                          className="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50 font-bold text-amber-900"
+                        />
+                      ) : (
+                        <select
+                          value={courseGrade}
+                          onChange={(e) => setCourseGrade(Number(e.target.value) as any)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        >
+                          <option value={10}>Kelas 10 SMA</option>
+                          <option value={11}>Kelas 11 SMA</option>
+                          <option value={12}>Kelas 12 SMA</option>
+                        </select>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Nomor Bab</label>
+                      <input
+                        type="number"
+                        value={courseChapterNum}
+                        onChange={(e) => setCourseChapterNum(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Judul Sub-Materi / Video Lesson *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Misal: Dampak Modernisasi Terhadap Kearifan Lokal"
+                      value={lessonTitle}
+                      onChange={(e) => setLessonTitle(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  {/* FILE ATTACHMENT TO FIREBASE STORAGE */}
+                  <div className="p-3 bg-purple-50/70 rounded-2xl border border-purple-200 space-y-2">
+                    <label className="block font-bold text-purple-900 flex items-center space-x-1.5">
+                      <Paperclip className="w-4 h-4 text-purple-600" />
+                      <span>Upload Dokumen Asli ke Firebase Storage</span>
+                    </label>
+                    <p className="text-[10px] text-purple-700">
+                      Lampirkan file PDF, Word, PPT, Excel, atau Gambar materi pembelajaran asli. File akan langsung diunggah ke Firebase Storage.
+                    </p>
+                    <input
+                      type="file"
+                      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg"
+                      onChange={(e) => setSelectedDocumentFile(e.target.files?.[0] || null)}
+                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
+                    />
+                    {selectedDocumentFile && (
+                      <p className="text-[11px] font-bold text-emerald-700 flex items-center space-x-1">
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        <span>File terpilih: {selectedDocumentFile.name} ({(selectedDocumentFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">YouTube Video ID / URL Embed</label>
+                    <input
+                      type="text"
+                      placeholder="2Vv-BfVoq4g atau ID YouTube"
+                      value={lessonVideoUrl}
+                      onChange={(e) => setLessonVideoUrl(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Rangkuman / Rincian Teks Materi</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Isi rincian uraian materi sosiologi..."
+                      value={lessonTextBody}
+                      onChange={(e) => setLessonTextBody(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Poin-poin Kunci (Satu per baris)</label>
+                    <textarea
+                      rows={2}
+                      placeholder="Poin 1&#10;Poin 2"
+                      value={lessonKeyPoints}
+                      onChange={(e) => setLessonKeyPoints(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Mengunggah ke Firebase Storage...</span>
+                      </>
+                    ) : (
+                      <span>+ Tambahkan Modul & Dokumen ke Firebase</span>
+                    )}
+                  </button>
+                </form>
+              </div>
+            ) : (
+              /* Bulk Upload Template Section */
+              <div className="space-y-4">
+                <div className="border-b border-slate-100 pb-3">
+                  <h2 className="text-sm font-bold text-slate-800">Upload Massal Modul ke Firebase</h2>
+                  <p className="text-[11px] text-white0 mt-1">
+                    Upload file CSV/Excel atau tempel teks hasil template data modul (berlaku untuk Materi Kelas 10, 11, 12 dan TKA Sosiologi).
+                  </p>
+                </div>
+
+                <div className="bg-indigo-50 p-3.5 rounded-2xl border border-indigo-100 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-indigo-900">📄 Format Template CSV / Excel</span>
+                    <button
+                      type="button"
+                      onClick={downloadCourseTemplateCSV}
+                      className="text-[11px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                    >
+                      Unduh Template CSV
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-indigo-700 leading-relaxed">
+                    Format Kolom: <code className="bg-indigo-100 px-1 py-0.5 rounded text-indigo-900 font-mono">Judul Modul, Target (Kelas 10/11/12/TKA), Nomor Bab, Judul Sub-Materi, YouTube ID, Ringkasan Materi, Poin Kunci</code>
+                  </p>
+                </div>
+
+                <form onSubmit={handleBulkUploadCoursesSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Tempelkan Teks CSV / JSON Template *</label>
+                    <textarea
+                      required
+                      rows={7}
+                      placeholder={`Judul Modul,Target Pilar,Nomor Bab,Judul Sub-Materi,YouTube ID,Ringkasan,Poin Kunci\nSosiologi Konflik,TKA,1,Teori Dahrendorf,2Vv-BfVoq4g,Pembahasan konflik sosial TKA.,Kekuasaan;Wewenang\nPerubahan Sosial,Kelas 12,2,Modernisasi & Kebudayaan,2Vv-BfVoq4g,Materi perubahan sosial.,Westernisasi;Sekularisasi`}
+                      value={courseTemplateText}
+                      onChange={(e) => setCourseTemplateText(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px] focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Atau Pilih File CSV / Text dari Perangkat</label>
+                    <input
+                      type="file"
+                      accept=".csv,.txt,.json"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (evt) => {
+                            if (evt.target?.result) {
+                              setCourseTemplateText(evt.target.result as string);
+                            }
+                          };
+                          reader.readAsText(file);
+                        }
+                      }}
+                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Proses Simpan ke Firebase...</span>
+                      </>
+                    ) : (
+                      <span>📥 Proses Upload Template Modul ke Firestore</span>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+
+          {/* List Modul Aktif */}
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-base font-bold text-slate-800">Daftar Modul Pembelajaran Aktif di LMS Firebase</h2>
+            <div className="space-y-3">
+              {courses.map((c) => (
+                <div key={c.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+                        Kelas {c.grade_level} SMA • BAB {c.lessons[0]?.chapter_number || 1}
+                      </span>
+                      <h3 className="text-sm font-extrabold text-slate-800 mt-1">{c.title}</h3>
+                      <p className="text-xs text-white0">{c.description}</p>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <button
+                        onClick={() => setEditingCourse(c)}
+                        className="px-2.5 py-1 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                        title="Edit Modul Pembelajaran"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => onDeleteCourse(c.id)}
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        title="Hapus Modul dari Firebase"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-slate-100 pt-3 space-y-2">
+                    <span className="text-[11px] font-bold text-slate-600">Sub-materi / Lessons ({c.lessons.length}):</span>
+                    {c.lessons.map((les) => (
+                      <div key={les.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <div className="font-bold text-slate-800 flex items-center space-x-2">
+                            <span>{les.title}</span>
+                            {les.document_url && (
+                              <a
+                                href={les.document_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center space-x-1 text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded-md hover:bg-purple-200 border border-purple-200"
+                              >
+                                <Paperclip className="w-3 h-3" />
+                                <span>{les.document_name || 'Dokumen File'}</span>
+                              </a>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-white0 truncate max-w-md">{les.text_body}</div>
+                        </div>
+                        <div className="flex items-center space-x-2 shrink-0">
+                          <span className="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">
+                            +{les.xp_reward} XP
+                          </span>
+                          <button
+                            onClick={() => {
+                              setEditingLesson({ lesson: les, sourceCourseId: c.id });
+                              setTargetCourseIdForMove(c.id);
+                            }}
+                            className="px-2 py-1 text-[11px] bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                            title="Edit & Pindahkan ke Bab/Modul Lain"
+                          >
+                            <ArrowRightLeft className="w-3 h-3" />
+                            <span>Edit / Pindahkan</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: INPUT TRYOUT TKA & SOAL SOSIOLOGI */}
+      {adminTab === 'exams' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Panel: Manual Form or Bulk Template Upload */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Mode Switcher */}
+            <div className="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => setExamInputMode('form')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  examInputMode === 'form' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                📝 Form Input Manual
+              </button>
+              <button
+                type="button"
+                onClick={() => setExamInputMode('template')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  examInputMode === 'template' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                📄 Upload Template CSV
+              </button>
+            </div>
+
+            {examInputMode === 'form' ? (
+              <>
+                {/* Form 1: Buat Paket Tryout */}
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <Plus className="w-5 h-5 text-amber-600" />
+                    <h2 className="text-base font-bold text-slate-800">1. Buat Paket Tryout TKA Baru</h2>
+                  </div>
+
+                  <form onSubmit={handleAddExamSubmit} className="space-y-3 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Judul Paket Ujian TKA *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Misal: Tryout TKA Sosiologi Paket 4 - Teori Kritis"
+                        value={examTitle}
+                        onChange={(e) => setExamTitle(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">Durasi (Menit)</label>
+                        <input
+                          type="number"
+                          value={examDuration}
+                          onChange={(e) => setExamDuration(Number(e.target.value))}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">Passing Score (0-100)</label>
+                        <input
+                          type="number"
+                          value={examPassingScore}
+                          onChange={(e) => setExamPassingScore(Number(e.target.value))}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isUploading}
+                      className="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 disabled:opacity-50"
+                    >
+                      + Buat Paket Tryout TKA ke Firebase
+                    </button>
+                  </form>
+                </div>
+
+                {/* Form 2: Input Soal ke Paket */}
+                <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <Plus className="w-5 h-5 text-amber-600" />
+                    <h2 className="text-base font-bold text-slate-800">2. Input Butir Soal Sosiologi</h2>
+                  </div>
+
+                  <form onSubmit={handleAddQuestionSubmit} className="space-y-3 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Pilih Paket Ujian *</label>
+                      <select
+                        required
+                        value={selectedExamId}
+                        onChange={(e) => setSelectedExamId(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold focus:ring-2 focus:ring-amber-500"
+                      >
+                        <option value="">-- Pilih Paket Tryout --</option>
+                        {exams.map((ex) => (
+                          <option key={ex.id} value={ex.id}>
+                            {ex.title} ({ex.questions.length} Soal)
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Tipe Soal Sosiologi</label>
+                      <select
+                        value={qType}
+                        onChange={(e) => setQType(e.target.value as any)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold"
+                      >
+                        <option value="pilihan_ganda">Pilihan Ganda A-E Standard</option>
+                        <option value="kompleks">Pilihan Ganda Kompleks (1,2,3,4)</option>
+                        <option value="sebab_akibat">Sebab-Akibat (Pernyataan & Alasan)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Teks / Narasi Soal Sosiologi *</label>
+                      <textarea
+                        required
+                        rows={3}
+                        placeholder="Tuliskan soal sosiologi..."
+                        value={qText}
+                        onChange={(e) => setQText(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      />
+                    </div>
+
+                    {qType === 'pilihan_ganda' && (
+                      <div className="space-y-2">
+                        <label className="block font-bold text-slate-700">Opsi Jawaban (A - E)</label>
+                        <input
+                          type="text"
+                          placeholder="Opsi A"
+                          value={qOptA}
+                          onChange={(e) => setQOptA(e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Opsi B"
+                          value={qOptB}
+                          onChange={(e) => setQOptB(e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Opsi C"
+                          value={qOptC}
+                          onChange={(e) => setQOptC(e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Opsi D"
+                          value={qOptD}
+                          onChange={(e) => setQOptD(e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Opsi E"
+                          value={qOptE}
+                          onChange={(e) => setQOptE(e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Kunci Jawaban Benar *</label>
+                      <select
+                        value={qCorrect}
+                        onChange={(e) => setQCorrect(e.target.value as any)}
+                        className="w-full px-3 py-2 rounded-xl border border-blue-400 bg-emerald-50 font-bold text-emerald-900"
+                      >
+                        <option value="A">Kunci Jawaban A</option>
+                        <option value="B">Kunci Jawaban B</option>
+                        <option value="C">Kunci Jawaban C</option>
+                        <option value="D">Kunci Jawaban D</option>
+                        <option value="E">Kunci Jawaban E</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Pembahasan HOTS Sosiologi</label>
+                      <textarea
+                        rows={2}
+                        placeholder="Pembahasan lengkap berdasarkan konsep/teori sosiologi..."
+                        value={qExplanation}
+                        onChange={(e) => setQExplanation(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isUploading}
+                      className="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 disabled:opacity-50"
+                    >
+                      + Tambahkan Soal ke Firebase
+                    </button>
+                  </form>
+                </div>
+              </>
+            ) : (
+              /* Bulk Bank Soal Template Section */
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                <div className="border-b border-slate-100 pb-3">
+                  <h2 className="text-sm font-bold text-slate-800">Upload Bulk Bank Soal dari Template</h2>
+                  <p className="text-[11px] text-white0 mt-1">
+                    Upload file CSV/Excel atau tempel teks hasil template data bank soal TKA Sosiologi.
+                  </p>
+                </div>
+
+                <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-900">📄 Format Template CSV Bank Soal</span>
+                    <button
+                      type="button"
+                      onClick={downloadExamTemplateCSV}
+                      className="text-[11px] bg-amber-600 hover:bg-amber-700 text-white font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                    >
+                      Unduh Template CSV
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-amber-800 leading-relaxed">
+                    Format Kolom: <code className="bg-amber-100 px-1 py-0.5 rounded text-amber-900 font-mono">Judul Paket, Teks Soal, Opsi A, Opsi B, Opsi C, Opsi D, Opsi E, Kunci, Kesukaran, Topik, Pembahasan</code>
+                  </p>
+                </div>
+
+                <form onSubmit={handleBulkUploadExamsSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Tempelkan Teks CSV / JSON Bank Soal *</label>
+                    <textarea
+                      required
+                      rows={8}
+                      placeholder={`Judul Paket,Teks Soal,Opsi A,Opsi B,Opsi C,Opsi D,Opsi E,Kunci,Kesukaran,Topik,Pembahasan\nTryout TKA Paket 1,"Manakah Teori Konflik?",Dahrendorf,Comte,Durkheim,Weber,Marx,A,Medium,Konflik,"Teori dialektika konflik oleh Dahrendorf."`}
+                      value={examTemplateText}
+                      onChange={(e) => setExamTemplateText(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px] focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Atau Pilih File CSV / Text dari Perangkat</label>
+                    <input
+                      type="file"
+                      accept=".csv,.txt,.json"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (evt) => {
+                            if (evt.target?.result) {
+                              setExamTemplateText(evt.target.result as string);
+                            }
+                          };
+                          reader.readAsText(file);
+                        }
+                      }}
+                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Menyimpan ke Firestore...</span>
+                      </>
+                    ) : (
+                      <span>📥 Proses Upload Bank Soal TKA ke Firebase</span>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+
+          {/* List Paket Tryout & Butir Soal */}
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-base font-bold text-slate-800">Bank Paket Ujian & Butir Soal TKA Sosiologi</h2>
+            <div className="space-y-4">
+              {exams.map((ex) => (
+                <div key={ex.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                  <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+                    <div>
+                      <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                        {ex.category} • {ex.duration_minutes} Menit • Passing {ex.passing_score}
+                      </span>
+                      <h3 className="text-sm font-extrabold text-slate-800 mt-1">{ex.title}</h3>
+                      <p className="text-xs text-white0">{ex.description}</p>
+                    </div>
+
+                    <div className="flex items-center space-x-1">
+                      <button
+                        onClick={() => setEditingExam(ex)}
+                        className="px-2.5 py-1 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                        title="Edit Paket Ujian"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => onDeleteExam(ex.id)}
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        title="Hapus Paket Ujian dari Firebase"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Questions list inside exam */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-700">
+                        Butir Soal ({ex.questions.length} Soal):
+                      </span>
+                      <span className="text-[10px] text-indigo-600 font-semibold">IRT Weight Calculated</span>
+                    </div>
+
+                    {ex.questions.length === 0 ? (
+                      <div className="text-xs text-slate-400 italic p-3 bg-slate-50 rounded-xl text-center">
+                        Belum ada soal pada paket ini. Gunakan form di samping untuk menginput soal.
+                      </div>
+                    ) : (
+                      ex.questions.map((q, idx) => (
+                        <div key={q.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
+                          <div className="flex items-start justify-between">
+                            <span className="font-bold text-indigo-900">
+                              {idx + 1}. {q.text}
+                            </span>
+                            <div className="flex items-center space-x-1 shrink-0 ml-2">
+                              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+                                Kunci: {q.correct_answer}
+                              </span>
+                              <button
+                                onClick={() => {
+                                  setEditingQuestion({ question: q, sourceExamId: ex.id });
+                                  setTargetExamIdForMove(ex.id);
+                                }}
+                                className="px-2 py-0.5 text-[10px] bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold rounded-md transition-colors flex items-center space-x-1 cursor-pointer"
+                                title="Edit & Pindahkan Soal ke Ujian Lain"
+                              >
+                                <ArrowRightLeft className="w-3 h-3" />
+                                <span>Edit / Pindahkan</span>
+                              </button>
+                              <button
+                                onClick={() => onDeleteQuestion(ex.id, q.id)}
+                                className="p-1 text-red-500 hover:bg-red-100 rounded cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-1 text-[11px] text-slate-600 pl-2">
+                            <div>A. {q.option_a}</div>
+                            <div>B. {q.option_b}</div>
+                            <div>C. {q.option_c}</div>
+                            <div>D. {q.option_d}</div>
+                          </div>
+
+                          <div className="text-[10px] text-white0 bg-white p-2 rounded-lg border border-slate-200">
+                            <strong>Topik:</strong> {q.topic || 'Umum'} | <strong>Pembahasan:</strong> {q.explanation}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: KELOLA PENGGUNA & ROLE (DENGAN FIREBASE & UPLOAD CSV MASSAL) */}
+      {adminTab === 'users' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form Input User / Mass CSV */}
+          <div className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            {/* Mode Switcher */}
+            <div className="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => setUserMode('form')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  userMode === 'form' ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                📝 Input Manual
+              </button>
+              <button
+                type="button"
+                onClick={() => setUserMode('csv')}
+                className={`flex-1 py-2 rounded-xl transition-all cursor-pointer ${
+                  userMode === 'csv' ? 'bg-purple-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                📄 Upload CSV Siswa
+              </button>
+            </div>
+
+            {userMode === 'form' ? (
+              <>
+                <div className="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                  <Plus className="w-5 h-5 text-purple-600" />
+                  <h2 className="text-base font-bold text-slate-800">Input Pengguna Baru ke Firebase</h2>
+                </div>
+
+                <form onSubmit={handleAddUserSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Nama Lengkap *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Misal: Ahmad Zaky"
+                      value={newUserName}
+                      onChange={(e) => setNewUserName(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Email Sekolah / Pribadi *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="ahmad@sosiologi.edu"
+                      value={newUserEmail}
+                      onChange={(e) => setNewUserEmail(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Peran (Role)</label>
+                      <select
+                        value={newUserRole}
+                        onChange={(e) => setNewUserRole(e.target.value as Role)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold"
+                      >
+                        <option value="siswa">Siswa</option>
+                        <option value="guru">Guru</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">Kelas (jika Siswa)</label>
+                      <select
+                        value={newUserGrade}
+                        onChange={(e) => setNewUserGrade(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-300"
+                      >
+                        <option value={10}>Kelas 10</option>
+                        <option value={11}>Kelas 11</option>
+                        <option value={12}>Kelas 12</option>
+                        <option value={0}>Guru/Admin</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Nama Sekolah / Instansi</label>
+                    <input
+                      type="text"
+                      placeholder="SMAIT As-Syifa Boarding School Wanareja"
+                      value={newUserSchool}
+                      onChange={(e) => setNewUserSchool(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 disabled:opacity-50"
+                  >
+                    + Tambahkan Pengguna ke Firebase
+                  </button>
+                </form>
+              </>
+            ) : (
+              /* Excel / CSV Student Upload Panel */
+              <div className="space-y-4">
+                <div className="border-b border-slate-100 pb-3">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                    <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                    <span>Upload Data Siswa Massal (Format Excel / CSV)</span>
+                  </h2>
+                  <p className="text-[11px] text-white0 mt-1 leading-relaxed">
+                    Impor seluruh roster siswa dari file Excel (.xlsx / .xls) sekaligus dan simpan langsung ke database Firebase Firestore.
+                  </p>
+                </div>
+
+                <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-emerald-900 flex items-center space-x-1.5">
+                      <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+                      <span>📊 Template Excel Data Siswa</span>
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={downloadStudentTemplateExcel}
+                        className="text-[11px] bg-blue-600 hover:bg-emerald-700 text-white font-extrabold px-3 py-1.5 rounded-xl shadow-xs transition-all cursor-pointer flex items-center space-x-1"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Unduh Template Excel (.xlsx)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={downloadStudentTemplateCSV}
+                        className="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1.5 rounded-xl transition-all cursor-pointer"
+                      >
+                        CSV
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-emerald-800 leading-relaxed">
+                    Format Kolom Excel: <code className="bg-emerald-100/90 px-1 py-0.5 rounded text-emerald-900 font-mono font-bold">NISN | Nama_Lengkap | Password_Akun | Kelas | Status</code>
+                  </p>
+                </div>
+
+                <form onSubmit={handleBulkUploadStudentsSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Pilih File Excel (.xlsx / .xls) atau CSV dari Perangkat *
+                    </label>
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls,.csv,.txt"
+                      onChange={handleStudentExcelFileUpload}
+                      className="w-full text-xs text-white0 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-100 file:text-emerald-900 hover:file:bg-emerald-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-slate-50"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-slate-700">Pratinjau Data Siswa (Teks / Hasil Parser File)</label>
+                      <button
+                        type="button"
+                        onClick={() => setStudentCsvText(TSV_STUDENTS_PRESET)}
+                        className="text-[10px] bg-orange-500 hover:bg-amber-600 text-stone-950 font-black px-2.5 py-1 rounded-lg transition-all cursor-pointer shadow-xs flex items-center space-x-1"
+                      >
+                        <Sparkles className="w-3 h-3 text-stone-950" />
+                        <span>✨ Isi 51 Data Siswa SOSHUM (Preset)</span>
+                      </button>
+                    </div>
+                    <textarea
+                      required
+                      rows={6}
+                      placeholder={`NISN,Nama_Lengkap,Password_Akun,Kelas,Status\n0051234099,Budi Cahyono,Socio2026!Pass,12,Aktif\n0051234100,Siti Aminah,Socio2026!Pass,12,Aktif`}
+                      value={studentCsvText}
+                      onChange={(e) => setStudentCsvText(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px] focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isUploading || !studentCsvText.trim()}
+                    className="w-full bg-blue-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm border border-slate-200 flex items-center justify-center space-x-2 disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Mengunggah Data ke Firestore...</span>
+                      </>
+                    ) : (
+                      <span>📥 Simpan Data Siswa dari Excel ke Firebase</span>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+
+          {/* User Table */}
+          <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h2 className="text-base font-bold text-slate-800">Data Seluruh Pengguna Sistem Firebase</h2>
+              <span className="text-xs text-white0">Ubah role instan & tersimpan di Cloud</span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-600 font-bold uppercase text-[11px]">
+                  <tr>
+                    <th className="p-3">Pengguna</th>
+                    <th className="p-3">Role Saat Ini</th>
+                    <th className="p-3">XP Points</th>
+                    <th className="p-3 text-right">Aksi Role Access</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {usersList.map((u) => (
+                    <tr key={u.id} className="hover:bg-slate-50">
+                      <td className="p-3">
+                        <div className="font-bold text-slate-800">{u.name}</div>
+                        <div className="text-[10px] text-white0">{u.email} • {u.schoolName || u.school}</div>
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${
+                            u.role === 'siswa'
+                              ? 'bg-indigo-100 text-indigo-800'
+                              : u.role === 'guru'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-purple-100 text-purple-800'
+                          }`}
+                        >
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="p-3 font-extrabold text-amber-600">{u.total_xp || u.xp || 500} XP</td>
+                      <td className="p-3 text-right space-x-1">
+                        <button
+                          onClick={() => handleToggleUserRole(u.id, 'siswa')}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                            u.role === 'siswa' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          Siswa
+                        </button>
+                        <button
+                          onClick={() => handleToggleUserRole(u.id, 'guru')}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                            u.role === 'guru' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          Guru
+                        </button>
+                        <button
+                          onClick={() => handleToggleUserRole(u.id, 'admin')}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
+                            u.role === 'admin' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          Admin
+                        </button>
+                        <button
+                          onClick={() => setEditingUser(u)}
+                          className="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-800 hover:bg-amber-200 transition-all cursor-pointer mr-1"
+                          title="Edit Pengguna"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(u.id)}
+                          className="p-1 text-red-500 hover:bg-red-50 rounded cursor-pointer ml-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {hasMoreUsers && onLoadMoreUsers && (
+              <div className="pt-4 border-t border-slate-100 flex justify-center">
+                <button
+                  onClick={onLoadMoreUsers}
+                  disabled={loadingMoreUsers}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs flex items-center space-x-2 transition-all cursor-pointer border border-indigo-200"
+                >
+                  {loadingMoreUsers ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                      <span>Memuat Data Selanjutnya dari Firestore...</span>
+                    </>
+                  ) : (
+                    <span>📥 Muat Lebih Banyak Pengguna (Paginated Load More)</span>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

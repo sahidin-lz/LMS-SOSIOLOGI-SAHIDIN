@@ -50,15 +50,13 @@ export default function App() {
   // Custom Hooks Data Fetching (Teroptimasi Caching & Pagination)
   const { courses, updateCourseLocally, removeCourseLocally, setCourses } = useOptimizedCourses();
   const { exams, updateExamLocally, removeExamLocally, setExams } = useOptimizedExams();
-  
+  const { usersList, hasMore: hasMoreUsers, loadMore: loadMoreUsers, loadingMore: loadingMoreUsers, setUsersList } = useOptimizedUsers(20);
   const { announcements, setAnnouncements } = useOptimizedAnnouncements();
   const { leaderboard } = useOptimizedLeaderboard();
 
     const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion'>('dashboard');
   const [cbtFilter, setCbtFilter] = useState<'semua' | 'tryout' | 'latihan'>('semua');
-  const [rombelFilter, setRombelFilter] = useState<string>('Semua');
-  const { usersList, hasMore: hasMoreUsers, loadMore: loadMoreUsers, loadingMore: loadingMoreUsers, setUsersList } = useOptimizedUsers(20, rombelFilter);
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(undefined);
   const [activeExam, setActiveExam] = useState<Exam | null>(null);
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
@@ -436,8 +434,6 @@ export default function App() {
                   hasMoreUsers={hasMoreUsers}
                   onLoadMoreUsers={loadMoreUsers}
                   loadingMoreUsers={loadingMoreUsers}
-                  rombelFilter={rombelFilter}
-                  setRombelFilter={setRombelFilter}
                   onAddCourse={handleAddCourse}
                   onDeleteCourse={handleDeleteCourse}
                   onAddExam={handleAddExam}

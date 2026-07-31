@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Exam } from '../types';
 import { EXAMS_DATA } from '../data/sociologyData';
-import { saveDocument } from '../lib/firestoreService';
-import { collection, getDocsFromCache, getDocsFromServer } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { fetchCollection, saveDocument } from '../lib/firestoreService';
 
+/**
+ * Custom Hook: useOptimizedExams
+ * One-time fetch paket ujian & latihan bab sosiologi dengan caching lokal untuk performa maksimal.
+ */
 export function useOptimizedExams() {
   const [exams, setExams] = useState<Exam[]>(EXAMS_DATA);
   const [loading, setLoading] = useState<boolean>(true);
@@ -13,33 +15,16 @@ export function useOptimizedExams() {
   const loadExams = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const examsRef = collection(db, 'exams');
-
-    // 1. Get from Cache first
     try {
-      const cacheSnapshot = await getDocsFromCache(examsRef);
-      if (!cacheSnapshot.empty) {
-        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Exam));
+      const fsExams = await fetchCollection<Exam>('exams');
+      if (fsExams && fsExams.length > 0) {
+        // Merge EXAMS_DATA default 10 bab exams with any custom Firestore exams
         const examMap = new Map<string, Exam>();
         EXAMS_DATA.forEach((e) => examMap.set(e.id, e));
-        cachedItems.forEach((e) => examMap.set(e.id, e));
-        setExams(Array.from(examMap.values()));
-        setLoading(false);
-      }
-    } catch (err) {
-      console.warn('[useOptimizedExams] Cache miss:', err);
-    }
-
-    // 2. Revalidate from Server in background
-    try {
-      const serverSnapshot = await getDocsFromServer(examsRef);
-      if (!serverSnapshot.empty) {
-        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Exam));
-        const examMap = new Map<string, Exam>();
-        EXAMS_DATA.forEach((e) => examMap.set(e.id, e));
-        serverItems.forEach((e) => examMap.set(e.id, e));
+        fsExams.forEach((e) => examMap.set(e.id, e));
         setExams(Array.from(examMap.values()));
       } else {
+        // Seed initial data ke Firestore jika belum ada
         for (const e of EXAMS_DATA) {
           await saveDocument('exams', e.id, e);
         }
@@ -47,9 +32,8 @@ export function useOptimizedExams() {
       }
     } catch (err: any) {
       console.error('[useOptimizedExams Error]', err);
-      if (exams.length === EXAMS_DATA.length) {
-         setError('Gagal memuat paket ujian');
-      }
+      setError('Gagal memuat paket ujian dari cache/Firestore');
+      setExams(EXAMS_DATA);
     } finally {
       setLoading(false);
     }
