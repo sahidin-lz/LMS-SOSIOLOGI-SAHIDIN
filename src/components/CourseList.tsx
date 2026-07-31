@@ -14,7 +14,7 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-slate-800">Modul Belajar Kurikulum Sosiologi</h2>
-          <p className="text-xs text-slate-500">Pilih modul kelas 10, 11, atau 12 untuk mulai belajar</p>
+          <p className="text-xs text-white0">Pilih modul kelas 10, 11, atau 12 untuk mulai belajar</p>
         </div>
 
         <button
@@ -40,14 +40,14 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
                     Kelas {course.grade_level} SMA
                   </span>
-                  <span className="text-xs text-slate-500 font-medium">{course.category}</span>
+                  <span className="text-xs text-white0 font-medium">{course.category}</span>
                 </div>
 
                 <h3 className="font-bold text-sm text-slate-800 group-hover:text-indigo-700 transition-colors line-clamp-2">
                   {course.title}
                 </h3>
 
-                <p className="text-xs text-slate-500 line-clamp-2">{course.description}</p>
+                <p className="text-xs text-white0 line-clamp-2">{course.description}</p>
               </div>
 
               <div className="space-y-2">
@@ -67,7 +67,7 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
 
                 <button
                   onClick={() => onStartCourse(course.id)}
-                  className="w-full py-2 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 hover:border-indigo-600 font-semibold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs"
+                  className="w-full py-2 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-slate-900 border border-indigo-200 hover:border-indigo-600 font-semibold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>{progressPercent > 0 ? 'Lanjutkan Belajar' : 'Mulai Modul Ini'}</span>

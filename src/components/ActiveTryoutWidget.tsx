@@ -14,7 +14,7 @@ export const ActiveTryoutWidget: React.FC<ActiveTryoutWidgetProps> = ({ exams, o
     <div className="bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl p-6 text-white shadow-xl space-y-5">
       <div className="flex items-center justify-between border-b border-slate-700/60 pb-4">
         <div className="flex items-center space-x-2">
-          <Zap className="w-5 h-5 text-amber-400" />
+          <Zap className="w-5 h-5 text-orange-600" />
           <h2 className="font-bold text-base">Tryout CBT UTBK Aktif</h2>
         </div>
         <span className="text-[10px] uppercase font-extrabold bg-amber-400 text-slate-900 px-2 py-0.5 rounded-full">
@@ -28,7 +28,7 @@ export const ActiveTryoutWidget: React.FC<ActiveTryoutWidgetProps> = ({ exams, o
           className="bg-slate-800/80 rounded-2xl p-4 border border-slate-700 space-y-3 hover:border-amber-400/50 transition-all"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-400/20 text-orange-500 border border-amber-400/30">
               {exam.category}
             </span>
             <div className="flex items-center space-x-1 text-slate-400 text-xs">
@@ -42,7 +42,7 @@ export const ActiveTryoutWidget: React.FC<ActiveTryoutWidgetProps> = ({ exams, o
           <p className="text-xs text-slate-400 line-clamp-2">{exam.description}</p>
 
           <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center space-x-1 text-amber-300 text-xs font-semibold">
+            <div className="flex items-center space-x-1 text-orange-500 text-xs font-semibold">
               <Award className="w-3.5 h-3.5" />
               <span>+{exam.xp_reward} XP</span>
             </div>

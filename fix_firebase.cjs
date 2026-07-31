@@ -1,4 +1,5 @@
-import { initializeApp, getApps } from 'firebase/app';
+const fs = require('fs');
+const content = `import { initializeApp, getApps } from 'firebase/app';
 import { 
   getFirestore, 
   initializeFirestore, 
@@ -28,3 +29,5 @@ export const auth = getAuth(app);
 export const storage = getStorage(app);
 
 export default app;
+`;
+fs.writeFileSync('src/lib/firebase.ts', content, 'utf8');

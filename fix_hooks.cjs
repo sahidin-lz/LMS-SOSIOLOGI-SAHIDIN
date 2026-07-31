@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+const fs = require('fs');
+
+const coursesHook = `import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Course } from '../types';
 import { COURSES_DATA } from '../data/sociologyData';
 import { saveDocument } from '../lib/firestoreService';
@@ -19,7 +21,7 @@ export function useOptimizedCourses() {
     try {
       const cacheSnapshot = await getDocsFromCache(coursesRef);
       if (!cacheSnapshot.empty) {
-        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Course));
+        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as Course));
         
         // Merge with initial data
         const courseMap = new Map<string, Course>();
@@ -36,7 +38,7 @@ export function useOptimizedCourses() {
     try {
       const serverSnapshot = await getDocsFromServer(coursesRef);
       if (!serverSnapshot.empty) {
-        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Course));
+        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as Course));
         
         const courseMap = new Map<string, Course>();
         COURSES_DATA.forEach((c) => courseMap.set(c.id, c));
@@ -88,3 +90,5 @@ export function useOptimizedCourses() {
 
   return memoizedValue;
 }
+`;
+fs.writeFileSync('src/hooks/useOptimizedCourses.ts', coursesHook, 'utf8');

@@ -43,7 +43,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(email)}`,
       grade: 12,
       streakDays: 1,
-      schoolName: 'SMA Negeri 1 Membumi',
+      schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
       group_name: selectedRole === 'admin' ? 'Super Admin' : '12 IPS 1',
     };
 
@@ -67,7 +67,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(defaultEmail)}`,
       grade: 12,
       streakDays: 14,
-      schoolName: 'SMA Negeri 1 Membumi',
+      schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
       group_name: role === 'admin' ? 'Super Admin' : '12 IPS 1',
     };
 
@@ -81,23 +81,23 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-stone-900 border border-amber-600/60 rounded-2xl shadow-2xl overflow-hidden text-stone-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-800/60 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-md bg-white border border-amber-600/60 rounded-2xl shadow-2xl overflow-hidden text-slate-800">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-900 via-stone-900 to-amber-950 px-6 py-4 border-b border-stone-800 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-emerald-900 via-stone-900 to-amber-950 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500 text-stone-950 flex items-center justify-center font-black shadow-md border border-amber-300">
+            <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black shadow-sm border border-slate-200 border border-amber-300">
               <Key className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-amber-200">Login LMS Sosiologi</h3>
-              <p className="text-xs text-stone-400">Masuk sebagai Super Admin, Guru, atau Siswa</p>
+              <h3 className="font-extrabold text-base text-orange-700">Login LMS Sosiologi</h3>
+              <p className="text-xs text-white0">Masuk sebagai Super Admin, Guru, atau Siswa</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-stone-800 transition-all cursor-pointer"
+            className="p-1.5 rounded-lg text-white0 hover:text-slate-800 hover:bg-slate-100 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -106,15 +106,15 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         {/* Body Content */}
         <div className="p-6 space-y-4">
           {loginAlert && (
-            <div className="p-3 bg-emerald-950/90 border border-emerald-500 text-emerald-200 rounded-xl text-xs font-semibold flex items-center space-x-2 animate-bounce">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3 bg-blue-50/90 border border-blue-400 text-blue-700 rounded-xl text-xs font-semibold flex items-center space-x-2 animate-bounce">
+              <Check className="w-4 h-4 text-blue-600 shrink-0" />
               <span>{loginAlert}</span>
             </div>
           )}
 
           {/* Quick Login Role Shortcuts */}
           <div className="space-y-1.5">
-            <label className="block text-[11px] font-bold text-amber-300 uppercase tracking-wider">Akses Masuk Cepat Peran:</label>
+            <label className="block text-[11px] font-bold text-orange-500 uppercase tracking-wider">Akses Masuk Cepat Peran:</label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
@@ -128,32 +128,32 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleQuickRoleLogin('guru', 'guru@sosiologimembumi.sch.id', 'Ibu Ratna Pertiwi, S.Sos')}
-                className="p-2.5 rounded-xl bg-amber-950/80 border border-amber-700/80 hover:bg-amber-900 text-amber-200 text-xs font-bold flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer shadow-sm hover:scale-105"
+                className="p-2.5 rounded-xl bg-orange-50/80 border border-amber-700/80 hover:bg-amber-900 text-orange-700 text-xs font-bold flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer shadow-sm hover:scale-105"
               >
-                <GraduationCap className="w-4 h-4 text-amber-400" />
+                <GraduationCap className="w-4 h-4 text-orange-600" />
                 <span className="text-[11px]">Guru</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleQuickRoleLogin('siswa', 'siswa@sosiologimembumi.sch.id', 'Ahmad Fauzi')}
-                className="p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-700/80 hover:bg-emerald-900 text-emerald-200 text-xs font-bold flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer shadow-sm hover:scale-105"
+                className="p-2.5 rounded-xl bg-blue-50/80 border border-emerald-700/80 hover:bg-blue-100 text-blue-700 text-xs font-bold flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer shadow-sm hover:scale-105"
               >
-                <UserCheck className="w-4 h-4 text-emerald-400" />
+                <UserCheck className="w-4 h-4 text-blue-600" />
                 <span className="text-[11px]">Siswa</span>
               </button>
             </div>
           </div>
 
           <div className="relative my-3">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-stone-800"></div></div>
-            <div className="relative flex justify-center text-[10px] uppercase font-bold text-stone-500"><span className="bg-stone-900 px-2">Atau Form Kredensial</span></div>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+            <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400"><span className="bg-white px-2">Atau Form Kredensial</span></div>
           </div>
 
           <form onSubmit={handleCustomSubmit} className="space-y-3.5">
             {/* Role Selection Buttons */}
             <div>
-              <label className="block text-xs font-bold text-stone-300 mb-1.5">Pilih Hak Akses:</label>
+              <label className="block text-xs font-bold text-slate-600 mb-1.5">Pilih Hak Akses:</label>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
@@ -161,7 +161,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'admin'
                       ? 'bg-purple-900 border-purple-500 text-purple-100 shadow-sm'
-                      : 'bg-stone-800 border-stone-700 text-stone-400 hover:text-stone-200'
+                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5" />
@@ -174,7 +174,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'guru'
                       ? 'bg-amber-900 border-amber-500 text-amber-100 shadow-sm'
-                      : 'bg-stone-800 border-stone-700 text-stone-400 hover:text-stone-200'
+                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
                   }`}
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
@@ -186,8 +186,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   onClick={() => setSelectedRole('siswa')}
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'siswa'
-                      ? 'bg-emerald-900 border-emerald-500 text-emerald-100 shadow-sm'
-                      : 'bg-stone-800 border-stone-700 text-stone-400 hover:text-stone-200'
+                      ? 'bg-blue-100 border-blue-400 text-emerald-100 shadow-sm'
+                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
                   }`}
                 >
                   <UserCheck className="w-3.5 h-3.5" />
@@ -198,54 +198,54 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
             {/* Name Field */}
             <div>
-              <label className="block text-xs font-bold text-stone-300 mb-1">Nama Lengkap (Opsional):</label>
+              <label className="block text-xs font-bold text-slate-600 mb-1">Nama Lengkap (Opsional):</label>
               <div className="relative">
-                <UserIcon className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                <UserIcon className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="Contoh: Drs. Supriyadi, M.Pd"
-                  className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-9 pr-3 py-2 text-xs text-stone-100 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
 
             {/* Email / NISN Field */}
             <div>
-              <label className="block text-xs font-bold text-stone-300 mb-1">Email / NIP / NISN:</label>
+              <label className="block text-xs font-bold text-slate-600 mb-1">Email / NIP / NISN:</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@sosiologimembumi.sch.id"
                   required
-                  className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-9 pr-3 py-2 text-xs text-stone-100 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-bold text-stone-300 mb-1">Kata Sandi:</label>
+              <label className="block text-xs font-bold text-slate-600 mb-1">Kata Sandi:</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-stone-500" />
+                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-9 pr-3 py-2 text-xs text-stone-100 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-2.5 bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 text-stone-950 font-extrabold rounded-xl text-xs hover:from-amber-400 hover:to-emerald-500 transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer mt-2"
+              className="w-full py-2.5 bg-gradient-to-r from-orange-500 via-orange-600 to-blue-600 text-stone-950 font-extrabold rounded-xl text-xs hover:from-orange-400 hover:to-blue-500 transition-all shadow-sm border border-slate-200 flex items-center justify-center space-x-2 cursor-pointer mt-2"
             >
               <LogIn className="w-4 h-4" />
               <span>Masuk Sekarang ({selectedRole.toUpperCase()})</span>
@@ -254,7 +254,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-stone-950 px-6 py-3 border-t border-stone-800 text-stone-400 text-[10px] flex items-center justify-between">
+        <div className="bg-slate-50 px-6 py-3 border-t border-slate-200 text-white0 text-[10px] flex items-center justify-between">
           <span>LMS Sosiologi • Firebase Cloud Connected</span>
           {onPurgeAllData && (
             <button

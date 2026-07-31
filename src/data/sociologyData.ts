@@ -13,7 +13,7 @@ export const INITIAL_LEADERBOARD: LeaderboardUser[] = INITIAL_STUDENT_USERS.slic
   id: s.id,
   rank: idx + 1,
   name: s.name,
-  school: 'SMA Negeri Sosiologi',
+  school: 'SMAIT As-Syifa Boarding School Wanareja',
   grade: 12,
   xp: 0,
   badgeTitle: 'Siswa Baru',

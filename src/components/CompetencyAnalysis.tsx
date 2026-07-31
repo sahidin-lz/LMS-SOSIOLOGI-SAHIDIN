@@ -19,7 +19,7 @@ export const CompetencyAnalysis: React.FC<CompetencyAnalysisProps> = ({ competen
           </div>
           <div>
             <h2 className="text-lg font-bold text-slate-800">Analisis Kemampuan Siswa Sesuai Soal Dikerjakan</h2>
-            <p className="text-xs text-slate-500">Pemetaan kekuatan & kelemahan per butir soal & materi sosiologi</p>
+            <p className="text-xs text-white0">Pemetaan kekuatan & kelemahan per butir soal & materi sosiologi</p>
           </div>
         </div>
         <span className="text-xs bg-indigo-50 text-indigo-700 font-bold px-3 py-1 rounded-full border border-indigo-100">
@@ -28,7 +28,7 @@ export const CompetencyAnalysis: React.FC<CompetencyAnalysisProps> = ({ competen
       </div>
 
       {displayCompetencies.length === 0 ? (
-        <div className="text-center py-8 text-slate-500 text-[11px] bg-slate-50 rounded-2xl border border-slate-100 italic">
+        <div className="text-center py-8 text-white0 text-[11px] bg-slate-50 rounded-2xl border border-slate-100 italic">
           Belum ada data analisis kemampuan. Siswa belum mengerjakan ujian atau soal latihan.
         </div>
       ) : (
@@ -56,16 +56,16 @@ export const CompetencyAnalysis: React.FC<CompetencyAnalysisProps> = ({ competen
                 <div
                   className={`h-full transition-all duration-300 ${
                     mastery >= 80
-                      ? 'bg-emerald-500'
+                      ? 'bg-blue-500'
                       : mastery >= 50
-                      ? 'bg-amber-500'
+                      ? 'bg-orange-500'
                       : 'bg-red-500'
                   }`}
                   style={{ width: `${mastery}%` }}
                 ></div>
               </div>
 
-              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+              <p className="text-[11px] text-white0 leading-relaxed font-medium">
                 💡 {comp.recommendation}
               </p>
             </div>

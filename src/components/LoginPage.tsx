@@ -76,7 +76,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${student.nisn}`,
         grade: parseInt(student.kelas.split(' ')[0]) || 12,
         streakDays: 1,
-        schoolName: 'SMA Negeri Sosiologi',
+        schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
         group_name: student.kelas,
         nisn: student.nisn,
       };
@@ -117,7 +117,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin`,
           grade: 12,
           streakDays: 30,
-          schoolName: 'SMA Negeri Sosiologi',
+          schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
           group_name: 'Guru Sosiologi',
         };
         saveDocument('users', fbUser.uid, appUser);
@@ -151,7 +151,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(email)}`,
           grade: 12,
           streakDays: 1,
-          schoolName: 'SMA Negeri 1 Membumi',
+          schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
           group_name: 'Super Admin',
         };
         setSuccessMessage(`Login Mode Offline: Selamat datang, ${offlineUser.name}`);
@@ -168,22 +168,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 flex items-center justify-center p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden font-sans">
       {/* Background Subtle Glow Decor */}
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="w-full max-w-md bg-stone-900 border border-amber-600/50 rounded-3xl shadow-2xl overflow-hidden relative z-10 text-stone-100">
+      <div className="w-full max-w-md bg-white border border-amber-600/50 rounded-3xl shadow-2xl overflow-hidden relative z-10 text-slate-800">
         
         {/* Brand Header */}
-        <div className="bg-gradient-to-r from-emerald-950 via-stone-900 to-amber-950 p-6 border-b border-stone-800 text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500 text-stone-950 font-black shadow-lg border border-amber-300 mx-auto">
+        <div className="bg-gradient-to-r from-emerald-950 via-stone-900 to-amber-950 p-6 border-b border-slate-200 text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-500 text-white font-black shadow-lg border border-amber-300 mx-auto">
             <BookOpen className="w-7 h-7" />
           </div>
-          <h1 className="text-xl font-extrabold text-amber-200 tracking-tight">
+          <h1 className="text-xl font-extrabold text-orange-700 tracking-tight">
             LMS SOSIOLOGI MEMBUMI
           </h1>
-          <p className="text-xs text-stone-400 font-medium">
+          <p className="text-xs text-white0 font-medium">
             Portal Pembelajaran & CBT Sosiologi SMA • Firebase Authenticated
           </p>
         </div>
@@ -200,8 +200,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           )}
 
           {successMessage && (
-            <div className="p-3 bg-emerald-950/90 border border-emerald-500 text-emerald-200 rounded-2xl text-xs font-semibold flex items-start space-x-2.5 animate-fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="p-3 bg-blue-50/90 border border-blue-400 text-blue-700 rounded-2xl text-xs font-semibold flex items-start space-x-2.5 animate-fade-in">
+              <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
               <span>{successMessage}</span>
             </div>
           )}
@@ -210,37 +210,37 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleLogin} className="space-y-4">
               {/* Email Input */}
               <div>
-                <label className="block text-xs font-bold text-stone-300 mb-1">Email / NISN / Nama Lengkap:</label>
+                <label className="block text-xs font-bold text-slate-600 mb-1">Email / NISN / Nama Lengkap:</label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                  <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                   <input
                     type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@sosiologimembumi.sch.id / 1000000001"
                     required
-                    className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-10 pr-3 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-amber-500 transition-all"
+                    className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500 transition-all"
                   />
                 </div>
               </div>
 
               {/* Password Input */}
               <div>
-                <label className="block text-xs font-bold text-stone-300 mb-1">Kata Sandi (Password):</label>
+                <label className="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (Password):</label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
+                  <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-10 pr-10 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-amber-500 transition-all"
+                    className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-stone-400 hover:text-stone-200"
+                    className="absolute right-3 top-2.5 text-white0 hover:text-slate-700"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -250,7 +250,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 text-stone-950 font-black rounded-xl text-xs hover:from-amber-400 hover:to-emerald-500 transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 mt-2"
+                className="w-full py-3 bg-gradient-to-r from-orange-500 via-orange-600 to-blue-600 text-stone-950 font-black rounded-xl text-xs hover:from-orange-400 hover:to-blue-500 transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50 mt-2"
               >
                 {loading ? (
                   <span className="flex items-center space-x-2">
@@ -268,7 +268,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </div>
 
         {/* Footer info */}
-        <div className="bg-stone-950 px-6 py-3 border-t border-stone-800 text-stone-500 text-[10px] flex items-center justify-between">
+        <div className="bg-slate-50 px-6 py-3 border-t border-slate-200 text-slate-400 text-[10px] flex items-center justify-between">
           <span>Sosiologi Membumi Enterprise</span>
           <span>Firebase Auth: lms-sosiologi</span>
         </div>

@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+const fs = require('fs');
+
+const userHook = `import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   collection,
   query,
@@ -40,7 +42,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     try {
       const cacheSnapshot = await getDocsFromCache(q);
       if (!cacheSnapshot.empty) {
-        const fetched: User[] = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+        const fetched: User[] = cacheSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
         setUsersList(fetched);
         if (cacheSnapshot.docs.length > 0) {
           setLastDoc(cacheSnapshot.docs[cacheSnapshot.docs.length - 1]);
@@ -55,7 +57,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     // 2. Revalidate from server
     try {
       const serverSnapshot = await getDocsFromServer(q);
-      const fetched: User[] = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+      const fetched: User[] = serverSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
       setUsersList(fetched);
       if (serverSnapshot.docs.length > 0) {
         setLastDoc(serverSnapshot.docs[serverSnapshot.docs.length - 1]);
@@ -73,7 +75,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
            ? query(collection(db, 'users'), limit(pageSize))
            : query(collection(db, 'users'), where('kelas', '==', rombelFilter), limit(pageSize));
         const simpleSnap = await getDocs(simpleQ);
-        const simpleUsers: User[] = simpleSnap.docs.map(ds => ({ id: ds.id, ...(ds.data() as object) } as User));
+        const simpleUsers: User[] = simpleSnap.docs.map(ds => ({ id: ds.id, ...ds.data() } as User));
         setUsersList(simpleUsers);
         setHasMore(simpleSnap.docs.length === pageSize);
         if (simpleSnap.docs.length > 0) {
@@ -110,7 +112,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
       }
       
       const querySnapshot = await getDocsFromServer(q);
-      const newUsers: User[] = querySnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+      const newUsers: User[] = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
 
       if (newUsers.length > 0) {
         setUsersList((prev) => {
@@ -148,3 +150,5 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
 
   return memoizedValue;
 }
+`;
+fs.writeFileSync('src/hooks/useOptimizedUsers.ts', userHook, 'utf8');

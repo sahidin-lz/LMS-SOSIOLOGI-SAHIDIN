@@ -111,22 +111,22 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans select-none">
       {/* Floating Sticky Header */}
-      <header className="sticky top-0 z-50 bg-slate-800/95 backdrop-blur-md border-b border-slate-700 px-4 py-3 shadow-md">
+      <header className="sticky top-0 z-50 bg-slate-800/95 backdrop-blur-md border-b border-slate-700 px-4 py-3 shadow-sm border border-slate-200">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <span className="font-black text-amber-400 text-lg tracking-tight">CBT TKA Engine</span>
+            <span className="font-black text-orange-600 text-lg tracking-tight">CBT TKA Engine</span>
             <span className="hidden sm:inline text-xs text-slate-400">| {exam.title}</span>
           </div>
 
           {/* Countdown Timer */}
-          <div className="flex items-center space-x-2 bg-red-950/80 border border-red-500/50 text-red-400 px-4 py-1.5 rounded-full shadow-inner animate-pulse">
+          <div className="flex items-center space-x-2 bg-red-950/80 border border-red-500/50 text-red-400 px-4 py-1.5 rounded-full shadow-sm animate-pulse">
             <Clock className="w-4 h-4 text-red-400" />
             <span className="font-mono text-base font-extrabold">{formatTime(timeLeft)}</span>
           </div>
 
           <div className="flex items-center space-x-3">
             {tabSwitchCount > 0 && (
-              <div className="hidden md:flex items-center space-x-1.5 text-xs text-amber-400 bg-amber-950/60 border border-amber-500/30 px-3 py-1 rounded-full">
+              <div className="hidden md:flex items-center space-x-1.5 text-xs text-orange-600 bg-orange-50/60 border border-amber-500/30 px-3 py-1 rounded-full">
                 <ShieldAlert className="w-3.5 h-3.5" />
                 <span>Pelanggaran Tab: {tabSwitchCount}x</span>
               </div>
@@ -134,7 +134,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
 
             <button
               onClick={() => setShowConfirmSubmitModal(true)}
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-xl text-xs transition-all shadow-md cursor-pointer flex items-center space-x-1"
+              className="bg-blue-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-1.5 rounded-xl text-xs transition-all shadow-sm border border-slate-200 cursor-pointer flex items-center space-x-1"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Selesai & Kumpulkan</span>
@@ -145,7 +145,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
 
       {/* Anti-Cheat Toast Warning */}
       {showAntiCheatWarning && (
-        <div className="bg-amber-500 text-slate-950 px-4 py-2 text-center text-xs font-bold flex items-center justify-center space-x-2">
+        <div className="bg-orange-500 text-slate-950 px-4 py-2 text-center text-xs font-bold flex items-center justify-center space-x-2">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>
             PERINGATAN ANTI-CHEAT: Anda terdeteksi berpindah tab browser! ({tabSwitchCount}x). Tetap berada di halaman ujian.
@@ -164,7 +164,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
             {/* Question Header */}
             <div className="flex items-center justify-between border-b border-slate-700/60 pb-4">
               <div className="flex items-center space-x-3">
-                <span className="w-9 h-9 rounded-xl bg-indigo-600 text-white font-extrabold text-sm flex items-center justify-center shadow-md">
+                <span className="w-9 h-9 rounded-xl bg-indigo-600 text-white font-extrabold text-sm flex items-center justify-center shadow-sm border border-slate-200">
                   {currentQuestionIndex + 1}
                 </span>
                 <div>
@@ -190,7 +190,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
                 onClick={handleToggleDoubtful}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center space-x-1.5 cursor-pointer ${
                   answers[currentQuestion.id]?.is_doubtful
-                    ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-md'
+                    ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-sm border border-slate-200'
                     : 'bg-slate-700/60 text-slate-300 border-slate-600 hover:bg-slate-700'
                 }`}
               >
@@ -223,18 +223,18 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
 
               if (tkaDetails.type === 'sebab_akibat') {
                 return (
-                  <div className="bg-amber-950/40 border border-amber-500/30 p-4 rounded-2xl text-xs text-amber-200 space-y-2">
-                    <div className="flex items-center space-x-2 font-bold text-amber-300">
-                      <GitCompare className="w-4 h-4 shrink-0 text-amber-400" />
+                  <div className="bg-orange-50 border border-amber-500/30 p-4 rounded-2xl text-xs text-orange-700 space-y-2">
+                    <div className="flex items-center space-x-2 font-bold text-orange-500">
+                      <GitCompare className="w-4 h-4 shrink-0 text-orange-600" />
                       <span>Petunjuk Soal Hubungan Sebab-Akibat:</span>
                     </div>
                     <p className="text-slate-300">{tkaDetails.description}</p>
                     <div className="space-y-1 bg-slate-900/60 p-3 rounded-xl border border-amber-500/20 text-[11px] font-medium">
-                      <div><span className="font-bold text-amber-300">A:</span> Pernyataan benar, alasan benar, dan keduanya menunjukkan hubungan sebab-akibat</div>
-                      <div><span className="font-bold text-amber-300">B:</span> Pernyataan benar, alasan benar, tetapi keduanya tidak menunjukkan hubungan sebab-akibat</div>
-                      <div><span className="font-bold text-amber-300">C:</span> Pernyataan benar dan alasan salah</div>
-                      <div><span className="font-bold text-amber-300">D:</span> Pernyataan salah dan alasan benar</div>
-                      <div><span className="font-bold text-amber-300">E:</span> Pernyataan dan alasan, keduanya salah</div>
+                      <div><span className="font-bold text-orange-500">A:</span> Pernyataan benar, alasan benar, dan keduanya menunjukkan hubungan sebab-akibat</div>
+                      <div><span className="font-bold text-orange-500">B:</span> Pernyataan benar, alasan benar, tetapi keduanya tidak menunjukkan hubungan sebab-akibat</div>
+                      <div><span className="font-bold text-orange-500">C:</span> Pernyataan benar dan alasan salah</div>
+                      <div><span className="font-bold text-orange-500">D:</span> Pernyataan salah dan alasan benar</div>
+                      <div><span className="font-bold text-orange-500">E:</span> Pernyataan dan alasan, keduanya salah</div>
                     </div>
                   </div>
                 );
@@ -263,16 +263,16 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
                 <div className="mt-3 p-4 bg-slate-800/80 rounded-xl border border-amber-500/30 space-y-3 text-xs sm:text-sm text-slate-200">
                   {currentQuestion.pernyataan && (
                     <div>
-                      <span className="font-extrabold text-amber-400 block uppercase text-[10px]">Kalimat Pernyataan:</span>
+                      <span className="font-extrabold text-orange-600 block uppercase text-[10px]">Kalimat Pernyataan:</span>
                       <p className="font-semibold text-white mt-0.5">{currentQuestion.pernyataan}</p>
                     </div>
                   )}
-                  <div className="text-center font-black text-amber-400 text-xs tracking-widest my-1 uppercase bg-amber-950/60 py-1 rounded border border-amber-500/20">
+                  <div className="text-center font-black text-orange-600 text-xs tracking-widest my-1 uppercase bg-orange-50/60 py-1 rounded border border-amber-500/20">
                     — SEBAB —
                   </div>
                   {currentQuestion.alasan && (
                     <div>
-                      <span className="font-extrabold text-amber-400 block uppercase text-[10px]">Kalimat Alasan:</span>
+                      <span className="font-extrabold text-orange-600 block uppercase text-[10px]">Kalimat Alasan:</span>
                       <p className="font-semibold text-white mt-0.5">{currentQuestion.alasan}</p>
                     </div>
                   )}
@@ -332,7 +332,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
             {currentQuestionIndex < exam.total_questions - 1 ? (
               <button
                 onClick={() => setCurrentQuestionIndex((prev) => Math.min(exam.total_questions - 1, prev + 1))}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-xs transition-all flex items-center space-x-1 cursor-pointer shadow-md"
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-xs transition-all flex items-center space-x-1 cursor-pointer shadow-sm border border-slate-200"
               >
                 <span>Berikutnya</span>
                 <ChevronRight className="w-4 h-4" />
@@ -340,7 +340,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
             ) : (
               <button
                 onClick={() => setShowConfirmSubmitModal(true)}
-                className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold text-xs transition-all flex items-center space-x-1 cursor-pointer shadow-md"
+                className="px-5 py-2.5 bg-blue-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-bold text-xs transition-all flex items-center space-x-1 cursor-pointer shadow-sm border border-slate-200"
               >
                 <span>Kumpulkan Ujian</span>
                 <CheckCircle2 className="w-4 h-4" />
@@ -372,7 +372,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
                 if (isDoubtful) {
                   bgClass = 'bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300';
                 } else if (isAnswered) {
-                  bgClass = 'bg-emerald-500 text-slate-950 font-black';
+                  bgClass = 'bg-blue-500 text-slate-950 font-black';
                 }
 
                 return (
@@ -380,7 +380,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
                     key={q.id}
                     onClick={() => setCurrentQuestionIndex(idx)}
                     className={`h-11 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex flex-col items-center justify-center relative ${bgClass} ${
-                      isCurrent ? 'ring-2 ring-indigo-400 scale-105 shadow-md' : 'hover:opacity-90'
+                      isCurrent ? 'ring-2 ring-indigo-400 scale-105 shadow-sm border border-slate-200' : 'hover:opacity-90'
                     }`}
                   >
                     <span>{idx + 1}</span>
@@ -398,7 +398,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
             <p className="font-bold text-slate-400 uppercase text-[10px] tracking-wider mb-1">Indikator Warna Status</p>
 
             <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 rounded bg-emerald-500 shrink-0"></span>
+              <span className="w-4 h-4 rounded bg-blue-500 shrink-0"></span>
               <span className="text-slate-300">Hijau: Sudah Dijawab</span>
             </div>
 
@@ -420,8 +420,8 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-slate-800 border border-slate-700 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-6 shadow-2xl text-slate-100">
             <div className="flex items-center justify-between border-b border-slate-700 pb-3">
-              <h3 className="font-bold text-lg text-amber-400">Konfirmasi Kumpulkan Ujian</h3>
-              <button onClick={() => setShowConfirmSubmitModal(false)} className="text-slate-400 hover:text-white">
+              <h3 className="font-bold text-lg text-orange-600">Konfirmasi Kumpulkan Ujian</h3>
+              <button onClick={() => setShowConfirmSubmitModal(false)} className="text-slate-400 hover:text-slate-900">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -433,11 +433,11 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
 
               <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-emerald-400 font-semibold">Sudah Dijawab:</span>
+                  <span className="text-blue-600 font-semibold">Sudah Dijawab:</span>
                   <span className="font-bold text-white">{totalAnswered} Soal</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-amber-400 font-semibold">Ditandai Ragu-ragu:</span>
+                  <span className="text-orange-600 font-semibold">Ditandai Ragu-ragu:</span>
                   <span className="font-bold text-white">{totalDoubtful} Soal</span>
                 </div>
                 <div className="flex justify-between">
@@ -456,7 +456,7 @@ export const CbtExamView: React.FC<CbtExamViewProps> = ({
               </button>
               <button
                 onClick={handleFinalSubmit}
-                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 font-bold rounded-xl text-xs text-slate-950 transition-all shadow-md cursor-pointer"
+                className="flex-1 py-3 bg-blue-500 hover:bg-emerald-400 font-bold rounded-xl text-xs text-slate-950 transition-all shadow-sm border border-slate-200 cursor-pointer"
               >
                 Ya, Kumpulkan Sekarang
               </button>

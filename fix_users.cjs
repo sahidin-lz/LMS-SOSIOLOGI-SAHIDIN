@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+const fs = require('fs');
+
+const userHook = `import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   collection,
   query,
@@ -7,7 +9,6 @@ import {
   limit,
   startAfter,
   orderBy,
-  where,
   QueryDocumentSnapshot,
   DocumentData,
   getDocs
@@ -16,7 +17,7 @@ import { db } from '../lib/firebase';
 import { User } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreService';
 
-export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 'Semua') {
+export function useOptimizedUsers(pageSize: number = 20) {
   const [usersList, setUsersList] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -28,19 +29,13 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     setLoading(true);
     setError(null);
     const usersRef = collection(db, 'users');
-    
-    let q;
-    if (rombelFilter === 'Semua') {
-      q = query(usersRef, orderBy('name', 'asc'), limit(pageSize));
-    } else {
-      q = query(usersRef, where('kelas', '==', rombelFilter), orderBy('name', 'asc'), limit(pageSize));
-    }
+    const q = query(usersRef, orderBy('name', 'asc'), limit(pageSize));
 
     // 1. Get from Cache first
     try {
       const cacheSnapshot = await getDocsFromCache(q);
       if (!cacheSnapshot.empty) {
-        const fetched: User[] = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+        const fetched: User[] = cacheSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
         setUsersList(fetched);
         if (cacheSnapshot.docs.length > 0) {
           setLastDoc(cacheSnapshot.docs[cacheSnapshot.docs.length - 1]);
@@ -55,7 +50,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     // 2. Revalidate from server
     try {
       const serverSnapshot = await getDocsFromServer(q);
-      const fetched: User[] = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+      const fetched: User[] = serverSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
       setUsersList(fetched);
       if (serverSnapshot.docs.length > 0) {
         setLastDoc(serverSnapshot.docs[serverSnapshot.docs.length - 1]);
@@ -69,11 +64,8 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
       handleFirestoreError(err, OperationType.LIST, 'users');
       // If index or query fails, fetch basic collection
       try {
-        const simpleQ = rombelFilter === 'Semua' 
-           ? query(collection(db, 'users'), limit(pageSize))
-           : query(collection(db, 'users'), where('kelas', '==', rombelFilter), limit(pageSize));
-        const simpleSnap = await getDocs(simpleQ);
-        const simpleUsers: User[] = simpleSnap.docs.map(ds => ({ id: ds.id, ...(ds.data() as object) } as User));
+        const simpleSnap = await getDocs(query(collection(db, 'users'), limit(pageSize)));
+        const simpleUsers: User[] = simpleSnap.docs.map(ds => ({ id: ds.id, ...ds.data() } as User));
         setUsersList(simpleUsers);
         setHasMore(simpleSnap.docs.length === pageSize);
         if (simpleSnap.docs.length > 0) {
@@ -85,32 +77,21 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     } finally {
       setLoading(false);
     }
-  }, [pageSize, rombelFilter]);
+  }, [pageSize]);
 
   const loadMore = useCallback(async () => {
     if (!lastDoc || !hasMore || loadingMore) return;
     setLoadingMore(true);
     try {
-      let q;
-      if (rombelFilter === 'Semua') {
-        q = query(
-          collection(db, 'users'),
-          orderBy('name', 'asc'),
-          startAfter(lastDoc),
-          limit(pageSize)
-        );
-      } else {
-        q = query(
-          collection(db, 'users'),
-          where('kelas', '==', rombelFilter),
-          orderBy('name', 'asc'),
-          startAfter(lastDoc),
-          limit(pageSize)
-        );
-      }
+      const q = query(
+        collection(db, 'users'),
+        orderBy('name', 'asc'),
+        startAfter(lastDoc),
+        limit(pageSize)
+      );
       
-      const querySnapshot = await getDocsFromServer(q);
-      const newUsers: User[] = querySnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+      const querySnapshot = await getDocsFromServer(q); // get more always from server for freshness
+      const newUsers: User[] = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
 
       if (newUsers.length > 0) {
         setUsersList((prev) => {
@@ -129,7 +110,7 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
     } finally {
       setLoadingMore(false);
     }
-  }, [lastDoc, hasMore, loadingMore, pageSize, rombelFilter]);
+  }, [lastDoc, hasMore, loadingMore, pageSize]);
 
   useEffect(() => {
     fetchInitialUsers();
@@ -148,3 +129,5 @@ export function useOptimizedUsers(pageSize: number = 20, rombelFilter: string = 
 
   return memoizedValue;
 }
+`;
+fs.writeFileSync('src/hooks/useOptimizedUsers.ts', userHook, 'utf8');

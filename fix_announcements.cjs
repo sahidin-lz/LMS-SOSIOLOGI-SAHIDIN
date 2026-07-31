@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+const fs = require('fs');
+
+const annHook = `import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Announcement } from '../types';
 import { INITIAL_ANNOUNCEMENTS } from '../data/sociologyData';
 import { saveDocument } from '../lib/firestoreService';
@@ -17,7 +19,7 @@ export function useOptimizedAnnouncements() {
     try {
       const cacheSnapshot = await getDocsFromCache(annRef);
       if (!cacheSnapshot.empty) {
-        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Announcement));
+        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as Announcement));
         setAnnouncements(cachedItems);
         setLoading(false);
       }
@@ -29,7 +31,7 @@ export function useOptimizedAnnouncements() {
     try {
       const serverSnapshot = await getDocsFromServer(annRef);
       if (!serverSnapshot.empty) {
-        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as Announcement));
+        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as Announcement));
         setAnnouncements(serverItems);
       } else {
         for (const a of INITIAL_ANNOUNCEMENTS) {
@@ -57,3 +59,5 @@ export function useOptimizedAnnouncements() {
 
   return memoizedValue;
 }
+`;
+fs.writeFileSync('src/hooks/useOptimizedAnnouncements.ts', annHook, 'utf8');

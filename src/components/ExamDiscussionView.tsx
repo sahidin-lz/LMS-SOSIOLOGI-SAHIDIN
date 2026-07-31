@@ -93,7 +93,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           <div className="md:col-span-2 space-y-3">
             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-indigo-200 border border-white/20">
-              <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <Trophy className="w-3.5 h-3.5 text-orange-500" />
               <span>Hasil Ujian CBT Sosiologi</span>
             </div>
 
@@ -103,7 +103,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <div className="flex items-center space-x-1.5 text-amber-300 font-bold text-xs bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+              <div className="flex items-center space-x-1.5 text-orange-500 font-bold text-xs bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
                 <Award className="w-4 h-4" />
                 <span>+{session.xp_earned} Socio-Points Berhasil Didapat!</span>
               </div>
@@ -118,11 +118,11 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
           {/* Dual Score Badges (Skala Maksimal 100 IRT & Normal 100) */}
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 text-center space-y-3">
             <div className="border-b border-white/10 pb-2">
-              <span className="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider block">Skor IRT TKA (Skala Max 100)</span>
-              <div className="text-3xl sm:text-4xl font-black text-amber-300 tracking-tight">
+              <span className="text-[10px] text-orange-500 font-extrabold uppercase tracking-wider block">Skor IRT TKA (Skala Max 100)</span>
+              <div className="text-3xl sm:text-4xl font-black text-orange-500 tracking-tight">
                 {session.irt_score ?? session.score} <span className="text-sm font-normal text-indigo-200">/ 100</span>
               </div>
-              <p className="text-[10px] text-amber-200/90 mt-0.5">Sistem Normal Berbobot Kesukaran Soal</p>
+              <p className="text-[10px] text-orange-700/90 mt-0.5">Sistem Normal Berbobot Kesukaran Soal</p>
             </div>
 
             <div className="pt-1">
@@ -134,7 +134,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
             </div>
 
             <div className="pt-2 border-t border-white/10">
-              <span className="inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              <span className="inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-500 border border-blue-300/30">
                 {(session.irt_score ?? session.score) >= 75 ? 'Lolos Target TKA Sosiologi' : 'Perlu Pendalaman Materi'}
               </span>
             </div>
@@ -144,8 +144,8 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
         {/* Breakdown bar + IRT Explanation Info */}
         <div className="space-y-3 pt-4 border-t border-white/15">
           <div className="grid grid-cols-3 gap-3 text-center text-xs">
-            <div className="bg-emerald-500/20 p-3 rounded-2xl border border-emerald-400/30">
-              <span className="text-emerald-300 block font-bold">Benar</span>
+            <div className="bg-blue-500/20 p-3 rounded-2xl border border-blue-300/30">
+              <span className="text-blue-500 block font-bold">Benar</span>
               <span className="text-lg font-black text-white">{session.total_correct} Soal</span>
             </div>
             <div className="bg-red-500/20 p-3 rounded-2xl border border-red-400/30">
@@ -159,7 +159,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
           </div>
 
           <div className="bg-indigo-950/60 p-3 rounded-xl border border-indigo-400/20 text-[11px] text-indigo-200 flex items-start space-x-2">
-            <Sparkles className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+            <Sparkles className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
             <p className="leading-snug">
               <strong className="text-white">Metode Penilaian Dual IRT & Normal:</strong> Skor IRT (Item Response Theory) memberi bobot poin lebih tinggi untuk soal penalaran HOTS yang lebih sukar, disesuaikan ke skala 100 nasional TKA.
             </p>
@@ -168,14 +168,14 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
       </div>
 
       {/* Analisis Kemampuan Siswa Sesuai Soal yang Dikerjakan */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm border border-slate-200 space-y-6">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-amber-100 rounded-2xl text-amber-700">
             <Award className="w-6 h-6" />
           </div>
           <div>
             <h2 className="text-lg font-extrabold text-slate-800">Analisis Kemampuan & Penguasaan Topik Siswa</h2>
-            <p className="text-xs text-slate-500">Pemetaan kekuatan dan kelemahan berdasarkan butir soal yang baru saja kamu selesaikan</p>
+            <p className="text-xs text-white0">Pemetaan kekuatan dan kelemahan berdasarkan butir soal yang baru saja kamu selesaikan</p>
           </div>
         </div>
 
@@ -220,12 +220,12 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                   {/* Progress Bar */}
                   <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full transition-all duration-500 ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} 
+                      className={`h-full transition-all duration-500 ${pct >= 80 ? 'bg-blue-500' : pct >= 50 ? 'bg-orange-500' : 'bg-red-500'}`} 
                       style={{ width: `${pct}%` }}
                     />
                   </div>
 
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-medium">{recText}</p>
+                  <p className="text-[11px] text-white0 leading-relaxed font-medium">{recText}</p>
                 </div>
               );
             });
@@ -238,7 +238,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
             <h2 className="text-xl font-extrabold text-slate-800">Pembahasan Soal Sosiologi Komprehensif</h2>
-            <p className="text-xs text-slate-500">Evaluasi jawaban kamu dan pelajari kunci teori sosiologinya</p>
+            <p className="text-xs text-white0">Evaluasi jawaban kamu dan pelajari kunci teori sosiologinya</p>
           </div>
           <span className="text-xs bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full">
             {exam.questions.length} Soal Lengkap
@@ -277,7 +277,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                     {idx + 1}
                   </span>
                   <div>
-                    <span className="text-xs text-slate-500 font-bold block">Topik: {question.topic}</span>
+                    <span className="text-xs text-white0 font-bold block">Topik: {question.topic}</span>
                     {(() => {
                       const tkaDetails = getTkaTypeDetails(question);
                       return (
@@ -297,7 +297,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                   </span>
                 ) : isUnanswered ? (
                   <span className="inline-flex items-center space-x-1.5 bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-200">
-                    <AlertCircle className="w-4 h-4 text-slate-500" />
+                    <AlertCircle className="w-4 h-4 text-white0" />
                     <span>Belum Dijawab</span>
                   </span>
                 ) : (
@@ -370,7 +370,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                       </div>
 
                       {isCorrectKey && (
-                        <span className="text-[11px] bg-emerald-600 text-white font-extrabold px-2.5 py-0.5 rounded-full shrink-0">
+                        <span className="text-[11px] bg-blue-600 text-white font-extrabold px-2.5 py-0.5 rounded-full shrink-0">
                           Kunci Jawaban
                         </span>
                       )}

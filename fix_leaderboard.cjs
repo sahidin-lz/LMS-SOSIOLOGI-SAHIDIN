@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+const fs = require('fs');
+
+const lbHook = `import { useState, useEffect, useCallback, useMemo } from 'react';
 import { collection, query, orderBy, limit, getDocsFromCache, getDocsFromServer } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { User } from '../types';
@@ -20,7 +22,7 @@ export function useOptimizedLeaderboard() {
     try {
       const cacheSnapshot = await getDocsFromCache(q);
       if (!cacheSnapshot.empty) {
-        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+        const cachedItems = cacheSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
         setLeaderboard(cachedItems);
         setLoading(false);
       }
@@ -32,7 +34,7 @@ export function useOptimizedLeaderboard() {
     try {
       const serverSnapshot = await getDocsFromServer(q);
       if (!serverSnapshot.empty) {
-        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...(d.data() as object) } as User));
+        const serverItems = serverSnapshot.docs.map(d => ({ id: d.id, ...d.data() } as User));
         setLeaderboard(serverItems);
       }
     } catch (err) {
@@ -53,3 +55,5 @@ export function useOptimizedLeaderboard() {
 
   return memoizedValue;
 }
+`;
+fs.writeFileSync('src/hooks/useOptimizedLeaderboard.ts', lbHook, 'utf8');

@@ -29,9 +29,9 @@ const ClassroomChatView = lazy(() => import('./components/ClassroomChat').then(m
 
 // Loading Component Fallback saat me-load tab secara lazy
 const ViewLoadingFallback = () => (
-  <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3 text-stone-300">
+  <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3 text-slate-600">
     <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-    <p className="text-xs font-bold text-stone-400 tracking-wider">Memuat Fitur LMS Sosiologi...</p>
+    <p className="text-xs font-bold text-white0 tracking-wider">Memuat Fitur LMS Sosiologi...</p>
   </div>
 );
 
@@ -50,14 +50,15 @@ export default function App() {
   // Custom Hooks Data Fetching (Teroptimasi Caching & Pagination)
   const { courses, updateCourseLocally, removeCourseLocally, setCourses } = useOptimizedCourses();
   const { exams, updateExamLocally, removeExamLocally, setExams } = useOptimizedExams();
-  const { usersList, hasMore: hasMoreUsers, loadMore: loadMoreUsers, loadingMore: loadingMoreUsers, setUsersList } = useOptimizedUsers(20);
+  
   const { announcements, setAnnouncements } = useOptimizedAnnouncements();
   const { leaderboard } = useOptimizedLeaderboard();
 
-  const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
-  const [tkaSubTab, setTkaSubTab] = useState<'materi' | 'latihan_bab' | 'try_out_tka'>('materi');
+    const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion'>('dashboard');
   const [cbtFilter, setCbtFilter] = useState<'semua' | 'tryout' | 'latihan'>('semua');
+  const [rombelFilter, setRombelFilter] = useState<string>('Semua');
+  const { usersList, hasMore: hasMoreUsers, loadMore: loadMoreUsers, loadingMore: loadingMoreUsers, setUsersList } = useOptimizedUsers(20, rombelFilter);
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(undefined);
   const [activeExam, setActiveExam] = useState<Exam | null>(null);
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
@@ -108,7 +109,7 @@ export default function App() {
             avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin`,
             grade: 12,
             streakDays: 30,
-            schoolName: 'SMA Negeri Sosiologi',
+            schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
             group_name: 'Guru Sosiologi',
           };
           saveDocument('users', fbUser.uid, fetchedUser);
@@ -156,11 +157,11 @@ export default function App() {
     const updated = { ...user, grade: newGrade };
     setUser(updated);
     saveDocument('users', user.id, updated);
-    if (updated.role === 'siswa' && newGrade !== 12 && mainPillar === 'tka') {
-      setMainPillar('belajar');
+    if (updated.role === 'siswa' && newGrade !== 12 && activeTab === 'cbt') {
+      
       setActiveTab('dashboard');
     }
-  }, [user, mainPillar]);
+  }, [user, activeTab]);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -377,9 +378,9 @@ export default function App() {
   // Auth Loading Screen
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-stone-950 flex flex-col items-center justify-center space-y-4 text-stone-100 font-sans">
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-4 text-slate-900 font-sans">
         <Loader2 className="w-10 h-10 text-amber-500 animate-spin" />
-        <p className="text-xs text-stone-400 font-bold tracking-wider uppercase">Memuat Sesi Autentikasi LMS...</p>
+        <p className="text-xs text-white0 font-bold tracking-wider uppercase">Memuat Sesi Autentikasi LMS...</p>
       </div>
     );
   }
@@ -397,7 +398,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans antialiased selection:bg-amber-500 selection:text-stone-950">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-orange-500 selection:text-stone-950">
       {activeTab !== 'exam_active' && (
         <Navbar
           user={user}
@@ -405,20 +406,8 @@ export default function App() {
           setMainPillar={setMainPillar}
           activeTab={activeTab as any}
           setActiveTab={(tab) => setActiveTab(tab as any)}
-          tkaSubTab={tkaSubTab}
-          onSelectTkaSubTab={(sub) => {
-            setMainPillar('tka');
-            setTkaSubTab(sub);
-            if (sub === 'try_out_tka') {
-              setActiveTab('cbt');
-            } else {
-              setActiveTab('modules');
-            }
-          }}
-          onSelectTkaModules={() => {
-            setSelectedCourseId('course_tka_01');
-            setActiveTab('modules');
-          }}
+          cbtFilter={cbtFilter}
+          setCbtFilter={setCbtFilter}
           onRoleChange={handleRoleChange}
           onGradeChange={handleGradeChange}
           onLogout={handleLogout}
@@ -447,6 +436,8 @@ export default function App() {
                   hasMoreUsers={hasMoreUsers}
                   onLoadMoreUsers={loadMoreUsers}
                   loadingMoreUsers={loadingMoreUsers}
+                  rombelFilter={rombelFilter}
+                  setRombelFilter={setRombelFilter}
                   onAddCourse={handleAddCourse}
                   onDeleteCourse={handleDeleteCourse}
                   onAddExam={handleAddExam}
@@ -472,13 +463,6 @@ export default function App() {
                   user={user}
                   courses={courses}
                   activeCourseId={selectedCourseId}
-                  tkaSubTab={tkaSubTab}
-                  onSelectTkaSubTab={(sub) => {
-                    setTkaSubTab(sub);
-                    if (sub === 'try_out_tka') {
-                      setActiveTab('cbt');
-                    }
-                  }}
                   onCompleteLesson={handleCompleteLesson}
                   onStartExam={handleStartExam}
                 />
@@ -519,13 +503,6 @@ export default function App() {
                   user={user}
                   courses={courses}
                   activeCourseId={selectedCourseId}
-                  tkaSubTab={tkaSubTab}
-                  onSelectTkaSubTab={(sub) => {
-                    setTkaSubTab(sub);
-                    if (sub === 'try_out_tka') {
-                      setActiveTab('cbt');
-                    }
-                  }}
                   onCompleteLesson={handleCompleteLesson}
                   onStartExam={handleStartExam}
                 />
@@ -544,83 +521,51 @@ export default function App() {
               {/* CBT Tryouts List Tab */}
               {activeTab === 'cbt' && (
                 <div className="space-y-6 pb-12">
-                  <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                      <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-amber-300 bg-amber-950 px-3 py-1 rounded-full mb-1 border border-amber-800">
-                        <FileText className="w-3.5 h-3.5 text-amber-400" />
+                      <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-orange-500 bg-orange-50 px-3 py-1 rounded-full mb-1 border border-orange-300">
+                        <FileText className="w-3.5 h-3.5 text-orange-600" />
                         <span>Simulasi Ujian Computer Based Test</span>
                       </div>
-                      <h1 className="text-2xl font-extrabold text-stone-100">
+                      <h1 className="text-2xl font-extrabold text-slate-900">
                         Bank Ujian CBT & Tryout TKA Sosiologi SMA
                       </h1>
-                      <p className="text-xs text-stone-400">Pilih paket tryout TKA atau Latihan Soal CBT 10 Bab Sosiologi SMA (Lengkap Bab 1 s.d. 10)</p>
+                      <p className="text-xs text-white0">Pilih paket tryout TKA atau Latihan Soal CBT 10 Bab Sosiologi SMA (Lengkap Bab 1 s.d. 10)</p>
                     </div>
 
-                    {/* Filter Pills */}
-                    <div className="flex bg-stone-950 p-1.5 rounded-2xl border border-stone-800 text-xs font-bold gap-1 flex-wrap shrink-0">
-                      <button
-                        onClick={() => setCbtFilter('semua')}
-                        className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
-                          cbtFilter === 'semua'
-                            ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                            : 'text-stone-400 hover:text-white'
-                        }`}
-                      >
-                        Semua Paket ({exams.length})
-                      </button>
-                      <button
-                        onClick={() => setCbtFilter('tryout')}
-                        className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
-                          cbtFilter === 'tryout'
-                            ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                            : 'text-stone-400 hover:text-white'
-                        }`}
-                      >
-                        🎯 Tryout TKA Resmi
-                      </button>
-                      <button
-                        onClick={() => setCbtFilter('latihan')}
-                        className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
-                          cbtFilter === 'latihan'
-                            ? 'bg-amber-500 text-stone-950 font-black shadow-md'
-                            : 'text-stone-400 hover:text-white'
-                        }`}
-                      >
-                        📝 Latihan 10 Bab
-                      </button>
-                    </div>
+
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {displayedExams.map((exam) => (
                       <div
                         key={exam.id}
-                        className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md hover:border-amber-500 transition-all space-y-4 flex flex-col justify-between"
+                        className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm border border-slate-200 hover:border-amber-500 transition-all space-y-4 flex flex-col justify-between"
                       >
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+                            <span className="text-[10px] font-extrabold uppercase px-3 py-1 rounded-full bg-orange-50 text-orange-500 border border-orange-300">
                               {exam.category}
                             </span>
-                            <div className="flex items-center space-x-1 text-stone-400 text-xs font-medium">
-                              <Clock className="w-3.5 h-3.5 text-amber-400" />
+                            <div className="flex items-center space-x-1 text-white0 text-xs font-medium">
+                              <Clock className="w-3.5 h-3.5 text-orange-600" />
                               <span>{exam.duration_minutes} Menit</span>
                             </div>
                           </div>
 
-                          <h2 className="text-lg font-bold text-stone-100">{exam.title}</h2>
-                          <p className="text-xs text-stone-400 leading-relaxed">{exam.description}</p>
+                          <h2 className="text-lg font-bold text-slate-900">{exam.title}</h2>
+                          <p className="text-xs text-white0 leading-relaxed">{exam.description}</p>
                         </div>
 
-                        <div className="pt-4 border-t border-stone-800 flex items-center justify-between">
-                          <div className="flex items-center space-x-1 text-amber-400 text-xs font-bold">
+                        <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                          <div className="flex items-center space-x-1 text-orange-600 text-xs font-bold">
                             <Award className="w-4 h-4" />
                             <span>+{exam.xp_reward} Socio-Points</span>
                           </div>
 
                           <button
                             onClick={() => handleStartExam(exam.id)}
-                            className="bg-gradient-to-r from-emerald-600 to-amber-600 hover:from-emerald-500 hover:to-amber-500 text-stone-950 font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all shadow-md cursor-pointer flex items-center space-x-1.5"
+                            className="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-500 hover:to-orange-500 text-stone-950 font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all shadow-sm border border-slate-200 cursor-pointer flex items-center space-x-1.5"
                           >
                             <span>Mulai Kerjakan Ujian</span>
                             <ChevronRight className="w-4 h-4" />

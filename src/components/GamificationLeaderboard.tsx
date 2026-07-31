@@ -24,13 +24,13 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
   return (
     <div className="space-y-8 pb-12">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-orange-600 via-orange-600 to-amber-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
         <div className="absolute right-0 top-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold text-amber-100 border border-white/20">
-              <Trophy className="w-3.5 h-3.5 text-amber-300" />
+              <Trophy className="w-3.5 h-3.5 text-orange-500" />
               <span>Klasemen Socio-Points Mingguan</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -43,13 +43,13 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
           {/* User's Own XP Rank Banner */}
           <div className="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/25 flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-400 flex items-center justify-center text-slate-900 shadow-md">
+            <div className="w-12 h-12 rounded-xl bg-amber-400 flex items-center justify-center text-slate-900 shadow-sm border border-slate-200">
               <Crown className="w-7 h-7 fill-slate-900" />
             </div>
             <div>
               <p className="text-xs text-amber-100 font-medium">Peringkat Kamu</p>
               <p className="text-xl font-extrabold text-white">Peringkat #3</p>
-              <p className="text-xs font-semibold text-amber-300">{user.total_xp} Socio-Points</p>
+              <p className="text-xs font-semibold text-orange-500">{user.total_xp} Socio-Points</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
               Juara 2
             </div>
             <div className="relative mt-2">
-              <div className="w-20 h-20 rounded-full ring-4 ring-slate-300 overflow-hidden shadow-md">
+              <div className="w-20 h-20 rounded-full ring-4 ring-slate-300 overflow-hidden shadow-sm border border-slate-200">
                 <img src={top2.avatar} alt={top2.name} className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-slate-700 font-black text-xs shadow-xs">
@@ -74,7 +74,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
             <div>
               <h3 className="font-bold text-slate-800 text-base">{top2.name}</h3>
-              <p className="text-xs text-slate-500">{top2.school}</p>
+              <p className="text-xs text-white0">{top2.school}</p>
             </div>
 
             <div className="bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 w-full">
@@ -87,7 +87,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
         {/* 1st Place Gold */}
         {top1 && (
           <div className="bg-gradient-to-b from-amber-50 to-white rounded-3xl p-7 border-2 border-amber-300 shadow-xl flex flex-col items-center text-center space-y-3 relative order-1 md:order-2 transform md:-translate-y-4">
-            <div className="absolute -top-5 bg-amber-400 text-slate-900 font-black text-xs px-4 py-1.5 rounded-full shadow-md flex items-center space-x-1">
+            <div className="absolute -top-5 bg-amber-400 text-slate-900 font-black text-xs px-4 py-1.5 rounded-full shadow-sm border border-slate-200 flex items-center space-x-1">
               <Crown className="w-4 h-4 fill-slate-900" />
               <span>Juara 1 Grandmaster</span>
             </div>
@@ -96,7 +96,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
               <div className="w-24 h-24 rounded-full ring-4 ring-amber-400 overflow-hidden shadow-lg">
                 <img src={top1.avatar} alt={top1.name} className="w-full h-full object-cover" />
               </div>
-              <div className="absolute -bottom-2 -right-2 w-9 h-9 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-slate-900 font-black text-sm shadow-md">
+              <div className="absolute -bottom-2 -right-2 w-9 h-9 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-slate-900 font-black text-sm shadow-sm border border-slate-200">
                 1
               </div>
             </div>
@@ -120,7 +120,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
               Juara 3
             </div>
             <div className="relative mt-2">
-              <div className="w-20 h-20 rounded-full ring-4 ring-amber-600 overflow-hidden shadow-md">
+              <div className="w-20 h-20 rounded-full ring-4 ring-amber-600 overflow-hidden shadow-sm border border-slate-200">
                 <img src={top3.avatar} alt={top3.name} className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-amber-700 border-2 border-white flex items-center justify-center text-white font-black text-xs shadow-xs">
@@ -130,7 +130,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
             <div>
               <h3 className="font-bold text-slate-800 text-base">{top3.name}</h3>
-              <p className="text-xs text-slate-500">{top3.school}</p>
+              <p className="text-xs text-white0">{top3.school}</p>
             </div>
 
             <div className="bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 w-full">
@@ -146,7 +146,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-lg font-bold text-slate-800">Tabel Peringkat Lengkap</h2>
-            <p className="text-xs text-slate-500">Klasemen diperbarui secara langsung setelah setiap aktivitas</p>
+            <p className="text-xs text-white0">Klasemen diperbarui secara langsung setelah setiap aktivitas</p>
           </div>
 
           <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
@@ -179,7 +179,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
-            <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+            <thead className="bg-orange-500 text-white0 font-bold uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="p-3">Rank</th>
                 <th className="p-3">Nama Siswa</th>
