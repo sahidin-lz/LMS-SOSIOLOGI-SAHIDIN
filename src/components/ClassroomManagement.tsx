@@ -5,15 +5,41 @@ import {
 } from 'lucide-react';
 import { ClassRoom, ClassStudent, SyllabusItem, User } from '../types';
 import { INITIAL_CLASSROOMS, INITIAL_SYLLABUS } from '../data/sociologyData';
+import { INITIAL_CLASSROOM_STUDENTS, TSV_STUDENTS_PRESET } from '../data/studentsData';
+
+const DEFAULT_SOSHUM_CLASSES: ClassRoom[] = [
+  {
+    id: 'class_12_soshum_putra',
+    name: '12 SOSHUM PUTRA',
+    grade_level: 12,
+    academic_year: '2026/2027',
+    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
+    total_students: 26,
+    description: 'Rombongan Belajar 12 SOSHUM PUTRA (26 Siswa)',
+    students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRA')
+  },
+  {
+    id: 'class_12_soshum_putri',
+    name: '12 SOSHUM PUTRI',
+    grade_level: 12,
+    academic_year: '2026/2027',
+    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
+    total_students: 25,
+    description: 'Rombongan Belajar 12 SOSHUM PUTRI (25 Siswa)',
+    students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRI')
+  }
+];
 
 interface ClassroomManagementProps {
   user: User;
 }
 
 export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }) => {
-  const [classrooms, setClassrooms] = useState<ClassRoom[]>(INITIAL_CLASSROOMS);
+  const [classrooms, setClassrooms] = useState<ClassRoom[]>(() => {
+    return [...DEFAULT_SOSHUM_CLASSES, ...INITIAL_CLASSROOMS];
+  });
   const [syllabi, setSyllabi] = useState<SyllabusItem[]>(INITIAL_SYLLABUS);
-  const [selectedClassId, setSelectedClassId] = useState<string>('class_10_ips_1');
+  const [selectedClassId, setSelectedClassId] = useState<string>('class_12_soshum_putra');
   const [activeAdminSubTab, setActiveAdminSubTab] = useState<'roster' | 'syllabus'>('roster');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showImportModal, setShowImportModal] = useState<boolean>(false);
@@ -117,24 +143,26 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
     lines.forEach((line, idx) => {
       if (idx === 0 && line.toLowerCase().startsWith('nisn')) return;
 
-      const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+      const cols = (line.includes('\t') ? line.split('\t') : line.split(','))
+        .map(c => c.trim().replace(/^"|"$/g, ''));
       if (cols.length >= 2) {
-        const nisn = cols[0] || `005123${Math.floor(100 + Math.random() * 900)}`;
+        const nisn = cols[0] || `1000000${Math.floor(1000 + Math.random() * 9000)}`;
         const name = cols[1] || 'Siswa Tanpa Nama';
-        const email = cols[2] || `${name.toLowerCase().replace(/\s+/g, '.')}@sosiologi.edu`;
-        const password = cols[3] || `Socio2026!${name.split(' ')[0]}`;
+        const password = cols[2] || `socio${String(idx).padStart(3, '0')}`;
+        const classroom_name = cols[3] || currentClassroom.name;
         const status = (cols[4] as any) || 'Aktif';
+        const email = `${nisn}@siswa.lms`;
 
         newStudents.push({
-          id: `st_imported_${Date.now()}_${idx}`,
+          id: `st_imported_${nisn}`,
           nisn,
           name,
           email,
           password,
-          classroom_name: currentClassroom.name,
-          total_xp: 0,
-          mission_completed_count: 0,
-          avg_cbt_score: 0,
+          classroom_name,
+          total_xp: 500,
+          mission_completed_count: 2,
+          avg_cbt_score: 85,
           status: status === 'Izin' || status === 'Alumni' ? status : 'Aktif',
         });
         importedCount++;

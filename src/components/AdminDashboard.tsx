@@ -7,6 +7,7 @@ import {
   Move, X, Save, ArrowRightLeft
 } from 'lucide-react';
 import { Announcement, Course, Exam, Lesson, Question, Role, User } from '../types';
+import { TSV_STUDENTS_PRESET } from '../data/studentsData';
 import { uploadFileToStorage } from '../lib/storageService';
 import { saveDocument, deleteDocument } from '../lib/firestoreService';
 
@@ -754,43 +755,57 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
 
       for (let idx = 0; idx < lines.length; idx++) {
         const line = lines[idx].trim();
-        if (idx === 0 && (line.toLowerCase().startsWith('nisn') || line.toLowerCase().startsWith('nama'))) continue;
         if (!line) continue;
+        if (idx === 0 && (line.toLowerCase().startsWith('nisn') || line.toLowerCase().startsWith('nama'))) continue;
 
-        const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+        // Support Tab (\t) from Excel copy-paste and Comma (,)
+        const cols = (line.includes('\t') ? line.split('\t') : line.split(','))
+          .map(c => c.trim().replace(/^"|"$/g, ''));
+
         if (cols.length >= 2) {
-          const nisn = cols[0] || `005123${Math.floor(100 + Math.random() * 900)}`;
+          const nisn = cols[0] || `1000000${Math.floor(1000 + Math.random() * 9000)}`;
           const name = cols[1] || 'Siswa Baru';
-          const password = cols[2] || `Socio2026!${name.split(' ')[0]}`;
-          const grade = Number(cols[3] || 12);
+          const password = cols[2] || `socio${String(idx).padStart(3, '0')}`;
+          const group_name = cols[3] || '12 SOSHUM PUTRA';
           const status = (cols[4] as any) || 'Aktif';
-          const email = `${nisn || name.toLowerCase().replace(/\s+/g, '.')}@siswa.lms`;
+          const email = `${nisn}@siswa.lms`;
 
           const studentUser: User = {
-            id: `usr_st_${Date.now()}_${idx}`,
+            id: `usr_st_${nisn}`,
             name,
             email,
             role: 'siswa',
             total_xp: 500,
             levelTitle: 'Siswa Sosiologi',
-            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(nisn || name)}`,
-            grade: grade || 12,
+            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(nisn)}`,
+            grade: 12,
             streakDays: 1,
-            schoolName: 'SMA Negeri 1 Membumi',
+            schoolName: 'SMA Negeri Sosiologi',
+            group_name,
             nisn,
             status: status === 'Izin' || status === 'Alumni' ? status : 'Aktif',
           };
 
-          await saveDocument('users', studentUser.id, studentUser);
           newStudents.push(studentUser);
           count++;
         }
       }
 
       if (newStudents.length > 0) {
-        setUsersList(prev => [...newStudents, ...prev]);
+        // FAST PARALLEL FIRESTORE SAVE
+        await Promise.all(
+          newStudents.map((st) => saveDocument('users', st.id, st))
+        );
+
+        setUsersList(prev => {
+          const map = new Map<string, User>();
+          prev.forEach(u => map.set(u.id, u));
+          newStudents.forEach(u => map.set(u.id, u));
+          return Array.from(map.values());
+        });
+
         if (onBulkAddUsers) onBulkAddUsers(newStudents);
-        showNotification(`Sukses! ${count} Data Siswa berhasil diimpor & tersimpan ke Firebase Firestore!`);
+        showNotification(`⚡ Sukses kilat! ${count} Data Siswa berhasil diimpor & tersimpan ke Firebase!`);
         setStudentCsvText('');
       } else {
         showErrorNotification('Format file/CSV tidak valid atau baris data tidak ditemukan.');
@@ -2204,7 +2219,17 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                   </div>
 
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Pratinjau Data Siswa (Teks / Hasil Parser File)</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-slate-700">Pratinjau Data Siswa (Teks / Hasil Parser File)</label>
+                      <button
+                        type="button"
+                        onClick={() => setStudentCsvText(TSV_STUDENTS_PRESET)}
+                        className="text-[10px] bg-amber-500 hover:bg-amber-600 text-stone-950 font-black px-2.5 py-1 rounded-lg transition-all cursor-pointer shadow-xs flex items-center space-x-1"
+                      >
+                        <Sparkles className="w-3 h-3 text-stone-950" />
+                        <span>✨ Isi 51 Data Siswa SOSHUM (Preset)</span>
+                      </button>
+                    </div>
                     <textarea
                       required
                       rows={6}
