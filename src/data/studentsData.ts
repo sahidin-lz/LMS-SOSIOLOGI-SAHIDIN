@@ -62,6 +62,22 @@ export const RAW_STUDENTS_LIST: RawStudentInput[] = [
   { nisn: '1000000051', name: 'DELISA KHALIFA SANTOSA', password: 'socio051', kelas: '12 SOSHUM PUTRI', status: 'Aktif' }
 ];
 
+export const TEACHER_USER: User = {
+  id: 'usr_sahidin_01',
+  name: 'Sahidin, S.Pd., Gr.',
+  email: 'sahidin@sosiologimembumi.sch.id',
+  role: 'admin',
+  total_xp: 9990,
+  levelTitle: 'Guru Pengampu Sosiologi',
+  avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin',
+  grade: 12,
+  streakDays: 30,
+  schoolName: 'SMA Negeri Sosiologi',
+  group_name: 'Guru Sosiologi',
+  nisn: '19880101202601',
+  status: 'Aktif'
+};
+
 export const INITIAL_STUDENT_USERS: User[] = RAW_STUDENTS_LIST.map((s) => ({
   id: `usr_st_${s.nisn}`,
   name: s.name,

@@ -96,24 +96,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       if (!appUser) {
         appUser = {
           id: fbUser.uid,
-          name: fbUser.displayName || email.split('@')[0] || 'Guru Super Admin',
+          name: fbUser.displayName || 'Sahidin, S.Pd., Gr.',
           email: fbUser.email || email,
           role: 'admin',
           total_xp: 9990,
-          levelTitle: 'Super Admin Utama / Guru Pengampu Sosiologi',
-          avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(email)}`,
+          levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
+          avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin`,
           grade: 12,
-          streakDays: 1,
-          schoolName: 'SMA Negeri 1 Membumi',
-          group_name: 'Super Admin',
+          streakDays: 30,
+          schoolName: 'SMA Negeri Sosiologi',
+          group_name: 'Guru Sosiologi',
         };
         saveDocument('users', fbUser.uid, appUser);
       } else {
         // Firebase user logged in gets Superadmin control
         appUser = {
           ...appUser,
+          name: appUser.name || 'Sahidin, S.Pd., Gr.',
           role: 'admin',
-          levelTitle: appUser.levelTitle || 'Super Admin Utama / Guru Pengampu Sosiologi',
+          levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
         };
       }
 
@@ -293,29 +294,29 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             <div className="grid grid-cols-3 gap-1.5 text-[10px]">
               <button
                 type="button"
-                onClick={() => handleQuickPrefill('admin', 'admin@sosiologimembumi.sch.id')}
+                onClick={() => handleQuickPrefill('admin', 'sahidin@sosiologimembumi.sch.id')}
                 className="p-1.5 rounded-lg bg-purple-950/70 border border-purple-800 text-purple-200 font-bold hover:bg-purple-900 transition-all flex items-center justify-center space-x-1 cursor-pointer"
               >
                 <Shield className="w-3 h-3 text-purple-400" />
-                <span>Admin</span>
+                <span>Admin Guru</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickPrefill('guru', 'guru@sosiologimembumi.sch.id')}
+                onClick={() => handleQuickPrefill('guru', 'sahidin@sosiologimembumi.sch.id')}
                 className="p-1.5 rounded-lg bg-amber-950/70 border border-amber-800 text-amber-200 font-bold hover:bg-amber-900 transition-all flex items-center justify-center space-x-1 cursor-pointer"
               >
                 <GraduationCap className="w-3 h-3 text-amber-400" />
-                <span>Guru</span>
+                <span>Guru Sahidin</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleQuickPrefill('siswa', 'siswa@sosiologimembumi.sch.id')}
+                onClick={() => handleQuickPrefill('siswa', '1000000001@siswa.lms')}
                 className="p-1.5 rounded-lg bg-emerald-950/70 border border-emerald-800 text-emerald-200 font-bold hover:bg-emerald-900 transition-all flex items-center justify-center space-x-1 cursor-pointer"
               >
                 <UserCheck className="w-3 h-3 text-emerald-400" />
-                <span>Siswa</span>
+                <span>Siswa Fahri</span>
               </button>
             </div>
           </div>

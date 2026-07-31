@@ -13,7 +13,7 @@ const DEFAULT_SOSHUM_CLASSES: ClassRoom[] = [
     name: '12 SOSHUM PUTRA',
     grade_level: 12,
     academic_year: '2026/2027',
-    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
+    teacher_name: 'Sahidin, S.Pd., Gr.',
     total_students: 26,
     description: 'Rombongan Belajar 12 SOSHUM PUTRA (26 Siswa)',
     students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRA')
@@ -23,7 +23,7 @@ const DEFAULT_SOSHUM_CLASSES: ClassRoom[] = [
     name: '12 SOSHUM PUTRI',
     grade_level: 12,
     academic_year: '2026/2027',
-    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
+    teacher_name: 'Sahidin, S.Pd., Gr.',
     total_students: 25,
     description: 'Rombongan Belajar 12 SOSHUM PUTRI (25 Siswa)',
     students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRI')
@@ -35,9 +35,7 @@ interface ClassroomManagementProps {
 }
 
 export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }) => {
-  const [classrooms, setClassrooms] = useState<ClassRoom[]>(() => {
-    return [...DEFAULT_SOSHUM_CLASSES, ...INITIAL_CLASSROOMS];
-  });
+  const [classrooms, setClassrooms] = useState<ClassRoom[]>(DEFAULT_SOSHUM_CLASSES);
   const [syllabi, setSyllabi] = useState<SyllabusItem[]>(INITIAL_SYLLABUS);
   const [selectedClassId, setSelectedClassId] = useState<string>('class_12_soshum_putra');
   const [activeAdminSubTab, setActiveAdminSubTab] = useState<'roster' | 'syllabus'>('roster');
@@ -54,8 +52,8 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
 
   // New Class Form State
   const [newClassName, setNewClassName] = useState<string>('');
-  const [newClassGrade, setNewClassGrade] = useState<10 | 11 | 12>(10);
-  const [newClassTeacher, setNewClassTeacher] = useState<string>(user.name || 'Dra. Endang Sulastri, M.Pd.');
+  const [newClassGrade, setNewClassGrade] = useState<10 | 11 | 12>(12);
+  const [newClassTeacher, setNewClassTeacher] = useState<string>(user.name || 'Sahidin, S.Pd., Gr.');
   const [newClassDesc, setNewClassDesc] = useState<string>('');
 
   const currentClassroom = classrooms.find(c => c.id === selectedClassId) || classrooms[0];

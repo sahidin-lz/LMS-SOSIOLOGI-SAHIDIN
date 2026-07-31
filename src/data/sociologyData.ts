@@ -1,80 +1,24 @@
 import { Course, Exam, LeaderboardUser, TryoutAnalytics, User } from '../types';
+import { INITIAL_STUDENT_USERS, INITIAL_CLASSROOM_STUDENTS, TEACHER_USER } from './studentsData';
 import { TKA_COURSES_EXTRA } from './unitsData';
 import { TKA_COURSES_EXTRA_2 } from './unitsData2';
 import { TKA_EXAMS_EXTRA } from './examsDataExtra';
 import { TKA_EXAMS_EXTRA_2 } from './examsDataExtra2';
 import { TKA_EXAMS_EXTRA_3 } from './examsDataExtra3';
 
-export const INITIAL_USER: User = {
-  id: 'usr_siswa_01',
-  name: 'Arya Pratama',
-  email: 'arya.pratama@sosiologi.edu',
-  role: 'siswa',
-  total_xp: 1450,
-  levelTitle: 'Analis Sosial Muda',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
-  grade: 12,
-  streakDays: 7,
-  schoolName: 'SMA Negeri 8 Jakarta',
-};
+export const INITIAL_USER: User = INITIAL_STUDENT_USERS[0];
 
-export const INITIAL_LEADERBOARD: LeaderboardUser[] = [
-  {
-    id: 'lb_1',
-    rank: 1,
-    name: 'Siti Rahmawati',
-    school: 'SMA Negeri 3 Yogyakarta',
-    grade: 12,
-    xp: 3820,
-    badgeTitle: 'Socio Master Grandeur',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200',
-    change: 'same',
-  },
-  {
-    id: 'lb_2',
-    rank: 2,
-    name: 'Bintang Ramadhan',
-    school: 'SMA Labschool Kebayoran',
-    grade: 12,
-    xp: 3450,
-    badgeTitle: 'Pakar Teori Kritis',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
-    change: 'up',
-  },
-  {
-    id: 'usr_siswa_01',
-    rank: 3,
-    name: 'Arya Pratama (Kamu)',
-    school: 'SMA Negeri 8 Jakarta',
-    grade: 12,
-    xp: 1450,
-    badgeTitle: 'Analis Sosial Muda',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300',
-    change: 'up',
-  },
-  {
-    id: 'lb_4',
-    rank: 4,
-    name: 'Dewi Lestari',
-    school: 'SMA Negeri 1 Surakarta',
-    grade: 11,
-    xp: 1280,
-    badgeTitle: 'Pengamat Dinamika',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200',
-    change: 'down',
-  },
-  {
-    id: 'lb_5',
-    rank: 5,
-    name: 'Fikri Haikal',
-    school: 'SMA Negeri 5 Surabaya',
-    grade: 10,
-    xp: 1150,
-    badgeTitle: 'Peneliti Sosial Pemula',
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200',
-    change: 'same',
-  },
-];
+export const INITIAL_LEADERBOARD: LeaderboardUser[] = INITIAL_STUDENT_USERS.slice(0, 10).map((s, idx) => ({
+  id: s.id,
+  rank: idx + 1,
+  name: s.name,
+  school: 'SMA Negeri Sosiologi',
+  grade: 12,
+  xp: 3800 - idx * 60,
+  badgeTitle: idx === 0 ? 'Socio Master Grandeur' : idx === 1 ? 'Pakar Teori Kritis' : 'Analis Sosial Muda',
+  avatar: s.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(s.nisn)}`,
+  change: idx === 1 ? 'up' : idx === 3 ? 'down' : 'same',
+}));
 
 export const TRYOUT_ANALYTICS_DATA: TryoutAnalytics[] = [
   { exam_title: 'Tryout 1', score: 120, date: '10 Jun', target_score: 150 },
@@ -1513,12 +1457,12 @@ export const INITIAL_SUBMISSIONS: any[] = [
     task_id: 'task_01',
     task_title: 'Analisis Studi Kasus: Fenomena Cyberbullying & Fakta Sosial',
     type: 'INDIVIDUAL',
-    submitted_by: 'Arya Pratama',
+    submitted_by: 'FAHRI RIZKI RAMADHAN',
     submitted_at: '28 Juli 2026, 14:30 WIB',
     answer_text: 'Berdasarkan observasi pada fenomena cyberbullying, budaya netizen terbentuk sebagai Fakta Sosial karena norma perilakunya berada di luar individu dan memiliki kekuatan coercive (memaksa). Remaja cenderung takut mengalami ostrasisme atau celaan sosial apabila tidak mengikuti tren atau opini mayoritas grup.',
-    file_name: 'Laporan_Analisis_Cyberbullying_Arya.pdf',
+    file_name: 'Laporan_Analisis_Cyberbullying_Fahri.pdf',
     grade: 92,
-    teacher_feedback: 'Analisis yang sangat tajam, Arya! Kaitan antara daya paksa eksternal Durkheim dan fenomena media sosial dijelaskan secara runtut.',
+    teacher_feedback: 'Analisis yang sangat tajam, Fahri! Kaitan antara daya paksa eksternal Durkheim dan fenomena media sosial dijelaskan secara runtut.',
     status: 'Sudah Dinilai',
   },
   {
@@ -1527,8 +1471,8 @@ export const INITIAL_SUBMISSIONS: any[] = [
     task_title: 'Tugas Kelompok: Pemetaan Konflik & Integrasi Sosial',
     type: 'GROUP',
     group_name: 'Kelompok 2 - Socio Thinkers',
-    group_members: ['Arya Pratama', 'Bintang Ramadhan', 'Siti Rahmawati', 'Dewi Lestari'],
-    submitted_by: 'Siti Rahmawati (Perwakilan Kelompok)',
+    group_members: ['FAHRI RIZKI RAMADHAN', 'MUHAMMAD AFRAZ GHAZAWAN', 'MUHAMMAD ARKAN RYANDIKHA', 'MADINE MEUTIARANISSA GITA'],
+    submitted_by: 'MADINE MEUTIARANISSA GITA (Perwakilan Kelompok)',
     submitted_at: '29 Juli 2026, 10:15 WIB',
     answer_text: 'Kelompok kami memetakan konflik agraria relokasi lahan di Jawa Tengah dengan pendekatan Teori Konflik Ralf Dahrendorf. Hasil pemetaan menunjukkan adanya ketidakseimbangan otoritas antara konsorsium pengembang dan komunitas petani lokal.',
     file_name: 'Makalah_Pemetaan_Konflik_Kelompok2.pdf',
@@ -1540,9 +1484,9 @@ export const INITIAL_COMMENTS: any[] = [
   {
     id: 'cmt_1',
     lesson_id: 'les_10_1',
-    user_name: 'Bintang Ramadhan',
+    user_name: 'MUHAMMAD AFRAZ GHAZAWAN',
     user_role: 'siswa',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1000000002',
     text: 'Sangat jelas penjelasan tentang Hukum Tiga Tahap Auguste Comte! Apakah tahap Positivis di Indonesia sudah sepenuhnya diterapkan dalam pembuatan kebijakan sosial?',
     created_at: '2 jam yang lalu',
     likes: 5,
@@ -1550,10 +1494,10 @@ export const INITIAL_COMMENTS: any[] = [
       {
         id: 'cmt_1_1',
         lesson_id: 'les_10_1',
-        user_name: 'Dra. Endang Sulastri, M.Pd.',
+        user_name: 'Sahidin, S.Pd., Gr.',
         user_role: 'guru',
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
-        text: 'Pertanyaan kritis yang bagus Bintang! Di Indonesia, kebijakan sosial berbasis data empiris (evidence-based policy) merupakan wujud pemikiran positivis yang terus ditingkatkan.',
+        avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin',
+        text: 'Pertanyaan kritis yang bagus Afraz! Di Indonesia, kebijakan sosial berbasis data empiris (evidence-based policy) merupakan wujud pemikiran positivis yang terus ditingkatkan.',
         created_at: '1 jam yang lalu',
         likes: 8,
       }
@@ -1562,9 +1506,9 @@ export const INITIAL_COMMENTS: any[] = [
   {
     id: 'cmt_2',
     lesson_id: 'les_10_1',
-    user_name: 'Siti Rahmawati',
+    user_name: 'MADINE MEUTIARANISSA GITA',
     user_role: 'siswa',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1000000027',
     text: 'Ciri non-etis dalam sosiologi membuat sosiologi berbeda dengan filsafat moral ya. Sosiologi menjelaskan mengapa sesuatu terjadi, bukan menghakimi.',
     created_at: '30 menit yang lalu',
     likes: 3,
@@ -1573,95 +1517,48 @@ export const INITIAL_COMMENTS: any[] = [
 
 export const INITIAL_CLASSROOMS: any[] = [
   {
-    id: 'class_10_ips_1',
-    name: '10-IPS-1',
-    grade_level: 10,
-    academic_year: '2026/2027',
-    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
-    total_students: 32,
-    description: 'Kelas Sepuluh IPS 1 - Konsentrasi Fondasi Sosiologi & Riset Sosial Dasar',
-    students: [
-      { id: 'st_1', nisn: '0051234001', name: 'Arya Pratama', email: 'arya.pratama@sosiologi.edu', password: 'Socio2026!Arya', classroom_name: '10-IPS-1', total_xp: 1450, mission_completed_count: 5, avg_cbt_score: 85, status: 'Aktif' },
-      { id: 'st_2', nisn: '0051234002', name: 'Bintang Ramadhan', email: 'bintang.ramadhan@sosiologi.edu', password: 'Socio2026!Bintang', classroom_name: '10-IPS-1', total_xp: 3450, mission_completed_count: 8, avg_cbt_score: 90, status: 'Aktif' },
-      { id: 'st_3', nisn: '0051234003', name: 'Siti Rahmawati', email: 'siti.rahmawati@sosiologi.edu', password: 'Socio2026!Siti', classroom_name: '10-IPS-1', total_xp: 3820, mission_completed_count: 9, avg_cbt_score: 95, status: 'Aktif' },
-      { id: 'st_4', nisn: '0051234004', name: 'Dewi Lestari', email: 'dewi.lestari@sosiologi.edu', password: 'Socio2026!Dewi', classroom_name: '10-IPS-1', total_xp: 1280, mission_completed_count: 4, avg_cbt_score: 78, status: 'Aktif' },
-      { id: 'st_5', nisn: '0051234005', name: 'Fikri Haikal', email: 'fikri.haikal@sosiologi.edu', password: 'Socio2026!Fikri', classroom_name: '10-IPS-1', total_xp: 1150, mission_completed_count: 4, avg_cbt_score: 75, status: 'Aktif' },
-    ]
-  },
-  {
-    id: 'class_11_ips_2',
-    name: '11-IPS-2',
-    grade_level: 11,
-    academic_year: '2026/2027',
-    teacher_name: 'Dra. Endang Sulastri, M.Pd.',
-    total_students: 30,
-    description: 'Kelas Sebelas IPS 2 - Konsentrasi Konflik Sosial, Diferensiasi & Struktur Masyarakat',
-    students: [
-      { id: 'st_6', nisn: '0041234006', name: 'Andi Wijaya', email: 'andi.w@sosiologi.edu', password: 'Socio2026!Andi', classroom_name: '11-IPS-2', total_xp: 2100, mission_completed_count: 6, avg_cbt_score: 82, status: 'Aktif' },
-      { id: 'st_7', nisn: '0041234007', name: 'Citra Kirana', email: 'citra.k@sosiologi.edu', password: 'Socio2026!Citra', classroom_name: '11-IPS-2', total_xp: 1950, mission_completed_count: 6, avg_cbt_score: 80, status: 'Aktif' },
-      { id: 'st_8', nisn: '0041234008', name: 'Doni Pratama', email: 'doni.p@sosiologi.edu', password: 'Socio2026!Doni', classroom_name: '11-IPS-2', total_xp: 1600, mission_completed_count: 4, avg_cbt_score: 74, status: 'Aktif' },
-    ]
-  },
-  {
-    id: 'class_12_ips_1',
-    name: '12-IPS-1',
+    id: 'class_12_soshum_putra',
+    name: '12 SOSHUM PUTRA',
     grade_level: 12,
     academic_year: '2026/2027',
-    teacher_name: 'Drs. Bambang Hariyanto, M.Si.',
-    total_students: 34,
-    description: 'Kelas Dua Belas IPS 1 - Persiapan Intensif TKA Sosiologi & Perubahan Sosial',
-    students: [
-      { id: 'st_9', nisn: '0031234009', name: 'Eka Kurnia', email: 'eka.k@sosiologi.edu', password: 'Socio2026!Eka', classroom_name: '12-IPS-1', total_xp: 2900, mission_completed_count: 8, avg_cbt_score: 88, status: 'Aktif' },
-      { id: 'st_10', nisn: '0031234010', name: 'Farah Nabila', email: 'farah.n@sosiologi.edu', password: 'Socio2026!Farah', classroom_name: '12-IPS-1', total_xp: 3100, mission_completed_count: 9, avg_cbt_score: 92, status: 'Aktif' },
-    ]
+    teacher_name: 'Sahidin, S.Pd., Gr.',
+    total_students: 26,
+    description: 'Rombongan Belajar 12 SOSHUM PUTRA (26 Siswa)',
+    students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRA')
+  },
+  {
+    id: 'class_12_soshum_putri',
+    name: '12 SOSHUM PUTRI',
+    grade_level: 12,
+    academic_year: '2026/2027',
+    teacher_name: 'Sahidin, S.Pd., Gr.',
+    total_students: 25,
+    description: 'Rombongan Belajar 12 SOSHUM PUTRI (25 Siswa)',
+    students: INITIAL_CLASSROOM_STUDENTS.filter(s => s.classroom_name === '12 SOSHUM PUTRI')
   }
 ];
 
 export const INITIAL_SYLLABUS: any[] = [
   {
-    id: 'syl_10_1',
-    grade_level: 10,
-    semester: 1,
-    chapter_code: 'BAB-01',
-    topic_name: 'Sosiologi Sebagai Ilmu Tentang Masyarakat',
-    basic_competency: 'Memahami sosiologi sebagai ilmu yang mengkaji fakta sosial dan hubungan antarmanusia.',
-    learning_objective: 'Siswa dapat menjelaskan ciri-ciri sosiologi, objek kajian, serta peran sosiolog dalam masyarakat.',
-    meeting_count: 4,
-    has_daily_test: true,
-    file_source: 'Silabus_Kemenag_Kurikulum_Merdeka_10.xlsx'
-  },
-  {
-    id: 'syl_10_2',
-    grade_level: 10,
-    semester: 1,
-    chapter_code: 'BAB-02',
-    topic_name: 'Interaksi Sosial, Nilai, dan Norma Sosial',
-    basic_competency: 'Mengenali dan mengidentifikasi bentuk-bentuk interaksi sosial serta pembentukan norma.',
-    learning_objective: 'Siswa mampu menganalisis syarat interaksi sosial dan dampaknya terhadap keteraturan sosial.',
-    meeting_count: 5,
-    has_daily_test: true,
-    file_source: 'Silabus_Kemenag_Kurikulum_Merdeka_10.xlsx'
-  },
-  {
-    id: 'syl_11_1',
-    grade_level: 11,
-    semester: 1,
-    chapter_code: 'BAB-01',
-    topic_name: 'Kelompok Sosial & Partikularisme',
-    basic_competency: 'Memahami pembentukan kelompok sosial dan dampaknya terhadap disintegrasi.',
-    learning_objective: 'Siswa mampu mengidentifikasi kelompok primary, secondary, in-group, dan out-group.',
-    meeting_count: 6,
-    has_daily_test: true,
-    file_source: 'Silabus_Kemenag_Kurikulum_Merdeka_11.xlsx'
-  },
-  {
     id: 'syl_12_1',
     grade_level: 12,
     semester: 1,
     chapter_code: 'BAB-01',
-    topic_name: 'Perubahan Sosial & Pemetaan TKA',
-    basic_competency: 'Menganalisis faktor pendorong/penghambat perubahan sosial dan penalaran TKA Sosiologi.',
-    learning_objective: 'Siswa siap menghadapi Tes Kemampuan Akademik (TKA) dengan penalaran kualitatif dan kuantitatif sosial.',
+    topic_name: 'Sosiologi Sebagai Ilmu & Perubahan Sosial',
+    basic_competency: 'Memahami sosiologi sebagai ilmu dan menganalisis fenomena perubahan sosial.',
+    learning_objective: 'Siswa dapat menjelaskan teori-teori sosiologi dan penerapannya dalam kehidupan bermasyarakat.',
+    meeting_count: 6,
+    has_daily_test: true,
+    file_source: 'Silabus_Kemenag_Kurikulum_Merdeka_12.xlsx'
+  },
+  {
+    id: 'syl_12_2',
+    grade_level: 12,
+    semester: 1,
+    chapter_code: 'BAB-02',
+    topic_name: 'Globalisasi, Modernisasi & Kearifan Lokal',
+    basic_competency: 'Menganalisis dampak globalisasi terhadap komunitas lokal.',
+    learning_objective: 'Siswa mampu merumuskan strategi pemberdayaan masyarakat berbasis kearifan lokal.',
     meeting_count: 8,
     has_daily_test: true,
     file_source: 'Silabus_Kemenag_Kurikulum_Merdeka_12.xlsx'
@@ -1709,7 +1606,7 @@ export const INITIAL_ANNOUNCEMENTS = [
     title: 'Jadwal Simulasi Tryout TKA Sosiologi Nasional 2026',
     category: 'Jadwal Ujian',
     date: '30 Juli 2026',
-    author: 'Tim Kurikulum Admin LMS',
+    author: 'Sahidin, S.Pd., Gr.',
     content: 'Simulasi Tryout CBT TKA Sosiologi dengan sistem penilaian IRT (Maksimal 200) & Skor Normal akan diselenggarakan serentak. Silakan berlatih menggunakan Paket Tryout 1 dan 2.',
   },
   {
@@ -1717,7 +1614,7 @@ export const INITIAL_ANNOUNCEMENTS = [
     title: 'Pembaruan Modul Pembelajaran Kelas 12: Teori Perubahan Sosial Modern',
     category: 'Pembaruan Materi',
     date: '28 Juli 2026',
-    author: 'Drs. Supriyadi, M.Pd.',
+    author: 'Sahidin, S.Pd., Gr.',
     content: 'Materi video dan rangkuman baru tentang Globalisasi, Modernisasi, dan Pemetaan Kearifan Lokal telah ditambahkan ke Modul Kelas 12.',
   },
 ];
@@ -1726,7 +1623,7 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: 'notif_1',
     title: 'Misi CBT TKA Baru Dibuka!',
-    message: 'Guru Sosiologi menugaskan Tryout TKA Paket 1 (Penilaian IRT Maksimal 200 & Skor Normal). Kerjakan sebelum 2 Agustus 2026.',
+    message: 'Sahidin, S.Pd., Gr. menugaskan Tryout TKA Paket 1 (Penilaian IRT Maksimal 200 & Skor Normal). Kerjakan sebelum 2 Agustus 2026.',
     type: 'cbt' as const,
     date: 'Hari ini, 08:30',
     isRead: false,
@@ -1735,7 +1632,7 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: 'notif_2',
     title: 'Tugas Studi Kasus Kelompok',
-    message: 'Guru menambahkan Tugas Penelitian Sosial Kelompok untuk Rombel 12-IPS 1.',
+    message: 'Sahidin, S.Pd., Gr. menambahkan Tugas Penelitian Sosial Kelompok untuk Rombel 12 SOSHUM.',
     type: 'task' as const,
     date: 'Kemarin, 14:15',
     isRead: false,
@@ -1744,7 +1641,7 @@ export const INITIAL_NOTIFICATIONS = [
   {
     id: 'notif_3',
     title: 'Tanggapan Guru di Forum Diskusi',
-    message: 'Dra. Endang Sulastri merespons pertanyaan Anda tentang Teori Anomie Merton.',
+    message: 'Sahidin, S.Pd., Gr. merespons pertanyaan Anda tentang Teori Anomie Merton.',
     type: 'discussion' as const,
     date: '27 Juli 2026',
     isRead: true,

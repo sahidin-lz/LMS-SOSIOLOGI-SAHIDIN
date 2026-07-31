@@ -7,7 +7,7 @@ import {
   Move, X, Save, ArrowRightLeft
 } from 'lucide-react';
 import { Announcement, Course, Exam, Lesson, Question, Role, User } from '../types';
-import { TSV_STUDENTS_PRESET } from '../data/studentsData';
+import { TSV_STUDENTS_PRESET, TEACHER_USER, INITIAL_STUDENT_USERS } from '../data/studentsData';
 import { uploadFileToStorage } from '../lib/storageService';
 import { saveDocument, deleteDocument } from '../lib/firestoreService';
 
@@ -68,10 +68,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [usersList, setUsersList] = useState<User[]>(() => {
     if (initialUsersList && initialUsersList.length > 0) return initialUsersList;
     return [
-      { id: 'usr_1', name: 'Arya Pratama', email: 'arya.pratama@sosiologi.edu', role: 'siswa' as Role, total_xp: 1450, levelTitle: 'Siswa Sosiologi', avatarUrl: '', grade: 12, streakDays: 3, schoolName: 'SMA Negeri 8 Jakarta', status: 'Aktif' },
-      { id: 'usr_2', name: 'Drs. Supriyadi, M.Pd.', email: 'supriyadi@sosiologi.edu', role: 'guru' as Role, total_xp: 4500, levelTitle: 'Guru Pengampu', avatarUrl: '', grade: 0, streakDays: 10, schoolName: 'SMA Negeri 3 Yogyakarta', status: 'Aktif' },
-      { id: 'usr_3', name: 'Siti Rahmawati', email: 'siti.rahma@sosiologi.edu', role: 'siswa' as Role, total_xp: 3820, levelTitle: 'Siswa Sosiologi', avatarUrl: '', grade: 12, streakDays: 5, schoolName: 'SMA Negeri 3 Yogyakarta', status: 'Aktif' },
-      { id: 'usr_4', name: 'Admin Master', email: 'admin@sosiologi.edu', role: 'admin' as Role, total_xp: 9999, levelTitle: 'Super Admin', avatarUrl: '', grade: 0, streakDays: 30, schoolName: 'Pusat Kurikulum Sosiologi', status: 'Aktif' },
+      TEACHER_USER,
+      ...INITIAL_STUDENT_USERS
     ];
   });
 
@@ -141,7 +139,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Form State: New Announcement
   const [annTitle, setAnnTitle] = useState('');
   const [annCategory, setAnnCategory] = useState<'Penting' | 'Informasi' | 'Jadwal Ujian' | 'Pembaruan Materi'>('Penting');
-  const [annAuthor, setAnnAuthor] = useState('Admin Kurikulum LMS');
+  const [annAuthor, setAnnAuthor] = useState('Sahidin, S.Pd., Gr.');
   const [annContent, setAnnContent] = useState('');
 
   // Edit & Move Modal States (Full CRUD & Item Transfer)

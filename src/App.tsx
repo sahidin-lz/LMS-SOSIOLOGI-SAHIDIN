@@ -99,23 +99,24 @@ export default function App() {
         if (!fetchedUser) {
           fetchedUser = {
             id: fbUser.uid,
-            name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Guru Super Admin',
+            name: fbUser.displayName || 'Sahidin, S.Pd., Gr.',
             email: fbUser.email || '',
             role: 'admin',
             total_xp: 9990,
-            levelTitle: 'Super Admin Utama / Guru Pengampu Sosiologi',
-            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(fbUser.email || 'user')}`,
+            levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
+            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin`,
             grade: 12,
-            streakDays: 1,
-            schoolName: 'SMA Negeri 1 Membumi',
-            group_name: 'Super Admin',
+            streakDays: 30,
+            schoolName: 'SMA Negeri Sosiologi',
+            group_name: 'Guru Sosiologi',
           };
           saveDocument('users', fbUser.uid, fetchedUser);
         } else {
           fetchedUser = {
             ...fetchedUser,
+            name: fetchedUser.name || 'Sahidin, S.Pd., Gr.',
             role: 'admin',
-            levelTitle: fetchedUser.levelTitle || 'Super Admin Utama / Guru Pengampu Sosiologi',
+            levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
           };
         }
 
