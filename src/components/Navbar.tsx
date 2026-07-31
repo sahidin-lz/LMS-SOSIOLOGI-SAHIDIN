@@ -9,8 +9,8 @@ export interface NavbarProps {
   user: User;
   mainPillar: 'belajar' | 'tka';
   setMainPillar: (pillar: 'belajar' | 'tka') => void;
-  activeTab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion';
-  setActiveTab: (tab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion') => void;
+  activeTab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion' | 'classroom_chat';
+  setActiveTab: (tab: 'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion' | 'classroom_chat') => void;
   onSelectTkaModules?: () => void;
   tkaSubTab?: 'materi' | 'latihan_bab' | 'try_out_tka';
   onSelectTkaSubTab?: (subTab: 'materi' | 'latihan_bab' | 'try_out_tka') => void;
@@ -342,6 +342,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <GraduationCap className="w-4 h-4 text-emerald-400" />
                 <span>Ruang Kelas (Rombel)</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('classroom_chat')}
+                className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl transition-all ${
+                  activeTab === 'classroom_chat'
+                    ? 'bg-emerald-800 text-amber-200 font-extrabold shadow-sm border border-emerald-600/50'
+                    : 'text-stone-300 hover:text-white hover:bg-stone-800'
+                }`}
+              >
+                <Users className="w-4 h-4 text-emerald-400" />
+                <span>Diskusi Kelas</span>
               </button>
 
               <button

@@ -247,3 +247,14 @@ export interface AppNotification {
   isRead: boolean;
   linkTab?: 'cbt' | 'tasks' | 'modules' | 'dashboard';
 }
+
+export interface ChatMessage {
+  id: string;
+  classroom_name: string;
+  user_id: string;
+  user_name: string;
+  user_avatar: string;
+  user_role: Role;
+  text: string;
+  timestamp: string;
+}

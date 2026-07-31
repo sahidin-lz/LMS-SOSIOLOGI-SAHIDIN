@@ -83,11 +83,11 @@ export const INITIAL_STUDENT_USERS: User[] = RAW_STUDENTS_LIST.map((s) => ({
   name: s.name,
   email: `${s.nisn}@siswa.lms`,
   role: 'siswa',
-  total_xp: 500,
+  total_xp: 0,
   levelTitle: 'Siswa Sosiologi',
   avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(s.nisn)}`,
   grade: 12,
-  streakDays: 1,
+  streakDays: 0,
   schoolName: 'SMA Negeri Sosiologi',
   group_name: s.kelas,
   nisn: s.nisn,
@@ -101,9 +101,9 @@ export const INITIAL_CLASSROOM_STUDENTS: ClassStudent[] = RAW_STUDENTS_LIST.map(
   email: `${s.nisn}@siswa.lms`,
   password: s.password,
   classroom_name: s.kelas,
-  total_xp: 500,
-  mission_completed_count: 2,
-  avg_cbt_score: 85,
+  total_xp: 0,
+  mission_completed_count: 0,
+  avg_cbt_score: 0,
   status: s.status
 }));
 

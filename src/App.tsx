@@ -25,6 +25,7 @@ const ExamDiscussionView = lazy(() => import('./components/ExamDiscussionView').
 const LearningJourneyMap = lazy(() => import('./components/LearningJourneyMap').then(m => ({ default: m.LearningJourneyMap })));
 const TasksWorkspace = lazy(() => import('./components/TasksWorkspace').then(m => ({ default: m.TasksWorkspace })));
 const ClassroomManagement = lazy(() => import('./components/ClassroomManagement').then(m => ({ default: m.ClassroomManagement })));
+const ClassroomChatView = lazy(() => import('./components/ClassroomChat').then(m => ({ default: m.ClassroomChat })));
 
 // Loading Component Fallback saat me-load tab secara lazy
 const ViewLoadingFallback = () => (
@@ -510,6 +511,11 @@ export default function App() {
           {/* Classroom Rombel Management */}
           {activeTab === 'classrooms' && (
             <ClassroomManagement user={user} />
+          )}
+
+          {/* Classroom Chat View */}
+          {activeTab === 'classroom_chat' && (
+            <ClassroomChatView user={user} />
           )}
 
           {/* CBT Tryouts List Tab */}

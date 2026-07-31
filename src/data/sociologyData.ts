@@ -20,13 +20,7 @@ export const INITIAL_LEADERBOARD: LeaderboardUser[] = INITIAL_STUDENT_USERS.slic
   change: idx === 1 ? 'up' : idx === 3 ? 'down' : 'same',
 }));
 
-export const TRYOUT_ANALYTICS_DATA: TryoutAnalytics[] = [
-  { exam_title: 'Tryout 1', score: 120, date: '10 Jun', target_score: 150 },
-  { exam_title: 'Tryout 2', score: 135, date: '24 Jun', target_score: 150 },
-  { exam_title: 'Tryout 3', score: 130, date: '08 Jul', target_score: 150 },
-  { exam_title: 'Tryout 4', score: 150, date: '22 Jul', target_score: 150 },
-  { exam_title: 'Tryout 5 (Terbaru)', score: 165, date: '28 Jul', target_score: 150 },
-];
+export const TRYOUT_ANALYTICS_DATA: TryoutAnalytics[] = [];
 
 export const COURSES_DATA: Course[] = [
   {
@@ -1451,69 +1445,9 @@ export const INITIAL_TASKS: any[] = [
   },
 ];
 
-export const INITIAL_SUBMISSIONS: any[] = [
-  {
-    id: 'sub_01',
-    task_id: 'task_01',
-    task_title: 'Analisis Studi Kasus: Fenomena Cyberbullying & Fakta Sosial',
-    type: 'INDIVIDUAL',
-    submitted_by: 'FAHRI RIZKI RAMADHAN',
-    submitted_at: '28 Juli 2026, 14:30 WIB',
-    answer_text: 'Berdasarkan observasi pada fenomena cyberbullying, budaya netizen terbentuk sebagai Fakta Sosial karena norma perilakunya berada di luar individu dan memiliki kekuatan coercive (memaksa). Remaja cenderung takut mengalami ostrasisme atau celaan sosial apabila tidak mengikuti tren atau opini mayoritas grup.',
-    file_name: 'Laporan_Analisis_Cyberbullying_Fahri.pdf',
-    grade: 92,
-    teacher_feedback: 'Analisis yang sangat tajam, Fahri! Kaitan antara daya paksa eksternal Durkheim dan fenomena media sosial dijelaskan secara runtut.',
-    status: 'Sudah Dinilai',
-  },
-  {
-    id: 'sub_02',
-    task_id: 'task_02',
-    task_title: 'Tugas Kelompok: Pemetaan Konflik & Integrasi Sosial',
-    type: 'GROUP',
-    group_name: 'Kelompok 2 - Socio Thinkers',
-    group_members: ['FAHRI RIZKI RAMADHAN', 'MUHAMMAD AFRAZ GHAZAWAN', 'MUHAMMAD ARKAN RYANDIKHA', 'MADINE MEUTIARANISSA GITA'],
-    submitted_by: 'MADINE MEUTIARANISSA GITA (Perwakilan Kelompok)',
-    submitted_at: '29 Juli 2026, 10:15 WIB',
-    answer_text: 'Kelompok kami memetakan konflik agraria relokasi lahan di Jawa Tengah dengan pendekatan Teori Konflik Ralf Dahrendorf. Hasil pemetaan menunjukkan adanya ketidakseimbangan otoritas antara konsorsium pengembang dan komunitas petani lokal.',
-    file_name: 'Makalah_Pemetaan_Konflik_Kelompok2.pdf',
-    status: 'Menunggu Penilaian',
-  },
-];
+export const INITIAL_SUBMISSIONS: any[] = [];
 
-export const INITIAL_COMMENTS: any[] = [
-  {
-    id: 'cmt_1',
-    lesson_id: 'les_10_1',
-    user_name: 'MUHAMMAD AFRAZ GHAZAWAN',
-    user_role: 'siswa',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1000000002',
-    text: 'Sangat jelas penjelasan tentang Hukum Tiga Tahap Auguste Comte! Apakah tahap Positivis di Indonesia sudah sepenuhnya diterapkan dalam pembuatan kebijakan sosial?',
-    created_at: '2 jam yang lalu',
-    likes: 5,
-    replies: [
-      {
-        id: 'cmt_1_1',
-        lesson_id: 'les_10_1',
-        user_name: 'Sahidin, S.Pd., Gr.',
-        user_role: 'guru',
-        avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin',
-        text: 'Pertanyaan kritis yang bagus Afraz! Di Indonesia, kebijakan sosial berbasis data empiris (evidence-based policy) merupakan wujud pemikiran positivis yang terus ditingkatkan.',
-        created_at: '1 jam yang lalu',
-        likes: 8,
-      }
-    ]
-  },
-  {
-    id: 'cmt_2',
-    lesson_id: 'les_10_1',
-    user_name: 'MADINE MEUTIARANISSA GITA',
-    user_role: 'siswa',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=1000000027',
-    text: 'Ciri non-etis dalam sosiologi membuat sosiologi berbeda dengan filsafat moral ya. Sosiologi menjelaskan mengapa sesuatu terjadi, bukan menghakimi.',
-    created_at: '30 menit yang lalu',
-    likes: 3,
-  }
-];
+export const INITIAL_COMMENTS: any[] = [];
 
 export const INITIAL_CLASSROOMS: any[] = [
   {
