@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as XLSX from 'xlsx';
 import { 
   Shield, Users, Database, Activity, Award, Plus, Trash2, 
   BookOpen, FileText, Bell, CheckCircle, HelpCircle, Edit3, Sparkles,
@@ -16,6 +17,9 @@ interface AdminDashboardProps {
   exams: Exam[];
   announcements: Announcement[];
   usersList?: User[];
+  hasMoreUsers?: boolean;
+  onLoadMoreUsers?: () => void;
+  loadingMoreUsers?: boolean;
   onAddCourse: (newCourse: Course) => void;
   onDeleteCourse: (courseId: string) => void;
   onAddExam: (newExam: Exam) => void;
@@ -36,6 +40,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   exams,
   announcements,
   usersList: initialUsersList,
+  hasMoreUsers,
+  onLoadMoreUsers,
+  loadingMoreUsers,
   onAddCourse,
   onDeleteCourse,
   onAddExam,
@@ -366,10 +373,10 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
   };
 
   const downloadStudentTemplateCSV = () => {
-    const csvData = `NISN,Nama_Lengkap,Email_Siswa,Password_Akun,Sekolah,Kelas,Status
-0051234099,Budi Cahyono,budi.c@sosiologi.edu,Socio2026!Pass,SMA Negeri 8 Jakarta,12,Aktif
-0051234100,Siti Aminah,siti.aminah@sosiologi.edu,Socio2026!Pass,SMA Negeri 3 Yogyakarta,12,Aktif
-0051234101,Rizky Pratama,rizky.p@sosiologi.edu,Socio2026!Pass,SMA Negeri 1 Membumi,11,Aktif`;
+    const csvData = `NISN,Nama_Lengkap,Password_Akun,Kelas,Status
+0051234099,Budi Cahyono,Socio2026!Pass,12,Aktif
+0051234100,Siti Aminah,Socio2026!Pass,12,Aktif
+0051234101,Rizky Pratama,Socio2026!Pass,11,Aktif`;
 
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -379,6 +386,96 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const downloadStudentTemplateExcel = () => {
+    const data = [
+      {
+        NISN: '0051234099',
+        Nama_Lengkap: 'Budi Cahyono',
+        Password_Akun: 'Socio2026!Pass',
+        Kelas: 12,
+        Status: 'Aktif'
+      },
+      {
+        NISN: '0051234100',
+        Nama_Lengkap: 'Siti Aminah',
+        Password_Akun: 'Socio2026!Pass',
+        Kelas: 12,
+        Status: 'Aktif'
+      },
+      {
+        NISN: '0051234101',
+        Nama_Lengkap: 'Rizky Pratama',
+        Password_Akun: 'Socio2026!Pass',
+        Kelas: 11,
+        Status: 'Aktif'
+      }
+    ];
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    worksheet['!cols'] = [
+      { wch: 15 },
+      { wch: 28 },
+      { wch: 18 },
+      { wch: 10 },
+      { wch: 12 }
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data_Siswa_LMS');
+    XLSX.writeFile(workbook, 'template_import_siswa_massal.xlsx');
+  };
+
+  const handleStudentExcelFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const fileName = file.name.toLowerCase();
+    const reader = new FileReader();
+
+    if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+      reader.onload = (evt) => {
+        try {
+          const buffer = evt.target?.result;
+          const workbook = XLSX.read(buffer, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const firstSheet = workbook.Sheets[firstSheetName];
+          const rawRows: any[] = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+
+          if (rawRows.length > 0) {
+            const csvRows: string[] = ['NISN,Nama_Lengkap,Password_Akun,Kelas,Status'];
+            rawRows.forEach((row) => {
+              const nisn = row.NISN || row.nisn || row['No NISN'] || '';
+              const nama = row.Nama_Lengkap || row.nama_lengkap || row.Nama || row.nama || '';
+              const pass = row.Password_Akun || row.password_akun || row.Password || row.password || '';
+              const kelas = row.Kelas || row.kelas || 12;
+              const status = row.Status || row.status || 'Aktif';
+
+              if (nama || nisn) {
+                csvRows.push(`"${nisn}","${nama}","${pass}",${kelas},"${status}"`);
+              }
+            });
+
+            setStudentCsvText(csvRows.join('\n'));
+            showNotification(`File Excel "${file.name}" berhasil dibaca (${rawRows.length} data siswa terdeteksi)!`);
+          } else {
+            showErrorNotification('File Excel kosong atau tidak memiliki data siswa.');
+          }
+        } catch (err) {
+          console.error('Excel parse error:', err);
+          showErrorNotification('Gagal membaca file Excel.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.onload = (evt) => {
+        if (evt.target?.result) {
+          setStudentCsvText(evt.target.result as string);
+        }
+      };
+      reader.readAsText(file);
+    }
   };
 
   // Bulk Importer Courses to Firebase
@@ -643,7 +740,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
     }
   };
 
-  // Bulk Student CSV Importer to Firebase
+  // Bulk Student CSV / Excel Importer to Firebase
   const handleBulkUploadStudentsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!studentCsvText.trim()) return;
@@ -664,11 +761,10 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
         if (cols.length >= 2) {
           const nisn = cols[0] || `005123${Math.floor(100 + Math.random() * 900)}`;
           const name = cols[1] || 'Siswa Baru';
-          const email = cols[2] || `${name.toLowerCase().replace(/\s+/g, '.')}@sosiologi.edu`;
-          const password = cols[3] || `Socio2026!${name.split(' ')[0]}`;
-          const schoolName = cols[4] || 'SMA Negeri Sosiologi';
-          const grade = Number(cols[5] || 12);
-          const status = (cols[6] as any) || 'Aktif';
+          const password = cols[2] || `Socio2026!${name.split(' ')[0]}`;
+          const grade = Number(cols[3] || 12);
+          const status = (cols[4] as any) || 'Aktif';
+          const email = `${nisn || name.toLowerCase().replace(/\s+/g, '.')}@siswa.lms`;
 
           const studentUser: User = {
             id: `usr_st_${Date.now()}_${idx}`,
@@ -677,10 +773,10 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
             role: 'siswa',
             total_xp: 500,
             levelTitle: 'Siswa Sosiologi',
-            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(email)}`,
+            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(nisn || name)}`,
             grade: grade || 12,
             streakDays: 1,
-            schoolName,
+            schoolName: 'SMA Negeri 1 Membumi',
             nisn,
             status: status === 'Izin' || status === 'Alumni' ? status : 'Aktif',
           };
@@ -697,7 +793,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
         showNotification(`Sukses! ${count} Data Siswa berhasil diimpor & tersimpan ke Firebase Firestore!`);
         setStudentCsvText('');
       } else {
-        showErrorNotification('Format CSV tidak valid atau baris data tidak ditemukan.');
+        showErrorNotification('Format file/CSV tidak valid atau baris data tidak ditemukan.');
       }
     } catch (err) {
       console.error('Student Bulk Upload Error:', err);
@@ -2053,77 +2149,84 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                 </form>
               </>
             ) : (
-              /* CSV Student Upload Panel */
+              /* Excel / CSV Student Upload Panel */
               <div className="space-y-4">
                 <div className="border-b border-slate-100 pb-3">
-                  <h2 className="text-sm font-bold text-slate-800">Upload Data Siswa Massal (CSV)</h2>
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Impor seluruh daftar siswa kelas sekaligus dan simpan langsung ke database Firebase Firestore.
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                    <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                    <span>Upload Data Siswa Massal (Format Excel / CSV)</span>
+                  </h2>
+                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                    Impor seluruh roster siswa dari file Excel (.xlsx / .xls) sekaligus dan simpan langsung ke database Firebase Firestore.
                   </p>
                 </div>
 
-                <div className="bg-purple-50 p-3.5 rounded-2xl border border-purple-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-purple-900">📄 Format CSV Data Siswa</span>
-                    <button
-                      type="button"
-                      onClick={downloadStudentTemplateCSV}
-                      className="text-[11px] bg-purple-600 hover:bg-purple-700 text-white font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
-                    >
-                      Unduh Template CSV
-                    </button>
+                <div className="bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200 space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-emerald-900 flex items-center space-x-1.5">
+                      <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+                      <span>📊 Template Excel Data Siswa</span>
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={downloadStudentTemplateExcel}
+                        className="text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-3 py-1.5 rounded-xl shadow-xs transition-all cursor-pointer flex items-center space-x-1"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Unduh Template Excel (.xlsx)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={downloadStudentTemplateCSV}
+                        className="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1.5 rounded-xl transition-all cursor-pointer"
+                      >
+                        CSV
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-purple-800 leading-relaxed">
-                    Format Kolom: <code className="bg-purple-100 px-1 py-0.5 rounded text-purple-900 font-mono">NISN, Nama_Lengkap, Email_Siswa, Password_Akun, Sekolah, Kelas, Status</code>
+                  <p className="text-[10px] text-emerald-800 leading-relaxed">
+                    Format Kolom Excel: <code className="bg-emerald-100/90 px-1 py-0.5 rounded text-emerald-900 font-mono font-bold">NISN | Nama_Lengkap | Password_Akun | Kelas | Status</code>
                   </p>
                 </div>
 
                 <form onSubmit={handleBulkUploadStudentsSubmit} className="space-y-3 text-xs">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Tempelkan Teks CSV Siswa *</label>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Pilih File Excel (.xlsx / .xls) atau CSV dari Perangkat *
+                    </label>
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls,.csv,.txt"
+                      onChange={handleStudentExcelFileUpload}
+                      className="w-full text-xs text-slate-500 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-100 file:text-emerald-900 hover:file:bg-emerald-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-slate-50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Pratinjau Data Siswa (Teks / Hasil Parser File)</label>
                     <textarea
                       required
-                      rows={7}
-                      placeholder={`NISN,Nama_Lengkap,Email_Siswa,Password_Akun,Sekolah,Kelas,Status\n0051234099,Budi Cahyono,budi.c@sosiologi.edu,Socio2026!Pass,SMA Negeri 8 Jakarta,12,Aktif\n0051234100,Siti Aminah,siti.aminah@sosiologi.edu,Socio2026!Pass,SMA Negeri 3 Yogyakarta,12,Aktif`}
+                      rows={6}
+                      placeholder={`NISN,Nama_Lengkap,Password_Akun,Kelas,Status\n0051234099,Budi Cahyono,Socio2026!Pass,12,Aktif\n0051234100,Siti Aminah,Socio2026!Pass,12,Aktif`}
                       value={studentCsvText}
                       onChange={(e) => setStudentCsvText(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px] focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     />
                   </div>
 
-                  <div>
-                    <label className="block font-bold text-slate-700 mb-1">Atau Pilih File CSV dari Perangkat</label>
-                    <input
-                      type="file"
-                      accept=".csv,.txt"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onload = (evt) => {
-                            if (evt.target?.result) {
-                              setStudentCsvText(evt.target.result as string);
-                            }
-                          };
-                          reader.readAsText(file);
-                        }
-                      }}
-                      className="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-100 file:text-purple-800 hover:file:bg-purple-200 cursor-pointer"
-                    />
-                  </div>
-
                   <button
                     type="submit"
-                    disabled={isUploading}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center justify-center space-x-2 disabled:opacity-50"
+                    disabled={isUploading || !studentCsvText.trim()}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center justify-center space-x-2 disabled:opacity-50"
                   >
                     {isUploading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Mengunggah ke Firestore...</span>
+                        <span>Mengunggah Data ke Firestore...</span>
                       </>
                     ) : (
-                      <span>📥 Proses Impor Data Siswa ke Firebase</span>
+                      <span>📥 Simpan Data Siswa dari Excel ke Firebase</span>
                     )}
                   </button>
                 </form>
@@ -2213,6 +2316,25 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                 </tbody>
               </table>
             </div>
+
+            {hasMoreUsers && onLoadMoreUsers && (
+              <div className="pt-4 border-t border-slate-100 flex justify-center">
+                <button
+                  onClick={onLoadMoreUsers}
+                  disabled={loadingMoreUsers}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs flex items-center space-x-2 transition-all cursor-pointer border border-indigo-200"
+                >
+                  {loadingMoreUsers ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                      <span>Memuat Data Selanjutnya dari Firestore...</span>
+                    </>
+                  ) : (
+                    <span>📥 Muat Lebih Banyak Pengguna (Paginated Load More)</span>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

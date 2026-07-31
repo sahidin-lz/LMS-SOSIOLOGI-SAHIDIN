@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
@@ -21,4 +21,20 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
+// Aktifkan Firestore Offline Persistence (IndexedDB Caching)
+enableIndexedDbPersistence(db)
+  .then(() => {
+    console.log('[Firestore] Offline persistence & IndexedDB caching successfully enabled!');
+  })
+  .catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.warn('[Firestore Persistence] Multiple tabs open, persistence enabled in primary tab.');
+    } else if (err.code === 'unimplemented') {
+      console.warn('[Firestore Persistence] Browser does not support offline persistence.');
+    } else {
+      console.warn('[Firestore Persistence Error]', err);
+    }
+  });
+
 export default app;
+
