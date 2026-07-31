@@ -19,7 +19,10 @@ export function useOptimizedCourses() {
     try {
       const fsCourses = await fetchCollection<Course>('courses');
       if (fsCourses && fsCourses.length > 0) {
-        setCourses(fsCourses);
+        const courseMap = new Map<string, Course>();
+        COURSES_DATA.forEach((c) => courseMap.set(c.id, c));
+        fsCourses.forEach((c) => courseMap.set(c.id, c));
+        setCourses(Array.from(courseMap.values()));
       } else {
         // Seed initial data ke Firestore jika kosong
         for (const c of COURSES_DATA) {

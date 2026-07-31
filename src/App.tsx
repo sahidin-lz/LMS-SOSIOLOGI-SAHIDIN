@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
 import { Navbar } from './components/Navbar';
 import { LoginPage } from './components/LoginPage';
 import { useOptimizedCourses } from './hooks/useOptimizedCourses';
@@ -56,10 +56,27 @@ export default function App() {
   const [mainPillar, setMainPillar] = useState<'belajar' | 'tka'>('belajar');
   const [tkaSubTab, setTkaSubTab] = useState<'materi' | 'latihan_bab' | 'try_out_tka'>('materi');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'journey' | 'modules' | 'tasks' | 'classrooms' | 'leaderboard' | 'cbt' | 'exam_active' | 'exam_discussion'>('dashboard');
+  const [cbtFilter, setCbtFilter] = useState<'semua' | 'tryout' | 'latihan'>('semua');
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(undefined);
   const [activeExam, setActiveExam] = useState<Exam | null>(null);
   const [examSession, setExamSession] = useState<ExamSession | null>(null);
   const [analytics, setAnalytics] = useState<TryoutAnalytics[]>(TRYOUT_ANALYTICS_DATA);
+
+  const displayedExams = useMemo(() => {
+    let list = [...exams];
+    if (cbtFilter === 'tryout') {
+      list = list.filter((e) => e.category?.toLowerCase().includes('tryout') || e.id.includes('tka_2025'));
+    } else if (cbtFilter === 'latihan') {
+      list = list.filter((e) => e.category?.toLowerCase().includes('latihan') || e.id.includes('latihan_bab'));
+    }
+    return list.sort((a, b) => {
+      if (a.id.includes('tka_2025')) return -1;
+      if (b.id.includes('tka_2025')) return 1;
+      const numA = parseInt(a.id.replace(/\D/g, '') || '0', 10);
+      const numB = parseInt(b.id.replace(/\D/g, '') || '0', 10);
+      return numA - numB;
+    });
+  }, [exams, cbtFilter]);
 
   // Firebase Auth Observer
   useEffect(() => {
@@ -497,7 +514,7 @@ export default function App() {
           {/* CBT Tryouts List Tab */}
           {activeTab === 'cbt' && (
             <div className="space-y-6 pb-12">
-              <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-amber-300 bg-amber-950 px-3 py-1 rounded-full mb-1 border border-amber-800">
                     <FileText className="w-3.5 h-3.5 text-amber-400" />
@@ -506,12 +523,46 @@ export default function App() {
                   <h1 className="text-2xl font-extrabold text-stone-100">
                     Bank Ujian CBT & Tryout TKA Sosiologi SMA
                   </h1>
-                  <p className="text-xs text-stone-400">Pilih paket tryout TKA untuk melatih kecepatan, penalaran, dan penguasaan materi Sosiologi</p>
+                  <p className="text-xs text-stone-400">Pilih paket tryout TKA atau Latihan Soal CBT 10 Bab Sosiologi SMA (Lengkap Bab 1 s.d. 10)</p>
+                </div>
+
+                {/* Filter Pills */}
+                <div className="flex bg-stone-950 p-1.5 rounded-2xl border border-stone-800 text-xs font-bold gap-1 flex-wrap shrink-0">
+                  <button
+                    onClick={() => setCbtFilter('semua')}
+                    className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                      cbtFilter === 'semua'
+                        ? 'bg-amber-500 text-stone-950 font-black shadow-md'
+                        : 'text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    Semua Paket ({exams.length})
+                  </button>
+                  <button
+                    onClick={() => setCbtFilter('tryout')}
+                    className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                      cbtFilter === 'tryout'
+                        ? 'bg-amber-500 text-stone-950 font-black shadow-md'
+                        : 'text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    🎯 Tryout TKA Resmi
+                  </button>
+                  <button
+                    onClick={() => setCbtFilter('latihan')}
+                    className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                      cbtFilter === 'latihan'
+                        ? 'bg-amber-500 text-stone-950 font-black shadow-md'
+                        : 'text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    📝 Latihan 10 Bab
+                  </button>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {exams.map((exam) => (
+                {displayedExams.map((exam) => (
                   <div
                     key={exam.id}
                     className="bg-stone-900 rounded-3xl p-6 border border-stone-800 shadow-md hover:border-amber-500 transition-all space-y-4 flex flex-col justify-between"

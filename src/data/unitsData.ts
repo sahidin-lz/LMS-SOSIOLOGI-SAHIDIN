@@ -423,5 +423,72 @@ ATURAN SIMULASI CBT:
 3. Kunci jawaban dan pembahasan rinci terbuka otomatis setelah disubmit.`
       }
     ]
+  },
+  {
+    id: 'course_tka_05',
+    title: 'Unit 5 TKA Sosiologi: Struktur Sosial, Diferensiasi dan Stratifikasi Sosial',
+    description: 'Modul Pembelajaran TKA Sosiologi Unit 5 - Membahas Struktur Sosial Horizontal (Diferensiasi Suku, Ras, Agama, Clan, Profesi) dan Vertikal (Stratifikasi Sosial Weber, Status & Peran, Sistem Terbuka/Tertutup/Campuran, Tipe Kekuasaan Mac Iver & Sistem Feodal/Kambium).',
+    grade_level: 12,
+    category: 'TKA Sosiologi (UTBK / Seleksi PTN)',
+    thumbnail: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=600',
+    totalLessons: 3,
+    completedLessons: 0,
+    lessons: [
+      {
+        id: 'les_tka_5_a',
+        course_id: 'course_tka_05',
+        chapter_number: 5,
+        chapter_title: 'UNIT 5: STRUKTUR SOSIAL, DIFERENSIASI & STRATIFIKASI',
+        title: '1. Diferensiasi Sosial (Penggolongan Sederajat)',
+        content_type: 'text',
+        duration: '20 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Diferensiasi Sosial: Penggolongan secara horizontal/sederajat berdasarkan ciri-ciri fisik, sosial, atau budaya.',
+          'Bentuk Diferensiasi: Suku Bangsa, Ras (Kroeber: Austroloid, Mongoloid, Kaukasoid, Negroid), Agama, Clan, Jenis Kelamin & Profesi.'
+        ],
+        text_body: `1. DIFERENSIASI SOSIAL\n\nDiferensiasi sosial adalah penggolongan individu atau kelompok berdasarkan ciri-ciri tertentu yang tidak menunjukkan adanya tingkatan (horizontal & sederajat).\n\nBentuk-Bentuk Diferensiasi Sosial:\n1. Suku Bangsa / Etnis\n2. Agama\n3. Ras (Austroloid, Mongoloid, Kaukasoid, Negroid)\n4. Clan\n5. Profesi & Gender.`
+      },
+      {
+        id: 'les_tka_5_b',
+        course_id: 'course_tka_05',
+        chapter_number: 5,
+        chapter_title: 'UNIT 5: STRUKTUR SOSIAL, DIFERENSIASI & STRATIFIKASI',
+        title: '2. Stratifikasi Sosial (Penggolongan Vertikal & Hierarkis)',
+        content_type: 'text',
+        duration: '20 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Stratifikasi Sosial (Max Weber): Penggolongan masyarakat ke dalam lapisan-lapisan hierarkis vertikal.',
+          'Unsur: Status (Ascribed, Achieved, Assigned Linton) & Peran Sosial (Role).',
+          'Sistem Stratifikasi: Tertutup, Terbuka, Campuran.',
+          'Sistem Politik (Mac Iver): Tipe Kasta, Tipe Oligarki, Tipe Demokratis.'
+        ],
+        text_body: `2. STRATIFIKASI SOSIAL\n\nStratifikasi sosial adalah penggolongan masyarakat ke dalam kelas atau lapisan yang bertingkat secara hierarkis atau vertikal.\n\nUnsur Stratifikasi:\n1. Status Sosial (Ascribed, Achieved, Assigned)\n2. Peran Sosial (Role)\n\nSistem Stratifikasi:\n- Tertutup\n- Terbuka\n- Campuran.`
+      },
+      {
+        id: 'les_tka_5_c',
+        course_id: 'course_tka_05',
+        chapter_number: 5,
+        chapter_title: 'UNIT 5: STRUKTUR SOSIAL, DIFERENSIASI & STRATIFIKASI',
+        title: '3. Latihan Bab 5: Struktur Sosial, Diferensiasi & Stratifikasi (20 Soal CBT)',
+        content_type: 'text',
+        duration: '40 Min',
+        xp_reward: 300,
+        completed: false,
+        bookmarked: true,
+        exam_id_target: 'exam_latihan_bab_5',
+        key_takeaways: [
+          'PG Biasa (Soal 1-8, 17-18): Diferensiasi Horizontal, Achieved Status Linton, Austroloid Aborigin, Stratifikasi Tertutup Kasta, Tipe Demokratis Mac Iver, Feodal Kepemilikan Tanah, Matrilineal, Lingkaran Kambium Keraton, Peran Sosial Role.',
+          'PGK Kategori (Soal 9-12, 19): Achieved/Ascribed/Assigned Status, Stratifikasi Terbuka/Tertutup/Campuran, Melanoderm/Leukoderm/Xantoderm, Daerah Adat Van Vollenhoven.',
+          'MCMA (Soal 13-16, 20): Bentuk Diferensiasi Suku/Ras/Profesi, Dimensi Stratifikasi Weber (Kekuasaan/Privilese/Prestise).'
+        ],
+        text_body: `I. LATIHAN BAB 5: STRUKTUR SOSIAL, DIFERENSIASI & STRATIFIKASI (20 SOAL CBT)\n\nSistem Latihan Bab 5 terintegrasi langsung dengan Engine Simulasi CBT TKA Sosiologi.\n\nATURAN SIMULASI CBT:\n1. Klik tombol "MULAI KERJAKAN 20 SOAL DI SISTEM CBT" di bawah.\n2. Selesaikan 20 soal interaktif mencakup PG Biasa, PGK Kategori, dan MCMA Multi-Jawaban.\n3. Kunci jawaban dan pembahasan rinci terbuka otomatis setelah disubmit.`
+      }
+    ]
   }
 ];

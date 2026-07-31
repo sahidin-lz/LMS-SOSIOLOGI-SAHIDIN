@@ -684,57 +684,6 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                   </button>
                 </div>
               </div>
-
-              {/* Secondary TKA Packages Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
-                      Tryout TKA Paket 1
-                    </span>
-                    <h4 className="text-base font-bold text-stone-100">Fondasi & Teori Klasik</h4>
-                    <p className="text-xs text-stone-400">Paket simulasi TKA berfokus pada analisis teori sosiologi klasik (Marx, Durkheim, Weber) dan pemetaan gejala sosial.</p>
-                  </div>
-                  <button
-                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
-                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
-                  >
-                    Mulai Kerjakan Ujian (25 Menit)
-                  </button>
-                </div>
-
-                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
-                      Tryout TKA Paket 2
-                    </span>
-                    <h4 className="text-base font-bold text-stone-100">Penalaran HOTS & Perubahan Global</h4>
-                    <p className="text-xs text-stone-400">Paket latihan TKA tingkat tinggi (HOTS) berfokus pada analisis konflik, globalisasi, kearifan lokal, dan transformasi digital.</p>
-                  </div>
-                  <button
-                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
-                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
-                  >
-                    Mulai Kerjakan Ujian (20 Menit)
-                  </button>
-                </div>
-
-                <div className="bg-stone-900 rounded-3xl p-6 border border-stone-800 space-y-4 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <span className="text-[10px] font-black uppercase text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800">
-                      Tryout TKA Paket 3
-                    </span>
-                    <h4 className="text-base font-bold text-stone-100">Pemetaan Riset & Analisis Kritis</h4>
-                    <p className="text-xs text-stone-400">Tryout TKA simulasi cepat untuk menguji kecepatan bernalar, kearifan lokal, dan mobilitas sosial.</p>
-                  </div>
-                  <button
-                    onClick={() => onStartExam && onStartExam('exam_tka_2025_resmi')}
-                    className="w-full py-2.5 rounded-xl bg-stone-800 hover:bg-amber-500 hover:text-stone-950 text-stone-200 font-bold text-xs transition-all cursor-pointer"
-                  >
-                    Mulai Kerjakan Ujian (15 Menit)
-                  </button>
-                </div>
-              </div>
             </div>
           ) : (
             /* Course Cards Grid */

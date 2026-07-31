@@ -18,7 +18,11 @@ export function useOptimizedExams() {
     try {
       const fsExams = await fetchCollection<Exam>('exams');
       if (fsExams && fsExams.length > 0) {
-        setExams(fsExams);
+        // Merge EXAMS_DATA default 10 bab exams with any custom Firestore exams
+        const examMap = new Map<string, Exam>();
+        EXAMS_DATA.forEach((e) => examMap.set(e.id, e));
+        fsExams.forEach((e) => examMap.set(e.id, e));
+        setExams(Array.from(examMap.values()));
       } else {
         // Seed initial data ke Firestore jika belum ada
         for (const e of EXAMS_DATA) {
@@ -29,6 +33,7 @@ export function useOptimizedExams() {
     } catch (err: any) {
       console.error('[useOptimizedExams Error]', err);
       setError('Gagal memuat paket ujian dari cache/Firestore');
+      setExams(EXAMS_DATA);
     } finally {
       setLoading(false);
     }
