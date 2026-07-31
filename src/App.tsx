@@ -36,7 +36,17 @@ export default function App() {
 
   const [courses, setCourses] = useState<Course[]>(() => {
     const saved = localStorage.getItem('socioedu_courses');
-    return saved ? JSON.parse(saved) : COURSES_DATA;
+    if (!saved) return COURSES_DATA;
+    try {
+      const parsed: Course[] = JSON.parse(saved);
+      const initialIds = new Set(COURSES_DATA.map((c) => c.id));
+      const userAddedCourses = parsed.filter((c) => !initialIds.has(c.id));
+      const updatedList = [...COURSES_DATA, ...userAddedCourses];
+      localStorage.setItem('socioedu_courses', JSON.stringify(updatedList));
+      return updatedList;
+    } catch {
+      return COURSES_DATA;
+    }
   });
 
   const [exams, setExams] = useState<Exam[]>(() => {

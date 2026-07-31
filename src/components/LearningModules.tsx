@@ -26,9 +26,12 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
   );
 
   const filteredCourses = courses.filter((c) => {
+    const isTkaCourse = c.category?.toLowerCase().includes('tka') || c.title?.toLowerCase().includes('tka');
     if (selectedCategoryTab === 'tka') {
-      return c.category?.toLowerCase().includes('tka') || c.title?.toLowerCase().includes('tka');
+      return isTkaCourse;
     }
+    // Exclude TKA courses from regular grade 10, 11, 12 tabs
+    if (isTkaCourse) return false;
     return c.grade_level === Number(selectedCategoryTab);
   });
   

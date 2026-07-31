@@ -81,6 +81,327 @@ export const TRYOUT_ANALYTICS_DATA: TryoutAnalytics[] = [
 
 export const COURSES_DATA: Course[] = [
   {
+    id: 'course_tka_01',
+    title: 'Unit 1 TKA Sosiologi: Sosiologi Sebagai Ilmu',
+    description: 'Modul Pembelajaran TKA Sosiologi Unit 1 - Mengupas Sejarah, Objek Kajian, Ciri/Karakteristik (Empiris, Teoritis, Kumulatif, Non-etis), Posisi Ilmu, Metode Penelitian, Perspektif, Teori Tokoh Klasik (Comte, Durkheim, Marx, Weber), Fungsi, serta Peran Sosiologi secara utuh.',
+    grade_level: 12,
+    category: 'TKA Sosiologi (UTBK / Seleksi PTN)',
+    thumbnail: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=600',
+    totalLessons: 8,
+    completedLessons: 0,
+    lessons: [
+      {
+        id: 'les_tka_1_a',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'A. Sejarah dan Perkembangan Ilmu Sosiologi',
+        content_type: 'text',
+        duration: '15 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: true,
+        key_takeaways: [
+          'Diperkenalkan pertama kali oleh Auguste Comte (Bapak Sosiologi) dalam buku "Positive-Philosophy" (1842).',
+          'Awalnya diusulkan nama "ethology" oleh John Stuart Mill, tetapi tidak banyak digunakan.',
+          'Perkembangan pesat terjadi setelah Herbert Spencer dari Inggris menulis buku "Principles of Sociology".',
+          'Sosiologi menyebar ke Amerika Serikat, Prancis, Jerman, hingga seluruh dunia termasuk Indonesia.',
+          'Tokoh-tokoh penting lainnya: Karl Marx, Max Weber, dan Charles H. Cooley.'
+        ],
+        text_body: `A. SEJARAH DAN PERKEMBANGAN ILMU SOSIOLOGI
+
+Siapa yang Memperkenalkan Sosiologi? 
+Sosiologi pertama kali diperkenalkan oleh seorang filsuf dari Prancis bernama Auguste Comte. Ia menulis beberapa buku yang berisi cara-cara umum untuk mempelajari masyarakat.
+
+Apa Ide Utamanya? 
+Comte percaya bahwa untuk memahami masyarakat, penelitian harus dilakukan melalui tahapan-tahapan yang logis hingga mencapai tahap paling akhir, yaitu tahap ilmiah.
+
+Kapan Sosiologi Lahir? 
+Sosiologi dianggap lahir pada tahun 1842. Ini adalah momen ketika Auguste Comte menerbitkan buku terakhirnya yang berjudul "Positive-Philosophy".
+
+Bagaimana Sosiologi Berkembang?
+1. Istilah Sosiologi tidak langsung populer. Awalnya, ada usulan nama lain yaitu "ethology" dari John Stuart Mill, tetapi tidak banyak digunakan.
+2. Perkembangan sosiologi menjadi sangat pesat setelah Herbert Spencer dari Inggris menulis buku "Principles of Sociology".
+3. Setelah itu, sosiologi berkembang pesat di Amerika Serikat, Prancis, dan Jerman, sebelum akhirnya menyebar ke seluruh dunia, termasuk Indonesia.
+4. Siapa Saja Tokoh-Tokoh Penting Lainnya? Selain Auguste Comte dan Herbert Spencer, ada banyak tokoh penting lain dalam perkembangan sosiologi, seperti Karl Marx, Max Weber, dan Charles H. Cooley.`
+      },
+      {
+        id: 'les_tka_1_b',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'B. Objek Kajian & Karakteristik Ilmu Sosiologi',
+        content_type: 'text',
+        duration: '20 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Empiris: Berdasarkan fakta nyata di lapangan (observasi), tidak berspekulasi/menduga-duga.',
+          'Teoritis: Menyusun kesimpulan logis (abstraksi) hubungan sebab-akibat dari pengamatan lapangan.',
+          'Kumulatif: Teori lama diperbaiki, dikembangkan, dilengkapi, atau disanggah sesuai kondisi terkini.',
+          'Non-Etis: Bebas nilai, objektif, netral tidak memihak, tidak menilai baik/buruk suatu fenomena.'
+        ],
+        text_body: `B. OBJEK KAJIAN DAN KARAKTERISTIK ILMU SOSIOLOGI
+
+1. Empiris
+Kata Kunci: Berdasarkan Fakta Nyata.
+Penjelasan Mudah: Sosiologi mempelajari masyarakat berdasarkan kejadian yang benar-benar terjadi di lapangan, bukan hasil karangan atau dugaan (spekulasi). Semua kesimpulannya harus bisa dibuktikan melalui pengamatan (observasi) dan dapat diterima oleh akal sehat.
+
+2. Teoritis
+Kata Kunci: Menjelaskan Sebab-Akibat.
+Penjelasan Mudah: Setelah mengumpulkan fakta, Sosiologi selalu berusaha menyusun kesimpulan logis untuk menjelaskan hubungan sebab-akibat dari sebuah gejala sosial. Tujuannya adalah untuk membangun sebuah teori yang bisa menjelaskan mengapa suatu fenomena terjadi.
+
+3. Kumulatif
+Kata Kunci: Membangun dan Menyempurnakan.
+Penjelasan Mudah: Teori-teori dalam Sosiologi tidak muncul begitu saja. Teori yang baru dibangun di atas teori lama yang sudah ada, dengan cara memperbaiki, memperluas, dan menyempurnakannya. Jadi, ilmu Sosiologi terus berkembang dan "bertumpuk" menjadi lebih baik dari waktu ke waktu.
+
+4. Non-etis
+Kata Kunci: Objektif (Tidak Menghakimi).
+Penjelasan Mudah: Sosiologi tidak bertugas untuk menilai apakah suatu hal di masyarakat itu baik atau buruk. Tugasnya adalah menjelaskan dan menganalisis fakta dari sebuah fenomena sosial secara apa adanya (objektif), tanpa memasukkan unsur penilaian pribadi.
+
+--------------------------------------------------------------------------------
+TABEL 1.1 CIRI ILMU SOSIOLOGI DAN CONTOH
+--------------------------------------------------------------------------------
+
+[CIRI: EMPIRIS]
+• Keterangan: 
+  - Berdasarkan kenyataan di masyarakat (hasil observasi atau melakukan pengamatan, penemuan, atau percobaan)
+  - Dapat dibuktikan kebenarannya, tidak menduga-duga atau berspekulasi
+• Contoh: 
+  Liza sedang melakukan observasi lapangan guna memahami nilai norma masyarakat Minangkabau.
+
+[CIRI: TEORITIS]
+• Keterangan: 
+  - Membuat abstraksi dari pengamatan lapangan
+  - Atau membuat kesimpulan dari pengamatan lapangan.
+• Contoh: 
+  Liza menyimpulkan alasan dilakukannya upacara adat marapulai pada prosesi pernikahan adat Minangkabau sesuai data di lapangan yang didapat.
+
+[CIRI: KUMULATIF]
+• Keterangan: 
+  - Kesimpulan yang sudah ada kemudian diperbaiki, dikembangkan, dilengkapi bahkan mungkin disanggah sesuai dengan keadaan terkini.
+• Contoh: 
+  - Penelitian 1: Kenakalan remaja itu, terjadi karena tidak ada keharmonisan dalam keluarga.
+  - Penelitian 2: Kenakalan remaja dipengaruhi karena pergaulan teman sebaya yang cenderung negatif.
+  - Kesimpulan Kumulatif: Jadi, penyebab kenakalan remaja yaitu ketidakharmonisan keluarga dan pergaulan teman sebaya yang negatif.
+
+[CIRI: NON ETIS]
+• Keterangan: 
+  - Bebas nilai tidak menilai baik dan buruk sebuah fenomena sosial
+  - Objektif
+  - Netral tidak memihak
+• Contoh: 
+  Liza menjelaskan penyebab terjadinya praktik sex bebas di kalangan mahasiswa sesuai data di lapangan, bukan berdasarkan prasangka pribadi.`
+      },
+      {
+        id: 'les_tka_1_c',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'C. Posisi Sosiologi sebagai Ilmu Pengetahuan',
+        content_type: 'text',
+        duration: '10 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Ilmu Murni (Pure Science): Digunakan untuk mendapatkan pengetahuan teoritis tentang masyarakat.',
+          'Ilmu Terapan (Applied Science): Digunakan untuk memecahkan masalah secara praktis guna memperbaiki kehidupan masyarakat.'
+        ],
+        text_body: `C. POSISI SOSIOLOGI SEBAGAI ILMU PENGETAHUAN
+
+ILMU MURNI (PURE SCIENCE)
+• Keterangan: 
+  Sosiologi sebagai ilmu murni digunakan untuk mendapatkan pengetahuan tentang masyarakat.
+• Contoh: 
+  Liza sedang melakukan penelitian mengenai penyebab dari konflik di bidang pertanahan yang sering terjadi di Indonesia.
+
+ILMU TERAPAN (APPLIED SCIENCE)
+• Keterangan: 
+  Sosiologi sebagai ilmu terapan digunakan untuk memecahkan masalah secara praktis guna memperbaiki kehidupan masyarakat.
+• Contoh: 
+  Liza melakukan penelitian mengenai cara pencegahan konflik pertanahan di Indonesia.`
+      },
+      {
+        id: 'les_tka_1_d',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'D. Metode-Metode dalam Ilmu Sosiologi',
+        content_type: 'text',
+        duration: '10 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Metode Kuantitatif: Meneliti fakta yang dapat diukur dengan angka menggunakan statistik, skala, indeks, tabel, dan formula matematika.',
+          'Metode Kualitatif: Penelitian dilakukan secara mendalam dengan sumber data berupa kata-kata lisan atau tertulis.'
+        ],
+        text_body: `D. METODE-METODE DALAM ILMU SOSIOLOGI
+
+Sosiologi sebagai ilmu dapat digunakan untuk melakukan penelitian sosial, baik dengan metode kuantitatif maupun kualitatif:
+
+a. Metode Kuantitatif
+Metode kuantitatif digunakan meneliti fakta yang dapat diukur dengan angka. Penarikan kesimpulan dalam penelitian kuantitatif menggunakan skala, indeks, tabel, dan formula-formula yang berkaitan dengan ilmu Matematika.
+
+b. Metode Kualitatif
+Metode kualitatif merupakan penelitian yang dilakukan secara mendalam dengan sumber data berupa kata-kata lisan atau tertulis.`
+      },
+      {
+        id: 'les_tka_1_e',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'E. Perspektif / Paradigma Sosiologi',
+        content_type: 'text',
+        duration: '15 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Perspektif Evolusionis (Comte & Spencer): Memusatkan perhatian pada pola perkembangan dan perubahan masyarakat.',
+          'Perspektif Interaksionis: Penekanan pada interaksi antara individu dan kelompok dengan simbol-simbol (isyarat, tanda, kata-kata).',
+          'Perspektif Fungsionalis: Memandang masyarakat sebagai jaringan yang terorganisasi dan mempunyai aturan yang ditaati anggotanya.',
+          'Perspektif Konflik: Kajian utama pada pertentangan antarkelas dan eksploitasi kelas sebagai penggerak utama sejarah.'
+        ],
+        text_body: `E. PERSPEKTIF SOSIOLOGI
+
+Perspektif Sosiologi merupakan cara memandang atau memahami suatu fenomena berdasarkan keyakinan kita. Perspektif sering disebut juga dengan paradigma. Berikut ini beberapa perspektif dalam sosiologi, yaitu:
+
+1. Perspektif Evolusionis
+Perspektif evolusionis yaitu memusatkan perhatian pada pola perkembangan dan perubahan dalam masyarakat yang berbeda. Auguste Comte dan Herbert Spencer adalah tokoh-tokoh perspektif evolusionis.
+
+2. Perspektif Interaksionis
+Pusat penekanannya pada interaksi antara individu dan kelompok dengan simbol-simbol. Simbol-simbol tersebut dapat berupa isyarat, tanda, dan kata-kata.
+
+3. Perspektif Fungsionalis
+Perspektif ini memandang masyarakat sebagai sebuah jaringan yang terorganisasi dan mempunyai aturan ditaati oleh anggotanya.
+
+4. Perspektif Konflik
+Kajian utama perspektif ini adalah adanya pertentangan antarkelas dan eksploitasi kelas dalam masyarakat sebagai penggerak utama kekuatan-kekuatan dalam sejarah.`
+      },
+      {
+        id: 'les_tka_1_f',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'F. Teori-Teori dalam Sosiologi',
+        content_type: 'text',
+        duration: '25 Min',
+        xp_reward: 120,
+        completed: false,
+        bookmarked: true,
+        key_takeaways: [
+          'Auguste Comte: Positivisme (Hukum 3 Tahap: Teologis, Metafisika, Positif).',
+          'Emile Durkheim: Fakta Sosial & Tipe Solidaritas (Mekanik & Organik).',
+          'Karl Marx: Perjuangan Kelas dalam Ekonomi Kapitalisme (Kaum Borjuis/Kapitalis & Kaum Proletar/Buruh).',
+          'Max Weber: Tindakan Sosial (Rasional Instrumental, Rasional Berorientasi Nilai, Tradisional, Afektif) & Etika Protestan (Calvinisme).'
+        ],
+        text_body: `F. TEORI-TEORI DALAM SOSIOLOGI
+
+1. Auguste Comte
+Auguste Comte mengemukakan tentang positivisme yaitu hukum tentang gejala-gejala sosial, yang berhubungan dengan perkembangan cara berpikir yang mendasari perkembangan masyarakat:
+• Teologis: menjelaskan gejala sosial dengan bersumber pada kekuatan Tuhan, dewa.
+• Metafisika: menjelaskan gejala sosial dengan bersumber pada kekuatan abstrak, gaib.
+• Positif: menjelaskan gejala sosial dengan bersumber pada ilmu pengetahuan ilmiah.
+
+2. Emile Durkheim
+Fokus kajian sosiologi menurut Durkheim adalah fakta sosial.
+Fakta sosial adalah cara bertindak, berpikir, dan berperasaan yang berada di luar diri individu tapi memiliki daya paksa atas dirinya. Misal: aturan, hukum, kepercayaan, adat istiadat.
+Durkheim juga membagi masyarakat ke dalam 2 tipe solidaritas, antara lain:
+• Mekanik: sederhana, homogen, belum ada pembagian kerja, diikat kesadaran kolektif.
+• Organik: pembagian kerja dengan fungsi masing-masing, saling tergantung sehingga harus bekerja sama.
+
+3. Karl Marx
+Menurut Marx, sejarah masyarakat merupakan sejarah perjuangan kelas. Ekonomi kapitalisme melahirkan 2 kelas berbeda, yaitu:
+• Kaum borjuis/kapitalis: orang-orang yang menguasai modal dan alat produksi.
+• Kaum proletar/buruh: orang-orang yang tidak punya modal dan alat sehingga dieksploitasi.
+
+4. Max Weber
+Fokus kajian sosiologi menurut Weber adalah tindakan sosial.
+Tindakan sosial yaitu tindakan yang mempertimbangkan dan berorientasi terhadap kehadiran atau perilaku orang lain.
+• Tindakan sosial rasional instrumental, yakni memperhitungkan cara yang digunakan untuk mencapai tujuan.
+• Tindakan sosial rasional berorientasi nilai, yakni memperhitungkan baik atau buruknya suatu tindakan.
+• Tindakan tradisional, yakni tindakan meneruskan tradisi/cara-cara yang dituntunkan nenek moyang (tanpa pertimbangan rasional).
+• Tindakan afektif, yakni luapan perasaan atau emosi, bersifat tidak rasional.
+
+*Keterangan Tambahan Pemikiran Max Weber (Etika Protestan):
+Kapitalisme muncul dan berkembang bersamaan dengan perkembangan ajaran Calvinisme dalam Protestan. Calvinisme mengajarkan umatnya untuk bekerja keras, disiplin, hidup sederhana, dan hemat. Dengan kerja keras umat Calvinis berharap mendapat kemakmuran yang menuntun ke surga.`
+      },
+      {
+        id: 'les_tka_1_g',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'G. Fungsi Ilmu Sosiologi',
+        content_type: 'text',
+        duration: '12 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          'Penelitian Sosial: Mempelajari & menjelaskan fenomena sosial secara empiris.',
+          'Perencanaan Sosial: Mempersiapkan masa depan kehidupan masyarakat secara ilmiah guna mengatasi potensi masalah sosial.',
+          'Pembangunan Sosial: Peningkatan taraf hidup masyarakat berdasarkan realitas sosial/kondisi masyarakat.',
+          'Pemecahan / Solusi Masalah Sosial: Penelitian sosial untuk menemukan solusi tepat dan diaplikasikan di masyarakat.'
+        ],
+        text_body: `G. FUNGSI SOSIOLOGI
+
+Menurut Abdulsyani, fungsi Sosiologi dalam masyarakat sebagai berikut:
+
+a. Penelitian Sosial
+Ilmu Sosiologi diperlukan untuk mempelajari dan menjelaskan berbagai fenomena sosial dalam masyarakat. Dengan demikian, fenomena sosial dapat dijelaskan secara empiris.
+
+b. Perencanaan Sosial
+Perencanaan sosial merupakan kegiatan untuk mempersiapkan masa depan kehidupan masyarakat secara ilmiah. Perencanaan sosial bertujuan mengatasi kemungkinan terjadinya masalah sosial.
+
+c. Pembangunan Sosial
+Pembangunan menurut konsep Sosiologi merupakan proses peningkatan taraf hidup masyarakat berdasarkan realitas sosial atau kondisi masyarakat.
+
+d. Pemecahan / Solusi Masalah Sosial
+Masalah sosial merupakan fenomena sosial yang perlu dicari solusinya. Untuk mencari solusi tersebut diperlukan penelitian sosial. Dalam kegiatan penelitian sosial sosiolog mengamati perilaku masyarakat dan masalah sosial melalui pendekatan Sosiologi. Berdasarkan hasil penelitian, upaya mengatasi/solusi masalah sosial dapat ditemukan, selanjutnya diaplikasikan untuk mengatasi masalah sosial.`
+      },
+      {
+        id: 'les_tka_1_h',
+        course_id: 'course_tka_01',
+        chapter_number: 1,
+        chapter_title: 'UNIT 1: SOSIOLOGI SEBAGAI ILMU',
+        title: 'H. Peran Ilmu Sosiologi',
+        content_type: 'text',
+        duration: '15 Min',
+        xp_reward: 100,
+        completed: false,
+        bookmarked: false,
+        key_takeaways: [
+          '1. Ahli Riset: Melakukan riset ilmiah & membuat laporan acuan pengambilan kebijakan.',
+          '2. Konsultan Kebijakan: Meramal persoalan agar masalah sosial ditekan seminimal mungkin.',
+          '3. Teknisi: Ilmuwan terapan mencari nilai/efektivitas suatu program masyarakat.',
+          '4. Guru atau Pendidik: Menyumbangkan ilmu untuk penyelesaian masalah sehari-hari dan perkembangan ilmu.',
+          '5. Pekerja Sosial: Membantu individu/kelompok menghadapi masalah keberfungsian sosial secara efektif.'
+        ],
+        text_body: `H. PERAN ILMU SOSIOLOGI
+
+Menurut Horton dan Hunt, peran sosiolog di dalam masyarakat, antara lain:
+
+1. Ahli Riset
+Dalam hal ini, para sosiolog melakukan riset ilmiah dan membuat laporan ilmiah. Data yang diperoleh menjadi acuan dalam mengambil kebijakan tentang masalah sosial di masyarakat.
+
+2. Konsultan Kebijakan
+Kebijakan sosial merupakan suatu ramalan. Dengan kebijakan ini, suatu persoalan dapat diambil sebuah kebijakan dengan harapan masalah yang muncul dapat ditekan seminimal mungkin.
+
+3. Teknisi
+Dalam hal ini seorang sosiolog bekerja sebagai ilmuwan terapan, dimana mereka dapat menggunakan ilmunya dalam mencari nilai-nilai tertentu, seperti efektivitas suatu program dalam masyarakat.
+
+4. Guru atau Pendidik
+Dalam hal ini seorang sosiolog dapat menyumbangkan ilmunya di masyarakat agar dapat bermanfaat dalam penyelesaian persoalan sehari-hari dan juga bermanfaat untuk perkembangan ilmunya.
+
+5. Pekerja Sosial
+Dalam hal ini, sosiolog membantu individu atau kelompok dalam menghadapi masalah keberfungsian sosialnya secara efektif.`
+      }
+    ]
+  },
+  {
     id: 'course_10',
     title: 'Sosiologi Kelas 10: Fondasi Sosiologi & Interaksi Sosial',
     description: 'Pelajari konsep dasar Sosiologi, fakta sosial Auguste Comte & Emile Durkheim, serta dinamika interaksi, nilai, dan norma masyarakat.',
