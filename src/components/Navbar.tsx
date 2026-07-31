@@ -332,17 +332,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Misi & Tugas</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('classrooms')}
-                className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl transition-all ${
-                  activeTab === 'classrooms'
-                    ? 'bg-emerald-800 text-amber-200 font-extrabold shadow-sm border border-emerald-600/50'
-                    : 'text-stone-300 hover:text-white hover:bg-stone-800'
-                }`}
-              >
-                <GraduationCap className="w-4 h-4 text-emerald-400" />
-                <span>Ruang Kelas (Rombel)</span>
-              </button>
+              {(user.role === 'admin' || user.role === 'guru') && (
+                <button
+                  onClick={() => setActiveTab('classrooms')}
+                  className={`flex items-center space-x-2 px-3 py-1.5 rounded-xl transition-all ${
+                    activeTab === 'classrooms'
+                      ? 'bg-emerald-800 text-amber-200 font-extrabold shadow-sm border border-emerald-600/50'
+                      : 'text-stone-300 hover:text-white hover:bg-stone-800'
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4 text-emerald-400" />
+                  <span>Ruang Kelas (Rombel)</span>
+                </button>
+              )}
 
               <button
                 onClick={() => setActiveTab('classroom_chat')}

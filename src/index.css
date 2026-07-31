@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@layer components {
+  button:not(:disabled), .cursor-pointer:not(:disabled) {
+    @apply active:scale-95 active:transition-transform active:duration-75;
+  }
+}
+

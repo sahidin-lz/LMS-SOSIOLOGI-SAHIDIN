@@ -6,7 +6,7 @@ import { useOptimizedExams } from './hooks/useOptimizedExams';
 import { useOptimizedUsers } from './hooks/useOptimizedUsers';
 import { useOptimizedAnnouncements } from './hooks/useOptimizedAnnouncements';
 import { useOptimizedLeaderboard } from './hooks/useOptimizedLeaderboard';
-import { TRYOUT_ANALYTICS_DATA } from './data/sociologyData';
+import { TRYOUT_ANALYTICS_DATA, EXAM_HISTORY_DATA } from './data/sociologyData';
 import { Announcement, Course, Exam, Question, ExamSession, Role, User, UserAnswer, TryoutAnalytics } from './types';
 import { testFirestoreConnection, saveDocument, deleteDocument } from './lib/firestoreService';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -467,6 +467,7 @@ export default function App() {
               exams={exams}
               announcements={announcements}
               analytics={analytics}
+              examHistory={EXAM_HISTORY_DATA}
               onStartCourse={handleStartCourse}
               onStartExam={handleStartExam}
               setActiveTab={(tab) => setActiveTab(tab as any)}

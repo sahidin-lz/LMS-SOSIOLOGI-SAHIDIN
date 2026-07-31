@@ -1,0 +1,3 @@
+Buku Ajar/Modul Premium: Sosiologi SMA Kelas X
+Bab 4: Lembaga Sosial (Kurikulum Merdeka)
+... (I will just use node to read the text later. I'll pass the content through the command or just use the generated file).

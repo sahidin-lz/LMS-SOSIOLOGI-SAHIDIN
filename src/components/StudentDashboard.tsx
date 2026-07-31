@@ -7,17 +7,19 @@ import { CourseList } from './CourseList';
 import { AnnouncementWidget } from './AnnouncementWidget';
 import { ActiveTryoutWidget } from './ActiveTryoutWidget';
 import { StudyTipsWidget } from './StudyTipsWidget';
+import { ExamHistoryWidget } from './ExamHistoryWidget';
 
 // Pastikan tipe data mencakup Competency
-import { Course, Exam, TryoutAnalytics, User, Announcement, Competency } from '../types';
+import { Course, Exam, TryoutAnalytics, User, Announcement, Competency, ExamSession } from '../types';
 
 interface StudentDashboardProps {
   user: User;
   courses: Course[];
   exams: Exam[];
   announcements?: Announcement[];
-  analytics?: TryoutAnalytics[]; 
-  competencies?: Competency[]; // Jadikan prop, JANGAN import langsung
+  analytics?: TryoutAnalytics[];
+  competencies?: Competency[];
+  examHistory?: ExamSession[];
   onStartCourse: (courseId: string) => void;
   onStartExam: (examId: string) => void;
   setActiveTab: (tab: 'dashboard' | 'modules' | 'leaderboard' | 'cbt') => void;
@@ -30,6 +32,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
   announcements = [],
   analytics = [],
   competencies = [],
+  examHistory = [],
   onStartCourse,
   onStartExam,
   setActiveTab,
@@ -68,6 +71,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             onStartCourse={onStartCourse} 
             onNavigate={() => setActiveTab('modules')} 
           />
+
         </div>
 
         {/* Kolom Kanan: Widgets */}
@@ -86,7 +90,10 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({
             />
           )}
 
-          {/* 7. Tips */}
+          {/* 7. Exam History */}
+          <ExamHistoryWidget history={examHistory} />
+
+          {/* 8. Tips */}
           <StudyTipsWidget />
           
         </div>

@@ -9,6 +9,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import { saveDocument } from '../lib/firestoreService';
 import { User } from '../types';
+import { RAW_STUDENTS_LIST } from '../data/studentsData';
 
 interface LoginPageProps {
   onLoginSuccess: (user: User) => void;
@@ -47,18 +48,46 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  // Handle Login Submit via Firebase Auth
+  // Handle Login Submit via Firebase Auth & Local Rombel Data
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
 
     if (!email || !password) {
-      setErrorMessage('Mohon isi Email dan Kata Sandi.');
+      setErrorMessage('Mohon isi Email/NISN dan Kata Sandi.');
       return;
     }
 
     setLoading(true);
+
+    // 1. Check local rombel data first (for students)
+    const trimmedInput = email.trim();
+    const student = RAW_STUDENTS_LIST.find(s => (s.nisn === trimmedInput || s.name.toLowerCase() === trimmedInput.toLowerCase()) && s.password === password);
+    
+    if (student) {
+      const appUser: User = {
+        id: `student_${student.nisn}`,
+        name: student.name,
+        email: `${student.nisn}@student.sosiologimembumi.sch.id`,
+        role: 'siswa',
+        total_xp: 0,
+        levelTitle: 'Siswa Baru',
+        avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${student.nisn}`,
+        grade: parseInt(student.kelas.split(' ')[0]) || 12,
+        streakDays: 1,
+        schoolName: 'SMA Negeri Sosiologi',
+        group_name: student.kelas,
+        nisn: student.nisn,
+      };
+      
+      setSuccessMessage(`Login Siswa Berhasil! Selamat datang, ${appUser.name}`);
+      setTimeout(() => {
+        onLoginSuccess(appUser);
+      }, 600);
+      setLoading(false);
+      return;
+    }
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
@@ -181,14 +210,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleLogin} className="space-y-4">
               {/* Email Input */}
               <div>
-                <label className="block text-xs font-bold text-stone-300 mb-1">Email Terdaftar:</label>
+                <label className="block text-xs font-bold text-stone-300 mb-1">Email / NISN / Nama Lengkap:</label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-3 w-4 h-4 text-stone-500" />
                   <input
-                    type="email"
+                    type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="nama@sosiologimembumi.sch.id"
+                    placeholder="nama@sosiologimembumi.sch.id / 1000000001"
                     required
                     className="w-full bg-stone-800 border border-stone-700 rounded-xl pl-10 pr-3 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-amber-500 transition-all"
                   />

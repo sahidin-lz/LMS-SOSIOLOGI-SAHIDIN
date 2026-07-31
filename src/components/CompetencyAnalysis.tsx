@@ -27,6 +27,11 @@ export const CompetencyAnalysis: React.FC<CompetencyAnalysisProps> = ({ competen
         </span>
       </div>
 
+      {displayCompetencies.length === 0 ? (
+        <div className="text-center py-8 text-slate-500 text-[11px] bg-slate-50 rounded-2xl border border-slate-100 italic">
+          Belum ada data analisis kemampuan. Siswa belum mengerjakan ujian atau soal latihan.
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {displayCompetencies.map((comp) => {
           const mastery = comp.mastery_percentage || 0;
@@ -67,6 +72,7 @@ export const CompetencyAnalysis: React.FC<CompetencyAnalysisProps> = ({ competen
           );
         })}
       </div>
+      )}
     </div>
   );
 };

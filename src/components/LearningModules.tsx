@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   BookOpen, Play, CheckCircle2, Bookmark, Award, Clock, ChevronRight, ChevronDown,
   Sparkles, FileText, Share2, Check, ArrowLeft, ArrowRight, MessageSquare, ThumbsUp, Send, StickyNote, Plus, PlayCircle,
-  Target, Layers, GitCompare, HelpCircle, ShieldAlert, Search, Filter, ListOrdered, LayoutGrid, GraduationCap
+  Target, Layers, GitCompare, HelpCircle, ShieldAlert, Search, Filter, ListOrdered, LayoutGrid, GraduationCap, Lightbulb, Info, BookMarked
 } from 'lucide-react';
 import { Course, Lesson, LessonComment, Role, User, VideoNote } from '../types';
 import { INITIAL_COMMENTS } from '../data/sociologyData';
@@ -131,6 +131,13 @@ const FormattedMaterialBody: React.FC<{
           {paragraphs.map((para, idx) => {
             const lines = para.split('\n');
             const firstLine = lines[0].trim();
+            const lowerFirst = firstLine.toLowerCase();
+            
+            const isTips = lowerFirst.includes('cara mudah membaca') || lowerFirst.includes('tips:') || lowerFirst.includes('trik:');
+            const isCaseStudy = lowerFirst.includes('studi kasus') || lowerFirst.includes('contoh kasus');
+            const isTimeline = lowerFirst.includes('timeline') || lowerFirst.includes('kronologi');
+            const isExercise = lowerFirst.includes('tugas:') || lowerFirst.includes('latihan:');
+            const isConcept = lowerFirst.includes('definisi:') || lowerFirst.includes('konsep penting:');
             
             // Check if paragraph header is a main title (ALL CAPS or numbered like "1. HAKIKAT GEJALA SOSIAL")
             const isMainSection = 
@@ -140,20 +147,109 @@ const FormattedMaterialBody: React.FC<{
             // Check if paragraph is sub-heading (like "1. Tindakan sosial instrumental" or "a. Kontak Sosial:")
             const isSubSection = /^[0-9a-z]\.\s+/i.test(firstLine) || /^[0-9a-z]\)\s+/i.test(firstLine);
 
+
+            let headerText = firstLine;
+            let bodyText = lines.slice(1);
+
+            if (isTips || isCaseStudy || isTimeline || isExercise || isConcept) {
+              const colonIndex = firstLine.indexOf(':');
+              if (colonIndex !== -1 && colonIndex < 40 && lines.length === 1) {
+                 headerText = firstLine.substring(0, colonIndex + 1);
+                 bodyText = [firstLine.substring(colonIndex + 1).trim()];
+              } else if (colonIndex !== -1 && colonIndex < 40 && lines.length > 1) {
+                 const partAfterColon = firstLine.substring(colonIndex + 1).trim();
+                 headerText = firstLine.substring(0, colonIndex + 1);
+                 if (partAfterColon) {
+                    bodyText = [partAfterColon, ...lines.slice(1)];
+                 } else {
+                    bodyText = lines.slice(1);
+                 }
+              }
+            }
+
+            const renderLines = (linesArr: string[]) => linesArr.map((l, lIdx) => (
+               <p key={lIdx}>{highlightKeyTerms(l)}</p>
+            ));
+
+
+            if (isTips) {
+              return (
+                <div key={idx} className="bg-gradient-to-br from-emerald-950/80 to-teal-900/60 border border-emerald-500/50 rounded-2xl p-5 space-y-3 shadow-lg relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl transform translate-x-10 -translate-y-10"></div>
+                  <div className="flex items-center space-x-2.5 border-b border-emerald-500/30 pb-3 relative z-10">
+                    <Lightbulb className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <h3 className="text-sm sm:text-base font-extrabold text-emerald-300 tracking-wide">{headerText}</h3>
+                  </div>
+                  {bodyText.length > 0 && (
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-200 leading-relaxed pt-1 relative z-10">
+                      {renderLines(bodyText)}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (isCaseStudy) {
+              return (
+                <div key={idx} className="bg-gradient-to-br from-blue-950/80 to-indigo-900/60 border border-blue-500/50 rounded-2xl p-5 space-y-3 shadow-lg relative overflow-hidden">
+                  <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl transform translate-x-10 translate-y-10"></div>
+                  <div className="flex items-center space-x-2.5 border-b border-blue-500/30 pb-3 relative z-10">
+                    <Search className="w-5 h-5 text-blue-400 shrink-0" />
+                    <h3 className="text-sm sm:text-base font-extrabold text-blue-300 tracking-wide">{headerText}</h3>
+                  </div>
+                  {bodyText.length > 0 && (
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-200 leading-relaxed pt-1 relative z-10">
+                      {renderLines(bodyText)}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (isTimeline || isConcept) {
+              return (
+                <div key={idx} className="bg-gradient-to-br from-purple-950/80 to-fuchsia-900/60 border border-purple-500/50 rounded-2xl p-5 space-y-3 shadow-lg relative overflow-hidden">
+                   <div className="flex items-center space-x-2.5 border-b border-purple-500/30 pb-3 relative z-10">
+                    {isTimeline ? <Clock className="w-5 h-5 text-purple-400 shrink-0" /> : <BookMarked className="w-5 h-5 text-purple-400 shrink-0" />}
+                    <h3 className="text-sm sm:text-base font-extrabold text-purple-300 tracking-wide">{headerText}</h3>
+                  </div>
+                  {bodyText.length > 0 && (
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-200 leading-relaxed pt-1 relative z-10">
+                      {renderLines(bodyText)}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            if (isExercise) {
+              return (
+                <div key={idx} className="bg-gradient-to-br from-rose-950/80 to-orange-900/60 border border-rose-500/50 rounded-2xl p-5 space-y-3 shadow-lg relative overflow-hidden">
+                  <div className="flex items-center space-x-2.5 border-b border-rose-500/30 pb-3 relative z-10">
+                    <Target className="w-5 h-5 text-rose-400 shrink-0" />
+                    <h3 className="text-sm sm:text-base font-extrabold text-rose-300 tracking-wide">{headerText}</h3>
+                  </div>
+                  {bodyText.length > 0 && (
+                    <div className="space-y-2 text-xs sm:text-sm text-stone-200 leading-relaxed pt-1 relative z-10">
+                      {renderLines(bodyText)}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             if (isMainSection) {
               return (
-                <div key={idx} className="bg-stone-950 border border-amber-500/30 rounded-2xl p-5 space-y-3 shadow-sm">
+                <div key={idx} className="bg-gradient-to-br from-stone-950 to-stone-900 border border-amber-500/40 rounded-2xl p-5 space-y-3 shadow-md">
                   <div className="flex items-center space-x-2.5 border-b border-stone-800 pb-3">
-                    <BookOpen className="w-4 h-4 text-amber-400 shrink-0" />
-                    <h3 className="text-sm sm:text-base font-extrabold text-amber-300 tracking-wide uppercase">
-                      {firstLine}
+                    <Layers className="w-5 h-5 text-amber-400 shrink-0" />
+                    <h3 className="text-sm sm:text-base font-black text-amber-400 tracking-wide uppercase">
+                      {headerText}
                     </h3>
                   </div>
-                  {lines.slice(1).length > 0 && (
+                  {bodyText.length > 0 && (
                     <div className="space-y-2 text-xs sm:text-sm text-stone-300 leading-relaxed pt-1">
-                      {lines.slice(1).map((l, lIdx) => (
-                        <p key={lIdx}>{highlightKeyTerms(l)}</p>
-                      ))}
+                      {renderLines(bodyText)}
                     </div>
                   )}
                 </div>
@@ -162,16 +258,14 @@ const FormattedMaterialBody: React.FC<{
 
             if (isSubSection) {
               return (
-                <div key={idx} className="bg-stone-950/90 border-l-4 border-amber-500 p-4 rounded-r-2xl border-y border-r border-stone-800/80 space-y-2 shadow-xs">
+                <div key={idx} className="bg-stone-900/60 border-l-4 border-amber-500 p-4 rounded-r-2xl border-y border-r border-stone-800/80 space-y-2 shadow-sm">
                   <h4 className="text-xs sm:text-sm font-bold text-stone-100 flex items-center space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
-                    <span>{firstLine}</span>
+                    <span className="w-2 h-2 rounded-full bg-amber-400 inline-block shadow-[0_0_8px_rgba(251,191,36,0.8)]"></span>
+                    <span>{headerText}</span>
                   </h4>
-                  {lines.slice(1).length > 0 && (
+                  {bodyText.length > 0 && (
                     <div className="space-y-1.5 text-xs text-stone-300 leading-relaxed pl-4">
-                      {lines.slice(1).map((l, lIdx) => (
-                        <p key={lIdx}>{highlightKeyTerms(l)}</p>
-                      ))}
+                      {renderLines(bodyText)}
                     </div>
                   )}
                 </div>
@@ -179,10 +273,8 @@ const FormattedMaterialBody: React.FC<{
             }
 
             return (
-              <div key={idx} className="bg-stone-950 p-4 sm:p-5 rounded-2xl border border-stone-800 space-y-2 text-xs sm:text-sm text-stone-300 leading-relaxed shadow-xs">
-                {lines.map((l, lIdx) => (
-                  <p key={lIdx}>{highlightKeyTerms(l)}</p>
-                ))}
+              <div key={idx} className="bg-stone-950 p-4 sm:p-5 rounded-2xl border border-stone-800/60 space-y-2 text-xs sm:text-sm text-stone-300 leading-relaxed shadow-sm hover:border-stone-700 transition-colors">
+                {renderLines(lines)}
               </div>
             );
           })}
@@ -705,19 +797,42 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                       className="group bg-stone-900 hover:bg-stone-850 rounded-3xl border border-stone-800 hover:border-amber-500/60 p-6 shadow-md hover:shadow-amber-500/10 transition-all cursor-pointer flex flex-col justify-between space-y-5 relative overflow-hidden transform hover:-translate-y-1 select-none"
                     >
                       {/* Top Card Info */}
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800 shadow-xs">
-                            {course.category}
-                          </span>
-                          <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-md border border-emerald-800">
-                            {completedCount}/{course.lessons.length} Sub-Bab Selesai
-                          </span>
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-3">
+                            <span className="inline-block text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800 shadow-xs">
+                              {course.category}
+                            </span>
+                            <h3 className="text-base sm:text-lg font-extrabold text-stone-100 group-hover:text-amber-300 transition-colors leading-snug">
+                              {course.title}
+                            </h3>
+                          </div>
+                          
+                          {/* Circular Progress Indicator */}
+                          <div className="relative w-12 h-12 flex items-center justify-center shrink-0 bg-stone-950 rounded-full border border-stone-800 shadow-inner">
+                            <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
+                              <path
+                                className="text-stone-800"
+                                strokeWidth="3.5"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                              <path
+                                className={`${progressPct === 100 ? 'text-emerald-500' : 'text-amber-500'} transition-all duration-1000 ease-out`}
+                                strokeWidth="3.5"
+                                strokeDasharray={`${progressPct}, 100`}
+                                strokeLinecap="round"
+                                stroke="currentColor"
+                                fill="none"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                            </svg>
+                            <div className="absolute inset-0 flex items-center justify-center flex-col">
+                              <span className="text-[10px] font-bold text-stone-300">{progressPct}%</span>
+                            </div>
+                          </div>
                         </div>
-
-                        <h3 className="text-base sm:text-lg font-extrabold text-stone-100 group-hover:text-amber-300 transition-colors leading-snug">
-                          {course.title}
-                        </h3>
                         
                         <p className="text-xs text-stone-400 line-clamp-2 leading-relaxed">
                           {course.description}
@@ -821,11 +936,44 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 text-xs text-stone-300 bg-stone-950 px-4 py-2 rounded-xl border border-stone-800 shrink-0">
-              <Award className="w-4 h-4 text-amber-400" />
-              <span>
-                {activeDetailCourse.lessons.filter(l => completedLessons.has(l.id)).length}/{activeDetailCourse.lessons.length} Sub-Bab Selesai
-              </span>
+            <div className="flex items-center space-x-4 text-xs text-stone-300 bg-stone-950 px-5 py-3 rounded-2xl border border-stone-800 shrink-0 shadow-inner">
+              <div className="flex flex-col items-end">
+                <span className="font-bold text-stone-200">
+                  {activeDetailCourse.lessons.filter(l => completedLessons.has(l.id)).length} / {activeDetailCourse.lessons.length} Sub-Bab
+                </span>
+                <span className="text-[10px] text-stone-500">Telah Diselesaikan</span>
+              </div>
+              
+              {(() => {
+                 const comp = activeDetailCourse.lessons.filter(l => completedLessons.has(l.id)).length;
+                 const tot = activeDetailCourse.lessons.length;
+                 const pct = Math.round((comp / tot) * 100);
+                 return (
+                   <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                       <path
+                         className="text-stone-800"
+                         strokeWidth="3.5"
+                         stroke="currentColor"
+                         fill="none"
+                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                       />
+                       <path
+                         className={`${pct === 100 ? 'text-emerald-500' : 'text-amber-500'} transition-all duration-1000 ease-out`}
+                         strokeWidth="3.5"
+                         strokeDasharray={`${pct}, 100`}
+                         strokeLinecap="round"
+                         stroke="currentColor"
+                         fill="none"
+                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                       />
+                     </svg>
+                     <div className="absolute inset-0 flex items-center justify-center flex-col">
+                       <span className="text-[10px] font-bold text-stone-300">{pct}%</span>
+                     </div>
+                   </div>
+                 );
+              })()}
             </div>
           </div>
 

@@ -24,11 +24,16 @@ export const AnalyticsChart: React.FC<AnalyticsChartProps> = ({ analytics, lates
 
         <div className="flex items-center space-x-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 text-xs text-emerald-800 font-semibold self-start sm:self-auto">
           <ArrowUpRight className="w-4 h-4 text-emerald-600" />
-          <span>Skor IRT Terbaru: {latestScore || 92} / 100</span>
+          <span>Skor IRT Terbaru: {latestScore || 0} / 100</span>
         </div>
       </div>
 
       {/* Recharts Line Graph */}
+      {analytics.length === 0 ? (
+        <div className="h-64 w-full flex items-center justify-center bg-slate-50 rounded-2xl border border-slate-100 italic text-slate-500 text-[11px]">
+          Belum ada riwayat pengerjaan Tryout untuk ditampilkan.
+        </div>
+      ) : (
       <div className="h-64 w-full pt-2">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={analytics} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
@@ -66,6 +71,7 @@ export const AnalyticsChart: React.FC<AnalyticsChartProps> = ({ analytics, lates
           </LineChart>
         </ResponsiveContainer>
       </div>
+      )}
 
       <div className="flex items-center justify-between text-xs text-slate-500 bg-slate-50 p-3 rounded-2xl border border-slate-100">
         <div className="flex items-center space-x-2">
