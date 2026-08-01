@@ -99,25 +99,18 @@ export default function App() {
         if (!fetchedUser) {
           fetchedUser = {
             id: fbUser.uid,
-            name: fbUser.displayName || 'Sahidin, S.Pd., Gr.',
+            name: fbUser.displayName || fbUser.email?.split('@')[0] || 'Siswa Baru',
             email: fbUser.email || '',
-            role: 'admin',
-            total_xp: 9990,
-            levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
-            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=Sahidin`,
-            grade: 12,
-            streakDays: 30,
+            role: 'siswa',
+            total_xp: 0,
+            levelTitle: 'Sosiolog Muda',
+            avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${fbUser.uid}`,
+            grade: 10,
+            streakDays: 1,
             schoolName: 'SMAIT As-Syifa Boarding School Wanareja',
-            group_name: 'Guru Sosiologi',
+            group_name: 'Siswa Baru',
           };
           saveDocument('users', fbUser.uid, fetchedUser);
-        } else {
-          fetchedUser = {
-            ...fetchedUser,
-            name: fetchedUser.name || 'Sahidin, S.Pd., Gr.',
-            role: 'admin',
-            levelTitle: 'Guru Pengampu Sosiologi / Admin LMS',
-          };
         }
 
         setUser(fetchedUser);

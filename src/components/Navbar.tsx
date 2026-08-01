@@ -118,17 +118,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right side Profile & Notifications */}
         <div className="flex items-center space-x-4">
-          <div className="hidden lg:flex items-center bg-white/80 px-4 py-1.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span className="text-[11px] font-bold text-slate-600 mr-2">Login sebagai:</span>
+          <div className="flex items-center bg-white/80 px-3 sm:px-4 py-1.5 rounded-2xl border border-slate-200 shadow-sm">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-600 mr-2 hidden xs:inline">Login:</span>
             <div className="flex items-center space-x-1">
               <select 
                 value={user.role} 
                 onChange={(e) => onRoleChange(e.target.value as Role)}
-                className="bg-transparent text-orange-600 text-xs font-black uppercase outline-none cursor-pointer hover:text-orange-500"
+                className="bg-transparent text-slate-900 text-xs font-black uppercase outline-none cursor-pointer hover:text-blue-600"
               >
-                <option value="siswa" className="bg-white text-white">👨‍🎓 Siswa</option>
-                <option value="guru" className="bg-white text-white">👨‍🏫 Guru</option>
-                <option value="admin" className="bg-white text-white">⚙️ Admin</option>
+                <option value="siswa" className="bg-white text-slate-800">👨‍🎓 Siswa</option>
+                <option value="guru" className="bg-white text-slate-800">👨‍🏫 Guru</option>
+                <option value="admin" className="bg-white text-slate-800">⚙️ Admin</option>
               </select>
             </div>
           </div>
