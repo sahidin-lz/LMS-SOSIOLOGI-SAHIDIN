@@ -175,7 +175,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-extrabold text-slate-800">Analisis Kemampuan & Penguasaan Topik Siswa</h2>
-            <p className="text-xs text-white0">Pemetaan kekuatan dan kelemahan berdasarkan butir soal yang baru saja kamu selesaikan</p>
+            <p className="text-xs text-slate-600">Pemetaan kekuatan dan kelemahan berdasarkan butir soal yang baru saja kamu selesaikan</p>
           </div>
         </div>
 
@@ -225,7 +225,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                     />
                   </div>
 
-                  <p className="text-[11px] text-white0 leading-relaxed font-medium">{recText}</p>
+                  <p className="text-[11px] text-slate-600 leading-relaxed font-medium">{recText}</p>
                 </div>
               );
             });
@@ -238,7 +238,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
             <h2 className="text-xl font-extrabold text-slate-800">Pembahasan Soal Sosiologi Komprehensif</h2>
-            <p className="text-xs text-white0">Evaluasi jawaban kamu dan pelajari kunci teori sosiologinya</p>
+            <p className="text-xs text-slate-600">Evaluasi jawaban kamu dan pelajari kunci teori sosiologinya</p>
           </div>
           <span className="text-xs bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full">
             {exam.questions.length} Soal Lengkap
@@ -277,7 +277,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                     {idx + 1}
                   </span>
                   <div>
-                    <span className="text-xs text-white0 font-bold block">Topik: {question.topic}</span>
+                    <span className="text-xs text-slate-600 font-bold block">Topik: {question.topic}</span>
                     {(() => {
                       const tkaDetails = getTkaTypeDetails(question);
                       return (
@@ -297,7 +297,7 @@ export const ExamDiscussionView: React.FC<ExamDiscussionViewProps> = ({
                   </span>
                 ) : isUnanswered ? (
                   <span className="inline-flex items-center space-x-1.5 bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-200">
-                    <AlertCircle className="w-4 h-4 text-white0" />
+                    <AlertCircle className="w-4 h-4 text-slate-600" />
                     <span>Belum Dijawab</span>
                   </span>
                 ) : (

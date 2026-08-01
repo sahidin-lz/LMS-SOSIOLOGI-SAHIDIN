@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Sosiologi Membumi
                 </span>
               </div>
-              <p className="text-[10px] text-white0 hidden sm:block font-medium">
+              <p className="text-[10px] text-slate-600 hidden sm:block font-medium">
                 Portal Edukasi Sosiologi SMAIT As-Syifa Boarding School Wanareja | TP 2026/2027
               </p>
             </div>
@@ -91,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`flex items-center space-x-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               mainPillar === 'belajar'
                 ? 'bg-gradient-to-r from-blue-700 to-blue-600 text-white shadow-sm border border-slate-200 border border-blue-200'
-                : 'text-white0 hover:text-slate-700 hover:bg-slate-100'
+                : 'text-slate-600 hover:text-slate-700 hover:bg-slate-100'
             }`}
           >
             <BookOpen className={`w-4 h-4 ${mainPillar === 'belajar' ? 'text-blue-500' : ''}`} />
@@ -105,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`flex items-center space-x-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               mainPillar === 'tka'
                 ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-stone-950 shadow-sm border border-slate-200 border border-amber-300'
-                : 'text-white0 hover:text-slate-700 hover:bg-slate-100'
+                : 'text-slate-600 hover:text-slate-700 hover:bg-slate-100'
             }`}
           >
             <Target className={`w-4 h-4 ${mainPillar === 'tka' ? 'text-stone-950' : ''}`} />
@@ -119,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Right side Profile & Notifications */}
         <div className="flex items-center space-x-4">
           <div className="hidden lg:flex items-center bg-white/80 px-4 py-1.5 rounded-2xl border border-slate-200 shadow-sm">
-            <span className="text-[11px] font-bold text-white0 mr-2">Login sebagai:</span>
+            <span className="text-[11px] font-bold text-slate-600 mr-2">Login sebagai:</span>
             <div className="flex items-center space-x-1">
               <select 
                 value={user.role} 
@@ -144,7 +144,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="relative">
             <button 
               onClick={() => setShowNotifPopover(!showNotifPopover)}
-              className="p-2 rounded-xl bg-white border border-slate-200 text-white0 hover:text-slate-900 hover:bg-slate-100 transition-colors relative"
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors relative"
             >
               <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
@@ -182,7 +182,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                               <h4 className={`text-xs font-bold ${!notif.isRead ? 'text-slate-900' : 'text-slate-600'}`}>
                                 {notif.title}
                               </h4>
-                              <p className="text-[11px] text-white0 line-clamp-2 leading-relaxed">
+                              <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
                                 {notif.message}
                               </p>
                               <span className="text-[9px] text-slate-400 font-medium">
@@ -234,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className={`flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
             mainPillar === 'belajar'
               ? 'bg-gradient-to-r from-blue-700 to-blue-600 text-white shadow-sm border border-slate-200 border border-blue-200'
-              : 'text-white0 hover:text-slate-700 hover:bg-slate-100 bg-slate-50 border border-slate-200'
+              : 'text-slate-600 hover:text-slate-700 hover:bg-slate-100 bg-slate-50 border border-slate-200'
           }`}
         >
           <BookOpen className={`w-4 h-4 ${mainPillar === 'belajar' ? 'text-blue-500' : ''}`} />
@@ -245,7 +245,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className={`flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
             mainPillar === 'tka'
               ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-stone-950 shadow-sm border border-slate-200 border border-amber-300'
-              : 'text-white0 hover:text-slate-700 hover:bg-slate-100 bg-slate-50 border border-slate-200'
+              : 'text-slate-600 hover:text-slate-700 hover:bg-slate-100 bg-slate-50 border border-slate-200'
           }`}
         >
           <Target className={`w-4 h-4 ${mainPillar === 'tka' ? 'text-stone-950' : ''}`} />
@@ -278,7 +278,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           ? g === 12
                             ? 'bg-orange-500 text-white shadow-sm border border-amber-300'
                             : 'bg-blue-600 text-white shadow-sm'
-                          : 'text-white0 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       {g}
@@ -419,7 +419,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="bg-white border border-amber-500/50 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 text-slate-900 shadow-2xl relative">
             <button 
               onClick={() => setShowTkaLockModal(false)}
-              className="absolute top-4 right-4 text-white0 hover:text-slate-900 p-1 rounded-full hover:bg-slate-100"
+              className="absolute top-4 right-4 text-slate-600 hover:text-slate-900 p-1 rounded-full hover:bg-slate-100"
             >
               <X className="w-5 h-5" />
             </button>
@@ -435,7 +435,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <p className="text-xs text-slate-600 leading-relaxed">
                 Akses <span className="font-bold text-white">Tes Kemampuan Akademik (TKA) Sosiologi</span> dan Simulasi Tryout CBT disiapkan khusus untuk Siswa Kelas 12 yang mempersiapkan UTBK/SNBT Seleksi Masuk PTN.
               </p>
-              <p className="text-xs text-white0 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+              <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-2xl border border-slate-200">
                 Saat ini Anda terdaftar di <span className="font-bold text-blue-600">Kelas {user.grade}</span>. Anda disarankan fokus menguasai materi pembelajaran Kurikulum Sosiologi Kelas {user.grade}.
               </p>
             </div>

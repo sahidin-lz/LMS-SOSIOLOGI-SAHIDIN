@@ -16,7 +16,7 @@ export const ExamHistoryWidget: React.FC<ExamHistoryWidgetProps> = ({ history })
           </div>
           <div>
             <h2 className="text-lg font-extrabold text-slate-800">Riwayat Ujian Saya</h2>
-            <p className="text-[11px] text-white0">Ujian CBT yang telah diselesaikan</p>
+            <p className="text-[11px] text-slate-600">Ujian CBT yang telah diselesaikan</p>
           </div>
         </div>
         <div className="text-center py-6 text-slate-400 text-xs">
@@ -34,7 +34,7 @@ export const ExamHistoryWidget: React.FC<ExamHistoryWidgetProps> = ({ history })
         </div>
         <div>
           <h2 className="text-lg font-extrabold text-slate-800">Riwayat Ujian Saya</h2>
-          <p className="text-[11px] text-white0">Ujian CBT yang telah diselesaikan</p>
+          <p className="text-[11px] text-slate-600">Ujian CBT yang telah diselesaikan</p>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export const ExamHistoryWidget: React.FC<ExamHistoryWidgetProps> = ({ history })
                 </h3>
               </div>
               <div className="text-right shrink-0">
-                <div className="text-[10px] text-white0 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                <div className="text-[10px] text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">
                   {new Date(session.start_time).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </div>
               </div>
@@ -59,7 +59,7 @@ export const ExamHistoryWidget: React.FC<ExamHistoryWidgetProps> = ({ history })
 
             <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-200">
               <div className="bg-white rounded-xl p-3 border border-slate-200/50">
-                <div className="flex items-center space-x-1.5 text-[10px] text-white0 font-semibold mb-1">
+                <div className="flex items-center space-x-1.5 text-[10px] text-slate-600 font-semibold mb-1">
                   <CheckCircle className="w-3.5 h-3.5 text-blue-600" />
                   <span>Skor Normal</span>
                 </div>
@@ -68,7 +68,7 @@ export const ExamHistoryWidget: React.FC<ExamHistoryWidgetProps> = ({ history })
                 </div>
               </div>
               <div className="bg-white rounded-xl p-3 border border-slate-200/50">
-                <div className="flex items-center space-x-1.5 text-[10px] text-white0 font-semibold mb-1">
+                <div className="flex items-center space-x-1.5 text-[10px] text-slate-600 font-semibold mb-1">
                   <Target className="w-3.5 h-3.5 text-orange-600" />
                   <span>Skor IRT</span>
                 </div>

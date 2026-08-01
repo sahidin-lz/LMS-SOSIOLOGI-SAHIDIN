@@ -292,7 +292,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">
             Menu Admin: Ruang Kelas, User & Silabus
           </h1>
-          <p className="text-xs sm:text-sm text-white0 leading-relaxed max-w-2xl">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
             Kelola data siswa beserta password akun, upload silabus Excel/CSV untuk memetakan bab & latihan ulangan harian, serta ekspor rekapitulasi data lengkap.
           </p>
         </div>
@@ -351,7 +351,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
           className={`flex items-center space-x-2 pb-2 text-xs font-extrabold border-b-2 transition-all ${
             activeAdminSubTab === 'roster'
               ? 'border-blue-400 text-blue-500'
-              : 'border-transparent text-white0 hover:text-slate-700'
+              : 'border-transparent text-slate-600 hover:text-slate-700'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -363,7 +363,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
           className={`flex items-center space-x-2 pb-2 text-xs font-extrabold border-b-2 transition-all ${
             activeAdminSubTab === 'syllabus'
               ? 'border-amber-500 text-orange-500'
-              : 'border-transparent text-white0 hover:text-slate-700'
+              : 'border-transparent text-slate-600 hover:text-slate-700'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -380,7 +380,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                 <BookOpen className="w-5 h-5 text-orange-600" />
                 <span>Peta Kurikulum & Silabus Terstruktur Sosiologi</span>
               </h2>
-              <p className="text-xs text-white0">Silabus ini diunggah dalam bentuk Excel/CSV dan dipetakan otomatis ke dalam modul pembelajaran, latihan bab, serta ulangan harian.</p>
+              <p className="text-xs text-slate-600">Silabus ini diunggah dalam bentuk Excel/CSV dan dipetakan otomatis ke dalam modul pembelajaran, latihan bab, serta ulangan harian.</p>
             </div>
             <button
               onClick={handleDownloadSyllabusTemplate}
@@ -401,7 +401,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                   <span className="text-xs font-mono font-bold text-orange-600">{syl.chapter_code}</span>
                 </div>
                 <h3 className="text-sm font-bold text-slate-800">{syl.topic_name}</h3>
-                <div className="text-xs text-white0 space-y-1">
+                <div className="text-xs text-slate-600 space-y-1">
                   <p><strong>Kompetensi Dasar:</strong> {syl.basic_competency}</p>
                   <p><strong>Tujuan Pembelajaran:</strong> {syl.learning_objective}</p>
                 </div>
@@ -430,10 +430,10 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                       : 'bg-white/70 text-slate-600 hover:text-orange-700 hover:bg-slate-100 border-slate-200'
                   }`}
                 >
-                  <Users className={`w-4 h-4 ${isSelected ? 'text-orange-600' : 'text-white0'}`} />
+                  <Users className={`w-4 h-4 ${isSelected ? 'text-orange-600' : 'text-slate-600'}`} />
                   <div className="text-left">
                     <div className="font-extrabold">{cls.name}</div>
-                    <div className="text-[10px] text-white0 font-normal">{cls.students.length} Siswa · K-{cls.grade_level}</div>
+                    <div className="text-[10px] text-slate-600 font-normal">{cls.students.length} Siswa · K-{cls.grade_level}</div>
                   </div>
                 </button>
               );
@@ -450,11 +450,11 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                   Tahun Ajaran {currentClassroom.academic_year}
                 </span>
               </h2>
-              <p className="text-xs text-white0 leading-relaxed">{currentClassroom.description}</p>
+              <p className="text-xs text-slate-600 leading-relaxed">{currentClassroom.description}</p>
             </div>
 
             <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-200 flex flex-col justify-center space-y-1">
-              <span className="text-[10px] text-white0 font-bold uppercase">Guru Pengampu Sosiologi</span>
+              <span className="text-[10px] text-slate-600 font-bold uppercase">Guru Pengampu Sosiologi</span>
               <span className="text-sm font-bold text-slate-700 flex items-center space-x-1.5">
                 <GraduationCap className="w-4 h-4 text-orange-600" />
                 <span>{currentClassroom.teacher_name}</span>
@@ -462,7 +462,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
             </div>
 
             <div className="bg-slate-800/60 p-4 rounded-2xl border border-slate-200 flex flex-col justify-center space-y-1">
-              <span className="text-[10px] text-white0 font-bold uppercase">Total Terdaftar</span>
+              <span className="text-[10px] text-slate-600 font-bold uppercase">Total Terdaftar</span>
               <span className="text-xl font-extrabold text-blue-600 flex items-center space-x-1.5">
                 <Users className="w-5 h-5 text-blue-600" />
                 <span>{currentClassroom.students.length} Siswa</span>
@@ -493,7 +493,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                   <span>{showPasswords ? 'Sembunyikan Password' : 'Lihat Password Akun'}</span>
                 </button>
 
-                <div className="text-xs font-semibold text-white0">
+                <div className="text-xs font-semibold text-slate-600">
                   <span>Siswa: <strong className="text-orange-600">{filteredStudents.length}</strong></span>
                 </div>
               </div>
@@ -502,7 +502,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
             {/* Student Table */}
             <div className="overflow-x-auto rounded-2xl border border-slate-200">
               <table className="w-full text-left text-xs text-slate-600">
-                <thead className="bg-orange-500 text-white0 uppercase font-bold text-[10px] border-b border-slate-200">
+                <thead className="bg-orange-500 text-slate-600 uppercase font-bold text-[10px] border-b border-slate-200">
                   <tr>
                     <th className="py-3.5 px-4">No</th>
                     <th className="py-3.5 px-4">NISN</th>
@@ -529,7 +529,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                         <td className="py-3.5 px-4 font-mono text-slate-600 font-bold">{st.nisn}</td>
                         <td className="py-3.5 px-4">
                           <div className="font-bold text-slate-800">{st.name}</div>
-                          <div className="text-[10px] text-white0">{st.email}</div>
+                          <div className="text-[10px] text-slate-600">{st.email}</div>
                         </td>
                         <td className="py-3.5 px-4 font-mono text-xs">
                           {showPasswords ? (
@@ -559,7 +559,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                             st.status === 'Aktif'
                               ? 'bg-blue-50 text-blue-500 border-blue-300'
-                              : 'bg-slate-100 text-white0 border-slate-300'
+                              : 'bg-slate-100 text-slate-600 border-slate-300'
                           }`}>
                             {st.status}
                           </span>
@@ -616,14 +616,14 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
               </div>
               <button 
                 onClick={() => setShowSyllabusModal(false)}
-                className="text-white0 hover:text-slate-700 text-sm font-bold cursor-pointer"
+                className="text-slate-600 hover:text-slate-700 text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-white0 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Tempelkan baris data CSV/Excel Silabus di bawah ini. Format kolom: <code>Tingkat_Kelas, Semester, Kode_Bab, Topik_Materi, Kompetensi_Dasar, Tujuan_Pembelajaran, Jumlah_Pertemuan, Ada_Ulangan_Harian</code>.
               </p>
 
@@ -675,14 +675,14 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
               </div>
               <button 
                 onClick={() => setShowImportModal(false)}
-                className="text-white0 hover:text-slate-700 text-sm font-bold cursor-pointer"
+                className="text-slate-600 hover:text-slate-700 text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-white0 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Unduh terlebih dahulu <strong>Format Template CSV/Excel + Password</strong> jika belum memilikinya. Format baris: <code>NISN, Nama_Siswa, Email, Password_Akun, Status</code>.
               </p>
 
@@ -735,7 +735,7 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
               <button 
                 type="button"
                 onClick={() => setShowAddClassModal(false)}
-                className="text-white0 hover:text-slate-700 text-sm font-bold cursor-pointer"
+                className="text-slate-600 hover:text-slate-700 text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -827,19 +827,19 @@ export const ClassroomManagement: React.FC<ClassroomManagementProps> = ({ user }
             {/* Biodata Siswa */}
             <div className="grid grid-cols-2 gap-4 text-xs bg-slate-50 p-4 rounded-2xl border border-slate-200">
               <div>
-                <p className="text-white0">Nama Siswa:</p>
+                <p className="text-slate-600">Nama Siswa:</p>
                 <p className="font-extrabold text-sm text-slate-900">{selectedStudentRapor.name}</p>
               </div>
               <div>
-                <p className="text-white0">NISN / ID Akun:</p>
+                <p className="text-slate-600">NISN / ID Akun:</p>
                 <p className="font-bold text-slate-800 font-mono">{selectedStudentRapor.nisn}</p>
               </div>
               <div>
-                <p className="text-white0">Rombongan Belajar (Rombel):</p>
+                <p className="text-slate-600">Rombongan Belajar (Rombel):</p>
                 <p className="font-bold text-emerald-800">{selectedStudentRapor.classroom_name || currentClassroom.name}</p>
               </div>
               <div>
-                <p className="text-white0">Tahun Ajaran / Semester:</p>
+                <p className="text-slate-600">Tahun Ajaran / Semester:</p>
                 <p className="font-bold text-slate-800">2026/2027 (Ganjil)</p>
               </div>
             </div>

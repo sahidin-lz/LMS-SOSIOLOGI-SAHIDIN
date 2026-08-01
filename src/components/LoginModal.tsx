@@ -92,12 +92,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
             <div>
               <h3 className="font-extrabold text-base text-orange-700">Login LMS Sosiologi</h3>
-              <p className="text-xs text-white0">Masuk sebagai Super Admin, Guru, atau Siswa</p>
+              <p className="text-xs text-slate-600">Masuk sebagai Super Admin, Guru, atau Siswa</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-white0 hover:text-slate-800 hover:bg-slate-100 transition-all cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-600 hover:text-slate-800 hover:bg-slate-100 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -161,7 +161,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'admin'
                       ? 'bg-purple-900 border-purple-500 text-purple-100 shadow-sm'
-                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
+                      : 'bg-slate-100 border-slate-300 text-slate-600 hover:text-slate-700'
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5" />
@@ -174,7 +174,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'guru'
                       ? 'bg-amber-900 border-amber-500 text-amber-100 shadow-sm'
-                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
+                      : 'bg-slate-100 border-slate-300 text-slate-600 hover:text-slate-700'
                   }`}
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
@@ -187,7 +187,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   className={`py-2 px-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all ${
                     selectedRole === 'siswa'
                       ? 'bg-blue-100 border-blue-400 text-emerald-100 shadow-sm'
-                      : 'bg-slate-100 border-slate-300 text-white0 hover:text-slate-700'
+                      : 'bg-slate-100 border-slate-300 text-slate-600 hover:text-slate-700'
                   }`}
                 >
                   <UserCheck className="w-3.5 h-3.5" />
@@ -254,7 +254,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-50 px-6 py-3 border-t border-slate-200 text-white0 text-[10px] flex items-center justify-between">
+        <div className="bg-slate-50 px-6 py-3 border-t border-slate-200 text-slate-600 text-[10px] flex items-center justify-between">
           <span>LMS Sosiologi • Firebase Cloud Connected</span>
           {onPurgeAllData && (
             <button

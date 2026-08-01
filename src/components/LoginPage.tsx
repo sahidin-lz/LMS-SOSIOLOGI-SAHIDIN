@@ -62,8 +62,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     // 1. Check local rombel data first (for students)
-    const trimmedInput = email.trim();
-    const student = RAW_STUDENTS_LIST.find(s => (s.nisn === trimmedInput || s.name.toLowerCase() === trimmedInput.toLowerCase()) && s.password === password);
+    const trimmedInput = email.trim().toLowerCase();
+    const student = RAW_STUDENTS_LIST.find(s => 
+      // Username can be Name or NISN (as fallback), but password must be NISN as requested
+      (s.name.toLowerCase() === trimmedInput || s.nisn === email.trim()) && 
+      (s.nisn === password)
+    );
     
     if (student) {
       const appUser: User = {
@@ -183,7 +187,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <h1 className="text-xl font-extrabold text-orange-700 tracking-tight">
             LMS SOSIOLOGI MEMBUMI
           </h1>
-          <p className="text-xs text-white0 font-medium">
+          <p className="text-xs text-slate-600 font-medium">
             Portal Pembelajaran & CBT Sosiologi SMA • Firebase Authenticated
           </p>
         </div>
@@ -210,14 +214,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <form onSubmit={handleLogin} className="space-y-4">
               {/* Email Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">Email / NISN / Nama Lengkap:</label>
+                <label className="block text-xs font-bold text-slate-600 mb-1">Username (Nama Lengkap):</label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                   <input
                     type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="nama@sosiologimembumi.sch.id / 1000000001"
+                    placeholder="Contoh: FAHRI RIZKI RAMADHAN"
                     required
                     className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-10 pr-3 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500 transition-all"
                   />
@@ -226,21 +230,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
               {/* Password Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (Password):</label>
+                <label className="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (NISN Siswa):</label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="Contoh: 1000000001"
                     required
                     className="w-full bg-slate-100 border border-slate-300 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-amber-500 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-white0 hover:text-slate-700"
+                    className="absolute right-3 top-2.5 text-slate-600 hover:text-slate-700"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>

@@ -60,13 +60,13 @@ const FormattedMaterialBody: React.FC<{
             <Sparkles className="w-4 h-4 text-orange-600 shrink-0" />
             <span>Poin Kunci & Ringkasan Konsep Utama</span>
           </div>
-          <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700">
+          <ul className="space-y-2.5 text-xs sm:text-sm text-slate-900 font-medium">
             {lesson.key_takeaways.map((point, i) => (
               <li key={i} className="flex items-start space-x-3">
-                <span className="w-5 h-5 rounded-lg bg-orange-500/20 border border-amber-500/40 text-orange-600 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-lg bg-orange-600 text-white font-black text-[11px] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   ✓
                 </span>
-                <span className="leading-relaxed">{highlightKeyTerms(point)}</span>
+                <span className="leading-relaxed text-slate-900">{highlightKeyTerms(point)}</span>
               </li>
             ))}
           </ul>
@@ -83,12 +83,12 @@ const FormattedMaterialBody: React.FC<{
                 <span className="bg-orange-500 text-white font-black text-[10px] px-2.5 py-0.5 rounded-md uppercase tracking-wider">
                   Mode Ujian CBT Aktif
                 </span>
-                <span className="text-xs text-white0 font-medium">20 Soal TKA Sosiologi</span>
+                <span className="text-xs text-slate-600 font-medium">20 Soal TKA Sosiologi</span>
               </div>
               <h3 className="text-lg sm:text-xl font-extrabold text-slate-800">
                 Simulasi CBT: {lesson.title}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
                 Siswa mengerjakan 20 soal terlebih dahulu di Sistem CBT secara mandiri. Kunci jawaban, analisis statistik IRT, serta pembahasan terinci terbuka otomatis setelah dikumpulkan!
               </p>
             </div>
@@ -96,25 +96,25 @@ const FormattedMaterialBody: React.FC<{
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-white/90 p-3.5 rounded-xl border border-slate-200 text-center">
-              <span className="block text-[10px] uppercase font-bold text-white0">Jumlah Soal</span>
+              <span className="block text-[10px] uppercase font-bold text-slate-600">Jumlah Soal</span>
               <span className="text-sm sm:text-base font-extrabold text-orange-600">20 Soal CBT</span>
             </div>
             <div className="bg-white/90 p-3.5 rounded-xl border border-slate-200 text-center">
-              <span className="block text-[10px] uppercase font-bold text-white0">Durasi Pengerjaan</span>
-              <span className="text-sm sm:text-base font-extrabold text-slate-700">40 Menit</span>
+              <span className="block text-[10px] uppercase font-bold text-slate-600">Durasi Pengerjaan</span>
+              <span className="text-sm sm:text-base font-extrabold text-slate-900">40 Menit</span>
             </div>
             <div className="bg-white/90 p-3.5 rounded-xl border border-slate-200 text-center">
-              <span className="block text-[10px] uppercase font-bold text-white0">Format Soal</span>
+              <span className="block text-[10px] uppercase font-bold text-slate-600">Format Soal</span>
               <span className="text-sm sm:text-base font-extrabold text-indigo-400">3 Model TKA</span>
             </div>
             <div className="bg-white/90 p-3.5 rounded-xl border border-slate-200 text-center">
-              <span className="block text-[10px] uppercase font-bold text-white0">Reward Hadiah</span>
+              <span className="block text-[10px] uppercase font-bold text-slate-600">Reward Hadiah</span>
               <span className="text-sm sm:text-base font-extrabold text-blue-600">+300 XP</span>
             </div>
           </div>
 
           <div className="bg-white/60 p-4 rounded-xl border border-amber-500/30 text-center space-y-3">
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs text-slate-800 font-medium">
               Format Soal: Pilihan Ganda Biasa, PGK Kategori (Sesuai/Tidak Sesuai), dan PGK Multi-Jawaban (MCMA).
             </p>
             <button
@@ -248,7 +248,7 @@ const FormattedMaterialBody: React.FC<{
                     </h3>
                   </div>
                   {bodyText.length > 0 && (
-                    <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
+                    <div className="space-y-2 text-xs sm:text-sm text-slate-900 font-bold leading-relaxed pt-1">
                       {renderLines(bodyText)}
                     </div>
                   )}
@@ -273,7 +273,7 @@ const FormattedMaterialBody: React.FC<{
             }
 
             return (
-              <div key={idx} className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/60 space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed shadow-sm hover:border-slate-300 transition-colors">
+              <div key={idx} className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-300 space-y-2 text-xs sm:text-sm text-slate-900 font-medium leading-relaxed shadow-sm hover:border-blue-400 transition-colors">
                 {renderLines(lines)}
               </div>
             );
@@ -560,7 +560,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-800">
             {selectedCategoryTab === 'tka' ? 'Modul & Materi TKA Sosiologi (UTBK / PTN)' : `Kurikulum Sosiologi Kelas ${selectedCategoryTab} SMA`}
           </h1>
-          <p className="text-xs text-white0">Pilih jenjang kelas atau pilar TKA untuk mengeksplorasi bab dan materi lengkap</p>
+          <p className="text-xs text-slate-600">Pilih jenjang kelas atau pilar TKA untuk mengeksplorasi bab dan materi lengkap</p>
         </div>
 
         {/* Grade & TKA Tabs */}
@@ -686,7 +686,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                 </button>
               </div>
 
-              <div className="text-xs font-semibold text-white0">
+              <div className="text-xs font-semibold text-slate-600">
                 {activeTkaSubTab === 'materi' && '📖 Mode Pembahasan & Rangkuman 10 Unit TKA'}
                 {activeTkaSubTab === 'latihan_bab' && '📝 Mode Latihan Soal CBT per Bab (20 Soal)'}
                 {activeTkaSubTab === 'try_out_tka' && '🎯 Mode Simulasi Ujian Tryout TKA Standar Nasional 2025'}
@@ -710,7 +710,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                   ? 'Try Out TKA Sosiologi Standar Nasional'
                   : `Pilih Bab / Unit Pembelajaran (${filteredCourses.length} Bab Tersedia)`}
               </h2>
-              <p className="text-xs text-white0">
+              <p className="text-xs text-slate-600">
                 {selectedCategoryTab === 'tka' && activeTkaSubTab === 'latihan_bab'
                   ? 'Klik tombol "Kerjakan Latihan CBT" pada kotak bab untuk langsung memulai latihan 20 soal CBT per unit.'
                   : 'Klik pada salah satu kotak bab di bawah untuk masuk ke Kegiatan Belajar lengkap dengan Sub-bab dan Latihan Soal CBT.'}
@@ -718,7 +718,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
             </div>
 
             <div className="relative min-w-[260px]">
-              <Search className="w-4 h-4 text-white0 absolute left-3.5 top-3" />
+              <Search className="w-4 h-4 text-slate-600 absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={searchQuery}
@@ -780,7 +780,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
           ) : (
             /* Course Cards Grid */
             filteredCourses.length === 0 ? (
-              <div className="bg-white rounded-3xl p-10 text-center text-xs text-white0 border border-slate-200">
+              <div className="bg-white rounded-3xl p-10 text-center text-xs text-slate-600 border border-slate-200">
                 Tidak ada materi yang sesuai dengan pencarian "{searchQuery}".
               </div>
             ) : (
@@ -834,14 +834,14 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                           </div>
                         </div>
                         
-                        <p className="text-xs text-white0 line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                           {course.description}
                         </p>
                       </div>
 
                       {/* Sub-Bab Preview List */}
                       <div className="space-y-2 bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200/80 text-xs">
-                        <div className="flex items-center justify-between text-[10px] uppercase font-bold text-white0 mb-1">
+                        <div className="flex items-center justify-between text-[10px] uppercase font-bold text-slate-600 mb-1">
                           <span>Sub-Bab & Kegiatan Belajar</span>
                           <span className="text-orange-600">{course.lessons.length} Sub-Bab</span>
                         </div>
@@ -851,7 +851,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                             return (
                               <li key={l.id} className="flex items-center space-x-2 text-slate-600 text-[11px] truncate">
                                 <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 ${
-                                  isDone ? 'bg-blue-500 text-stone-950' : 'bg-slate-100 text-white0'
+                                  isDone ? 'bg-blue-500 text-stone-950' : 'bg-slate-100 text-slate-600'
                                 }`}>
                                   {isDone ? '✓' : lIdx + 1}
                                 </span>
@@ -870,7 +870,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                       {/* Progress & CTA Button */}
                       <div className="pt-3 border-t border-slate-200/80 space-y-3">
                         <div className="space-y-1">
-                          <div className="flex justify-between text-[10px] font-bold text-white0">
+                          <div className="flex justify-between text-[10px] font-bold text-slate-600">
                             <span>Progres Unit</span>
                             <span className="text-orange-600">{progressPct}%</span>
                           </div>
@@ -987,7 +987,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     <ListOrdered className="w-4 h-4" />
                     <span>Sub-Bab & Latihan CBT</span>
                   </span>
-                  <span className="text-[11px] text-white0">
+                  <span className="text-[11px] text-slate-600">
                     {activeDetailCourse.lessons.length} Sub-Bab
                   </span>
                 </div>
@@ -1031,7 +1031,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                               {lesson.title}
                             </p>
                             <div className="flex items-center space-x-2 text-[10px] mt-0.5">
-                              <span className={isSelected ? 'text-orange-600 font-medium' : 'text-white0'}>
+                              <span className={isSelected ? 'text-orange-600 font-medium' : 'text-slate-600'}>
                                 {lesson.duration}
                               </span>
                               {isCbt && (
@@ -1044,11 +1044,11 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                         </div>
 
                         {lesson.content_type === 'video' ? (
-                          <Play className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-orange-600 fill-amber-400' : 'text-white0'}`} />
+                          <Play className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-orange-600 fill-amber-400' : 'text-slate-600'}`} />
                         ) : isCbt ? (
                           <ShieldAlert className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-orange-600' : 'text-amber-500/70'}`} />
                         ) : (
-                          <FileText className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-orange-500' : 'text-white0'}`} />
+                          <FileText className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-orange-500' : 'text-slate-600'}`} />
                         )}
                       </button>
                     );
@@ -1058,7 +1058,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
 
               {/* Pindah Bab Quick Switcher */}
               <div className="bg-white rounded-3xl p-4 border border-slate-200 space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-white0 block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block">
                   Pindah Ke Bab Lain ({filteredCourses.length} Bab)
                 </span>
                 <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
@@ -1069,7 +1069,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                       className={`w-full text-left p-2 rounded-xl text-xs font-medium transition-all cursor-pointer truncate ${
                         c.id === activeDetailCourse.id
                           ? 'bg-orange-500/20 text-orange-500 font-bold border border-amber-500/40'
-                          : 'text-white0 hover:text-slate-700 hover:bg-slate-100'
+                          : 'text-slate-600 hover:text-slate-700 hover:bg-slate-100'
                       }`}
                     >
                       • {c.title}
@@ -1086,7 +1086,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
               {/* Top lesson info */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                 <div>
-                  <div className="flex items-center space-x-2 text-xs font-semibold text-white0 mb-1 flex-wrap gap-y-1">
+                  <div className="flex items-center space-x-2 text-xs font-semibold text-slate-600 mb-1 flex-wrap gap-y-1">
                     <span className="bg-slate-100 text-orange-500 px-2.5 py-0.5 rounded-md font-bold">
                       Bab {selectedLesson.chapter_number}: {selectedLesson.chapter_title}
                     </span>
@@ -1109,7 +1109,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
                       bookmarked
                         ? 'bg-orange-50 text-orange-500 border-amber-600'
-                        : 'bg-slate-100 text-white0 border-slate-300 hover:bg-slate-200'
+                        : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
                     }`}
                     title="Simpan Bookmark"
                   >
@@ -1176,7 +1176,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     <StickyNote className="w-4 h-4" />
                     <span>Catatan Berbasis Waktu (Time-Stamped Notes)</span>
                   </div>
-                  <span className="text-[10px] text-white0">Otomatis Tersimpan</span>
+                  <span className="text-[10px] text-slate-600">Otomatis Tersimpan</span>
                 </div>
 
                 {/* Form to add note */}
@@ -1266,7 +1266,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     <h3 className="text-base font-bold text-slate-800 mt-1">
                       Latihan Soal & Ulangan Harian Bab {selectedLesson.chapter_number}
                     </h3>
-                    <p className="text-xs text-white0">
+                    <p className="text-xs text-slate-600">
                       Selesaikan Latihan Bab & Ulangan Harian untuk menguji pemahaman konsep sosiologimu
                     </p>
                   </div>
@@ -1301,7 +1301,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
                     <MessageSquare className="w-4 h-4 text-orange-600" />
                     <span>Forum Diskusi Berantai (Threaded Discussion)</span>
                   </div>
-                  <span className="text-[10px] text-white0">{comments.length} Diskusi Aktif</span>
+                  <span className="text-[10px] text-slate-600">{comments.length} Diskusi Aktif</span>
                 </div>
 
                 {/* Add New Parent Comment */}
@@ -1342,7 +1342,7 @@ export const LearningModules: React.FC<LearningModulesProps> = ({
 
                       <p className="text-slate-600 leading-relaxed text-[11px] pl-9">{cmt.text}</p>
 
-                      <div className="pl-9 flex items-center space-x-4 text-[10px] text-white0 font-semibold">
+                      <div className="pl-9 flex items-center space-x-4 text-[10px] text-slate-600 font-semibold">
                         <button className="flex items-center space-x-1 hover:text-orange-500">
                           <ThumbsUp className="w-3 h-3" />
                           <span>{cmt.likes} Suka</span>

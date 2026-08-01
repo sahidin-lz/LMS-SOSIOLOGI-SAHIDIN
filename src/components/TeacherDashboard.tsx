@@ -75,7 +75,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
           <div className="flex items-center space-x-3 bg-slate-100/90 border border-slate-300 px-4 py-3 rounded-2xl">
             <Users className="w-6 h-6 text-orange-600" />
             <div>
-              <p className="text-[10px] text-white0 uppercase font-bold">Total Siswa Bimbingan</p>
+              <p className="text-[10px] text-slate-600 uppercase font-bold">Total Siswa Bimbingan</p>
               <p className="text-base font-extrabold text-slate-800">128 Siswa Aktif</p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               className={`pb-3 border-b-2 flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === 'penilaian'
                   ? 'border-amber-500 text-orange-600'
-                  : 'border-transparent text-white0 hover:text-slate-700'
+                  : 'border-transparent text-slate-600 hover:text-slate-700'
               }`}
             >
               <FileText className="w-4 h-4" />
@@ -116,7 +116,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               className={`pb-3 border-b-2 flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === 'soal'
                   ? 'border-amber-500 text-orange-600'
-                  : 'border-transparent text-white0 hover:text-slate-700'
+                  : 'border-transparent text-slate-600 hover:text-slate-700'
               }`}
             >
               <PlusCircle className="w-4 h-4" />
@@ -128,7 +128,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               className={`pb-3 border-b-2 flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === 'materi'
                   ? 'border-amber-500 text-orange-600'
-                  : 'border-transparent text-white0 hover:text-slate-700'
+                  : 'border-transparent text-slate-600 hover:text-slate-700'
               }`}
             >
               <BookOpen className="w-4 h-4" />
@@ -140,7 +140,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               className={`pb-3 border-b-2 flex items-center space-x-2 whitespace-nowrap ${
                 activeTab === 'nilai'
                   ? 'border-amber-500 text-orange-600'
-                  : 'border-transparent text-white0 hover:text-slate-700'
+                  : 'border-transparent text-slate-600 hover:text-slate-700'
               }`}
             >
               <BarChart3 className="w-4 h-4" />
@@ -222,7 +222,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                 </div>
 
                 <h3 className="text-xs font-bold text-slate-800">{sub.task_title}</h3>
-                <p className="text-[11px] text-white0 mt-1">Oleh: {sub.submitted_by}</p>
+                <p className="text-[11px] text-slate-600 mt-1">Oleh: {sub.submitted_by}</p>
               </div>
             ))}
           </div>
@@ -235,12 +235,12 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                   {activeSub.type === 'GROUP' ? activeSub.group_name : 'Tugas Mandiri'}
                 </span>
                 <h3 className="text-base font-extrabold text-slate-800">{activeSub.task_title}</h3>
-                <p className="text-xs text-white0">Pengirim: {activeSub.submitted_by} • {activeSub.submitted_at}</p>
+                <p className="text-xs text-slate-600">Pengirim: {activeSub.submitted_by} • {activeSub.submitted_at}</p>
               </div>
 
               {activeSub.grade !== undefined && (
                 <div className="text-right">
-                  <span className="text-[10px] text-white0 font-bold block uppercase">Nilai Saat Ini</span>
+                  <span className="text-[10px] text-slate-600 font-bold block uppercase">Nilai Saat Ini</span>
                   <span className="text-2xl font-extrabold text-orange-600">{activeSub.grade} / 100</span>
                 </div>
               )}
@@ -310,7 +310,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
           <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <div>
               <h2 className="text-lg font-bold text-slate-800">Formulir Tambah Soal CBT Sosiologi</h2>
-              <p className="text-xs text-white0">Soal akan langsung dimasukkan ke dalam Bank Soal Ujian CBT</p>
+              <p className="text-xs text-slate-600">Soal akan langsung dimasukkan ke dalam Bank Soal Ujian CBT</p>
             </div>
             <span className="text-xs bg-orange-50 text-orange-500 border border-orange-300 font-semibold px-3 py-1 rounded-full">
               Format Standard UTBK SNBT
@@ -350,7 +350,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-white0 mb-1">Pilihan A</label>
+                <label className="block font-semibold text-slate-600 mb-1">Pilihan A</label>
                 <input
                   type="text"
                   value={optionA}
@@ -361,7 +361,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               </div>
 
               <div>
-                <label className="block font-semibold text-white0 mb-1">Pilihan B</label>
+                <label className="block font-semibold text-slate-600 mb-1">Pilihan B</label>
                 <input
                   type="text"
                   value={optionB}
@@ -372,7 +372,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               </div>
 
               <div>
-                <label className="block font-semibold text-white0 mb-1">Pilihan C</label>
+                <label className="block font-semibold text-slate-600 mb-1">Pilihan C</label>
                 <input
                   type="text"
                   value={optionC}
@@ -383,7 +383,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               </div>
 
               <div>
-                <label className="block font-semibold text-white0 mb-1">Pilihan D</label>
+                <label className="block font-semibold text-slate-600 mb-1">Pilihan D</label>
                 <input
                   type="text"
                   value={optionD}
@@ -394,7 +394,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               </div>
 
               <div className="md:col-span-2">
-                <label className="block font-semibold text-white0 mb-1">Pilihan E</label>
+                <label className="block font-semibold text-slate-600 mb-1">Pilihan E</label>
                 <input
                   type="text"
                   value={optionE}
@@ -454,10 +454,10 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                 <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-500 border border-orange-300">
                   Kelas {course.grade_level}
                 </span>
-                <span className="text-xs text-white0 font-medium">{course.lessons.length} Sub-Materi</span>
+                <span className="text-xs text-slate-600 font-medium">{course.lessons.length} Sub-Materi</span>
               </div>
               <h3 className="font-bold text-slate-800 text-sm">{course.title}</h3>
-              <p className="text-xs text-white0 line-clamp-2">{course.description}</p>
+              <p className="text-xs text-slate-600 line-clamp-2">{course.description}</p>
               <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
                 <span className="text-orange-600 font-bold">{course.category}</span>
                 <button className="text-blue-600 hover:underline font-semibold flex items-center space-x-1 cursor-pointer">
@@ -480,7 +480,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-orange-500 text-white0 font-bold uppercase tracking-wider text-[10px]">
+              <thead className="bg-orange-500 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="p-3">Nama Siswa</th>
                   <th className="p-3">Sekolah</th>
@@ -493,7 +493,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
               <tbody className="divide-y divide-stone-800">
                 <tr className="hover:bg-slate-100">
                   <td className="p-3 font-bold text-slate-800">Arya Pratama</td>
-                  <td className="p-3 text-white0">SMAIT As-Syifa Boarding School Wanareja</td>
+                  <td className="p-3 text-slate-600">SMAIT As-Syifa Boarding School Wanareja</td>
                   <td className="p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-16 bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -512,7 +512,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                 </tr>
                 <tr className="hover:bg-slate-100">
                   <td className="p-3 font-bold text-slate-800">Siti Rahmawati</td>
-                  <td className="p-3 text-white0">SMAIT As-Syifa Boarding School Wanareja</td>
+                  <td className="p-3 text-slate-600">SMAIT As-Syifa Boarding School Wanareja</td>
                   <td className="p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-16 bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -531,7 +531,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ courses, exa
                 </tr>
                 <tr className="hover:bg-slate-100">
                   <td className="p-3 font-bold text-slate-800">Bintang Ramadhan</td>
-                  <td className="p-3 text-white0">SMAIT As-Syifa Boarding School Wanareja</td>
+                  <td className="p-3 text-slate-600">SMAIT As-Syifa Boarding School Wanareja</td>
                   <td className="p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-16 bg-slate-100 h-2 rounded-full overflow-hidden">

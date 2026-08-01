@@ -62,6 +62,7 @@ export interface User {
   group_id?: string;
   group_name?: string;
   nisn?: string;
+  password?: string;
   status?: 'Aktif' | 'Izin' | 'Alumni';
 }
 

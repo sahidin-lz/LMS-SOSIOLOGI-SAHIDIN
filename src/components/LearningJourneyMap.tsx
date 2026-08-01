@@ -63,13 +63,13 @@ export const LearningJourneyMap: React.FC<LearningJourneyMapProps> = ({ user, co
               {activeCourse.category}
             </span>
             <h2 className="text-xl font-bold text-slate-800 mt-2">{activeCourse.title}</h2>
-            <p className="text-xs text-white0 mt-1">{activeCourse.description}</p>
+            <p className="text-xs text-slate-600 mt-1">{activeCourse.description}</p>
           </div>
 
           <div className="flex items-center space-x-3 bg-slate-100/90 px-4 py-2.5 rounded-2xl border border-slate-300 shrink-0">
             <Trophy className="w-5 h-5 text-orange-600" />
             <div>
-              <div className="text-[10px] text-white0 font-medium">Progres Kelas {selectedGrade}</div>
+              <div className="text-[10px] text-slate-600 font-medium">Progres Kelas {selectedGrade}</div>
               <div className="text-xs font-bold text-slate-800">
                 {activeCourse.completedLessons} / {activeCourse.totalLessons} Selesai
               </div>
@@ -128,7 +128,7 @@ export const LearningJourneyMap: React.FC<LearningJourneyMapProps> = ({ user, co
                           {lesson.title}
                         </h3>
 
-                        <div className="mt-2 flex items-center justify-between text-[10px] text-white0">
+                        <div className="mt-2 flex items-center justify-between text-[10px] text-slate-600">
                           <span>{lesson.duration}</span>
                           {isCompleted && (
                             <span className="text-blue-600 font-bold flex items-center space-x-1">

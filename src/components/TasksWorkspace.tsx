@@ -104,17 +104,17 @@ export const TasksWorkspace: React.FC<TasksWorkspaceProps> = ({ user }) => {
                       {task.type === 'GROUP' ? 'Kelompok' : 'Individu'}
                     </span>
 
-                    <span className="text-[10px] text-white0 flex items-center space-x-1">
+                    <span className="text-[10px] text-slate-600 flex items-center space-x-1">
                       <Clock className="w-3 h-3 text-orange-600" />
                       <span>{task.deadline}</span>
                     </span>
                   </div>
 
                   <h3 className="text-xs font-bold text-slate-800 line-clamp-2">{task.title}</h3>
-                  <p className="text-[11px] text-white0 mt-1">{task.chapter_title}</p>
+                  <p className="text-[11px] text-slate-600 mt-1">{task.chapter_title}</p>
 
                   <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
-                    <span className="text-white0 font-medium">Maks. {task.max_score} Poin</span>
+                    <span className="text-slate-600 font-medium">Maks. {task.max_score} Poin</span>
                     {sub ? (
                       <span className="font-bold text-blue-600 flex items-center space-x-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
@@ -177,13 +177,13 @@ export const TasksWorkspace: React.FC<TasksWorkspaceProps> = ({ user }) => {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-800">Status: {activeSubmission.status}</div>
-                      <div className="text-[11px] text-white0">Diunggah oleh: {activeSubmission.submitted_by} • {activeSubmission.submitted_at}</div>
+                      <div className="text-[11px] text-slate-600">Diunggah oleh: {activeSubmission.submitted_by} • {activeSubmission.submitted_at}</div>
                     </div>
                   </div>
 
                   {activeSubmission.grade !== undefined && (
                     <div className="text-right">
-                      <div className="text-[10px] text-white0 font-medium">Nilai Guru</div>
+                      <div className="text-[10px] text-slate-600 font-medium">Nilai Guru</div>
                       <div className="text-xl font-extrabold text-orange-600">{activeSubmission.grade} / 100</div>
                     </div>
                   )}

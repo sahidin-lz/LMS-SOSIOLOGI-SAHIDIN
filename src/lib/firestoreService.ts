@@ -5,7 +5,8 @@ import {
   setDoc,
   deleteDoc,
   onSnapshot,
-  getDocFromServer
+  getDocFromServer,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -102,4 +103,30 @@ export function subscribeToCollection<T>(
       handleFirestoreError(error, OperationType.GET, collectionName);
     }
   );
+}
+
+export async function seedInitialStudentsToFirestore(students: any[]) {
+  try {
+    const CHUNK_SIZE = 450; // Use slightly less than 500 limit for safety
+    for (let i = 0; i < students.length; i += CHUNK_SIZE) {
+      const chunk = students.slice(i, i + CHUNK_SIZE);
+      const batch = writeBatch(db);
+      
+      chunk.forEach(student => {
+        const docRef = doc(db, 'users', student.id);
+        batch.set(docRef, student, { merge: true });
+      });
+      
+      await batch.commit();
+      console.log(`Berhasil batch write chunk: ${i} - ${i + chunk.length}`);
+      // Small delay to prevent rate limiting
+      if (i + CHUNK_SIZE < students.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+    console.log(`Total berhasil batch write ${students.length} siswa`);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, 'users (batch)');
+    throw error;
+  }
 }

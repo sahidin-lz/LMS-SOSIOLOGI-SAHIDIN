@@ -74,7 +74,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
             <div>
               <h3 className="font-bold text-slate-800 text-base">{top2.name}</h3>
-              <p className="text-xs text-white0">{top2.school}</p>
+              <p className="text-xs text-slate-600">{top2.school}</p>
             </div>
 
             <div className="bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 w-full">
@@ -130,7 +130,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
             <div>
               <h3 className="font-bold text-slate-800 text-base">{top3.name}</h3>
-              <p className="text-xs text-white0">{top3.school}</p>
+              <p className="text-xs text-slate-600">{top3.school}</p>
             </div>
 
             <div className="bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 w-full">
@@ -146,7 +146,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-lg font-bold text-slate-800">Tabel Peringkat Lengkap</h2>
-            <p className="text-xs text-white0">Klasemen diperbarui secara langsung setelah setiap aktivitas</p>
+            <p className="text-xs text-slate-600">Klasemen diperbarui secara langsung setelah setiap aktivitas</p>
           </div>
 
           <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
@@ -179,7 +179,7 @@ export const GamificationLeaderboard: React.FC<GamificationLeaderboardProps> = (
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
-            <thead className="bg-orange-500 text-white0 font-bold uppercase tracking-wider text-[11px]">
+            <thead className="bg-orange-500 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="p-3">Rank</th>
                 <th className="p-3">Nama Siswa</th>

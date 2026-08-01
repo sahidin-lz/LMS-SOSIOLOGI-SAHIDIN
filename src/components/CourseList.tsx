@@ -14,7 +14,7 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-slate-800">Modul Belajar Kurikulum Sosiologi</h2>
-          <p className="text-xs text-white0">Pilih modul kelas 10, 11, atau 12 untuk mulai belajar</p>
+          <p className="text-xs text-slate-600">Pilih modul kelas 10, 11, atau 12 untuk mulai belajar</p>
         </div>
 
         <button
@@ -40,24 +40,24 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
                     Kelas {course.grade_level} SMA
                   </span>
-                  <span className="text-xs text-white0 font-medium">{course.category}</span>
+                  <span className="text-xs text-slate-600 font-medium">{course.category}</span>
                 </div>
 
-                <h3 className="font-bold text-sm text-slate-800 group-hover:text-indigo-700 transition-colors line-clamp-2">
+                <h3 className="font-black text-sm text-slate-900 group-hover:text-indigo-800 transition-colors line-clamp-2">
                   {course.title}
                 </h3>
 
-                <p className="text-xs text-white0 line-clamp-2">{course.description}</p>
+                <p className="text-xs text-slate-800 font-medium line-clamp-2 leading-relaxed">{course.description}</p>
               </div>
 
               <div className="space-y-2">
                 {/* Progress bar */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-[11px] font-medium text-slate-600">
+                  <div className="flex justify-between text-[11px] font-black text-slate-800">
                     <span>Progres Belajar</span>
                     <span>{progressPercent}%</span>
                   </div>
-                  <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                  <div className="w-full bg-slate-300 rounded-full h-1.5 overflow-hidden">
                     <div
                       className="bg-indigo-600 h-full rounded-full transition-all duration-300"
                       style={{ width: `${progressPercent}%` }}
@@ -67,7 +67,7 @@ export const CourseList: React.FC<CourseListProps> = ({ courses, onStartCourse, 
 
                 <button
                   onClick={() => onStartCourse(course.id)}
-                  className="w-full py-2 bg-white hover:bg-indigo-600 text-indigo-700 hover:text-slate-900 border border-indigo-200 hover:border-indigo-600 font-semibold rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs"
+                  className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-md"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>{progressPercent > 0 ? 'Lanjutkan Belajar' : 'Mulai Modul Ini'}</span>

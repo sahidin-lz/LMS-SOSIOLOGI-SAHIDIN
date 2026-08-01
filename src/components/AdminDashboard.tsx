@@ -9,7 +9,7 @@ import {
 import { Announcement, Course, Exam, Lesson, Question, Role, User } from '../types';
 import { TSV_STUDENTS_PRESET, TEACHER_USER, INITIAL_STUDENT_USERS } from '../data/studentsData';
 import { uploadFileToStorage } from '../lib/storageService';
-import { saveDocument, deleteDocument } from '../lib/firestoreService';
+import { saveDocument, deleteDocument, seedInitialStudentsToFirestore } from '../lib/firestoreService';
 
 interface AdminDashboardProps {
   user: User;
@@ -66,17 +66,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Local User List state for Admin CMS
   const [usersList, setUsersList] = useState<User[]>(() => {
-    if (initialUsersList && initialUsersList.length > 0) return initialUsersList;
-    return [
-      TEACHER_USER,
-      ...INITIAL_STUDENT_USERS
-    ];
+    const combined = [...(initialUsersList || [])];
+    
+    // Add master students if they aren't already in the list
+    INITIAL_STUDENT_USERS.forEach(masterUser => {
+      const exists = combined.some(u => u.id === masterUser.id || u.nisn === masterUser.nisn);
+      if (!exists) {
+        combined.push(masterUser);
+      }
+    });
+
+    return combined.length > 0 ? combined : [TEACHER_USER, ...INITIAL_STUDENT_USERS];
   });
 
   // Keep local usersList in sync if parent passes updated array
   React.useEffect(() => {
     if (initialUsersList && initialUsersList.length > 0) {
-      setUsersList(initialUsersList);
+      setUsersList(prev => {
+        const combined = [...initialUsersList];
+        INITIAL_STUDENT_USERS.forEach(masterUser => {
+          const exists = combined.some(u => u.id === masterUser.id || u.nisn === masterUser.nisn);
+          if (!exists) {
+            combined.push(masterUser);
+          }
+        });
+        return combined;
+      });
     }
   }, [initialUsersList]);
 
@@ -88,6 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newUserGrade, setNewUserGrade] = useState<number>(12);
   const [newUserSchool, setNewUserSchool] = useState('');
   const [studentCsvText, setStudentCsvText] = useState<string>('');
+  const [filterRombel, setFilterRombel] = useState<string>('Semua');
 
   // Form State: New Course & Document Upload
   const [courseTargetPillar, setCourseTargetPillar] = useState<'kelas' | 'tka'>('kelas');
@@ -816,6 +832,23 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
     }
   };
 
+  const handleSyncInitialStudents = async () => {
+    if (!window.confirm(`Apakah Anda yakin ingin menyinkronkan ${INITIAL_STUDENT_USERS.length} data siswa default ke Firestore? Data yang sama akan ditimpa.`)) return;
+    
+    setIsUploading(true);
+    try {
+      await seedInitialStudentsToFirestore(INITIAL_STUDENT_USERS);
+      showNotification(`⚡ Sinkronisasi Berhasil! ${INITIAL_STUDENT_USERS.length} Data Siswa dari sistem default telah disinkronkan ke Cloud.`);
+      // Refresh user list from Firestore after sync
+      if (onLoadMoreUsers) onLoadMoreUsers();
+    } catch (err) {
+      console.error('Sync Error:', err);
+      showErrorNotification('Gagal melakukan sinkronisasi data awal: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   // User Handlers (Firebase Integration)
   const handleAddUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1224,7 +1257,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[11px] font-medium text-white0">Materi / Modul</p>
+            <p className="text-[11px] font-medium text-slate-600">Materi / Modul</p>
             <p className="text-lg font-extrabold text-slate-800">{courses.length} Modul</p>
           </div>
         </div>
@@ -1234,7 +1267,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
             <FileText className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[11px] font-medium text-white0">Paket Tryout TKA</p>
+            <p className="text-[11px] font-medium text-slate-600">Paket Tryout TKA</p>
             <p className="text-lg font-extrabold text-slate-800">{exams.length} Ujian</p>
           </div>
         </div>
@@ -1244,7 +1277,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
             <Users className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[11px] font-medium text-white0">Total Pengguna</p>
+            <p className="text-[11px] font-medium text-slate-600">Total Pengguna</p>
             <p className="text-lg font-extrabold text-slate-800">{usersList.length} User</p>
           </div>
         </div>
@@ -1254,7 +1287,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
             <Bell className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-[11px] font-medium text-white0">Pengumuman</p>
+            <p className="text-[11px] font-medium text-slate-600">Pengumuman</p>
             <p className="text-lg font-extrabold text-slate-800">{announcements.length} Berita</p>
           </div>
         </div>
@@ -1450,7 +1483,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                       type="file"
                       accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg"
                       onChange={(e) => setSelectedDocumentFile(e.target.files?.[0] || null)}
-                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
+                      className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
                     />
                     {selectedDocumentFile && (
                       <p className="text-[11px] font-bold text-emerald-700 flex items-center space-x-1">
@@ -1514,7 +1547,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
               <div className="space-y-4">
                 <div className="border-b border-slate-100 pb-3">
                   <h2 className="text-sm font-bold text-slate-800">Upload Massal Modul ke Firebase</h2>
-                  <p className="text-[11px] text-white0 mt-1">
+                  <p className="text-[11px] text-slate-600 mt-1">
                     Upload file CSV/Excel atau tempel teks hasil template data modul (berlaku untuk Materi Kelas 10, 11, 12 dan TKA Sosiologi).
                   </p>
                 </div>
@@ -1565,7 +1598,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                           reader.readAsText(file);
                         }
                       }}
-                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"
+                      className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"
                     />
                   </div>
 
@@ -1600,7 +1633,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                         Kelas {c.grade_level} SMA • BAB {c.lessons[0]?.chapter_number || 1}
                       </span>
                       <h3 className="text-sm font-extrabold text-slate-800 mt-1">{c.title}</h3>
-                      <p className="text-xs text-white0">{c.description}</p>
+                      <p className="text-xs text-slate-600">{c.description}</p>
                     </div>
                     <div className="flex items-center space-x-1">
                       <button
@@ -1640,7 +1673,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                               </a>
                             )}
                           </div>
-                          <div className="text-[10px] text-white0 truncate max-w-md">{les.text_body}</div>
+                          <div className="text-[10px] text-slate-600 truncate max-w-md">{les.text_body}</div>
                         </div>
                         <div className="flex items-center space-x-2 shrink-0">
                           <span className="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-md">
@@ -1880,7 +1913,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
               <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
                 <div className="border-b border-slate-100 pb-3">
                   <h2 className="text-sm font-bold text-slate-800">Upload Bulk Bank Soal dari Template</h2>
-                  <p className="text-[11px] text-white0 mt-1">
+                  <p className="text-[11px] text-slate-600 mt-1">
                     Upload file CSV/Excel atau tempel teks hasil template data bank soal TKA Sosiologi.
                   </p>
                 </div>
@@ -1931,7 +1964,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                           reader.readAsText(file);
                         }
                       }}
-                      className="w-full text-xs text-white0 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer"
+                      className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer"
                     />
                   </div>
 
@@ -1966,7 +1999,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                         {ex.category} • {ex.duration_minutes} Menit • Passing {ex.passing_score}
                       </span>
                       <h3 className="text-sm font-extrabold text-slate-800 mt-1">{ex.title}</h3>
-                      <p className="text-xs text-white0">{ex.description}</p>
+                      <p className="text-xs text-slate-600">{ex.description}</p>
                     </div>
 
                     <div className="flex items-center space-x-1">
@@ -2039,7 +2072,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                             <div>D. {q.option_d}</div>
                           </div>
 
-                          <div className="text-[10px] text-white0 bg-white p-2 rounded-lg border border-slate-200">
+                          <div className="text-[10px] text-slate-600 bg-white p-2 rounded-lg border border-slate-200">
                             <strong>Topik:</strong> {q.topic || 'Umum'} | <strong>Pembahasan:</strong> {q.explanation}
                           </div>
                         </div>
@@ -2169,7 +2202,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                     <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
                     <span>Upload Data Siswa Massal (Format Excel / CSV)</span>
                   </h2>
-                  <p className="text-[11px] text-white0 mt-1 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
                     Impor seluruh roster siswa dari file Excel (.xlsx / .xls) sekaligus dan simpan langsung ke database Firebase Firestore.
                   </p>
                 </div>
@@ -2212,7 +2245,7 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
                       type="file"
                       accept=".xlsx,.xls,.csv,.txt"
                       onChange={handleStudentExcelFileUpload}
-                      className="w-full text-xs text-white0 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-100 file:text-emerald-900 hover:file:bg-emerald-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-slate-50"
+                      className="w-full text-xs text-slate-600 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-emerald-100 file:text-emerald-900 hover:file:bg-emerald-200 cursor-pointer border border-slate-200 rounded-xl p-1 bg-slate-50"
                     />
                   </div>
 
@@ -2260,27 +2293,49 @@ Tryout TKA Sosiologi Paket 5,"Demonstrasi buruh menuntut kenaikan UMR menurut Da
           {/* User Table */}
           <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h2 className="text-base font-bold text-slate-800">Data Seluruh Pengguna Sistem Firebase</h2>
-              <span className="text-xs text-white0">Ubah role instan & tersimpan di Cloud</span>
+              <div className="flex items-center space-x-3">
+                <h2 className="text-base font-bold text-slate-800">Data Seluruh Pengguna Sistem Firebase</h2>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Total Master:</span>
+                  <span className="text-[10px] font-black text-indigo-700">{INITIAL_STUDENT_USERS.length} Siswa</span>
+                </div>
+                <select
+                  value={filterRombel}
+                  onChange={(e) => setFilterRombel(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                >
+                  <option value="Semua">Semua Rombel</option>
+                  {Array.from(new Set(usersList.map(u => u.group_name || 'Tidak Ada Rombel'))).sort().map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+                <span className="text-xs text-slate-600 hidden sm:inline">Ubah role instan & tersimpan di Cloud</span>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 text-slate-600 font-bold uppercase text-[11px]">
                   <tr>
-                    <th className="p-3">Pengguna</th>
-                    <th className="p-3">Role Saat Ini</th>
+                    <th className="p-3">Nama Lengkap</th>
+                    <th className="p-3">Username (NISN)</th>
+                    <th className="p-3">Password (NISN)</th>
+                    <th className="p-3">Role & Level</th>
                     <th className="p-3">XP Points</th>
-                    <th className="p-3 text-right">Aksi Role Access</th>
+                    <th className="p-3 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {usersList.map((u) => (
+                  {usersList.filter(u => filterRombel === 'Semua' || (u.group_name || 'Tidak Ada Rombel') === filterRombel).map((u) => (
                     <tr key={u.id} className="hover:bg-slate-50">
                       <td className="p-3">
-                        <div className="font-bold text-slate-800">{u.name}</div>
-                        <div className="text-[10px] text-white0">{u.email} • {u.schoolName || u.school}</div>
+                        <div className="font-extrabold text-slate-900">{u.name}</div>
+                        <div className="text-[10px] text-slate-600 font-medium uppercase tracking-tight">{u.group_name || 'Tanpa Rombel'}</div>
                       </td>
+                      <td className="p-3 font-mono text-[10px] font-black text-indigo-700">{u.nisn || '-'}</td>
+                      <td className="p-3 font-mono text-[10px] font-black text-amber-700">{u.password || '-'}</td>
                       <td className="p-3">
                         <span
                           className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold capitalize ${

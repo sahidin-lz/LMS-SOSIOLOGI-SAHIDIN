@@ -110,7 +110,7 @@ export const ClassroomChat: React.FC<ClassroomChatProps> = ({ user }) => {
           </div>
           <div>
             <h2 className="text-emerald-100 font-bold text-lg leading-tight">Diskusi Kelas: {classroomName}</h2>
-            <p className="text-xs text-white0">Hanya anggota rombel {classroomName} yang dapat melihat ruang ini.</p>
+            <p className="text-xs text-slate-600">Hanya anggota rombel {classroomName} yang dapat melihat ruang ini.</p>
           </div>
         </div>
       </div>
@@ -118,7 +118,7 @@ export const ClassroomChat: React.FC<ClassroomChatProps> = ({ user }) => {
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white/50">
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-full text-white0 space-y-2">
+          <div className="flex flex-col items-center justify-center h-full text-slate-600 space-y-2">
             <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
             <span className="text-xs">Memuat pesan...</span>
           </div>
@@ -149,7 +149,7 @@ export const ClassroomChat: React.FC<ClassroomChatProps> = ({ user }) => {
 
                   <div className={`flex flex-col ${isMe ? 'items-end ml-2 mr-0' : 'items-start'}`}>
                     {(!isMe && showAvatar) && (
-                      <span className="text-[10px] text-white0 mb-1 ml-1 font-semibold flex items-center space-x-1">
+                      <span className="text-[10px] text-slate-600 mb-1 ml-1 font-semibold flex items-center space-x-1">
                         <span>{msg.user_name}</span>
                         {isTeacher && (
                           <span className="text-[8px] bg-orange-500/20 text-orange-600 border border-amber-500/30 px-1 py-0.5 rounded uppercase">Guru</span>
